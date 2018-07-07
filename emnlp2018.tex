@@ -1,0 +1,349 @@
+%
+% File emnlp2018.tex
+%
+%% Based on the style files for EMNLP 2018, which were
+%% Based on the style files for ACL 2018, which were
+%% Based on the style files for ACL-2015, with some improvements
+%%  taken from the NAACL-2016 style
+%% Based on the style files for ACL-2014, which were, in turn,
+%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
+%% EACL-2009, IJCNLP-2008...
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{emnlp2018}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{paralist}
+\usepackage{color,xcolor}
+\usepackage{bm}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\usepackage{multirow}
+\newcommand{\rmx}{\mathrm x}
+%\aclfinalcopy % Uncomment this line for the final submission
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+\newcommand{\TODO}[1]{{\color{red} [TODO: #1] }}
+\title{Disentangling Latent Space for Style Transfer in\\Natural Language Generation}
+
+\author{First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\graphicspath{{images/}}
+
+
+\begin{abstract}
+	This paper tackles the problem of disentangling the style and content latent spaces of text modeling. We propose a simple yet effective approach, which incorporates two auxiliary losses: multi-task loss and adversarial loss. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled from each other. We also apply our disentangled latent space to style-transfer sentence generation. We achieve similar content-preservation scores compared to previous state-of-the-art approaches, but significantly better style-transfer strength. Our code is publicly available\footnote{\tiny{\url{https://mega.nz/\#!XNwGiADT!_mmBLlcTiA_vdoQiexljN-JjcuNrlypGZ9sh14GUWRo}}}.
+\end{abstract}
+
+% 
+
+\section{Introduction}
+
+The neural network has been a successful learning machine during the past decade due to its high modeling capability, which arises from multiple layers of non-linear transformation of input features. Such transformations, however, make intermediate features ``latent'', in that they do not have explicit meaning and are not explainable. Therefore, neural networks are usually treated as black-box machinery.
+
+Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \newcite{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \newcite{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing (NLP).
+
+In this paper, we address the problem of disentangling neural networks' latent space for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with different features, namely, \textit{style} and \textit{content}.
+
+To accomplish this, we propose a simple approach that combines multi-task loss and adversarial loss. We artificially divide the latent representation into two parts: style space and content space.
+We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information.
+The adversarial objective, on the contrary, operates on the content space to minimize the predictability of style. In this way, the style and content parts can be disentangled from each other.
+
+The disentangled latent space can be directly used for style transfer in sentence generation~\cite{fu2017style,shen2017style}, where a system can generate a sentence with the same content, but a different style. We simply apply an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the autoencoder for decoding. Using this grafting technique, we generate a new sentence similar in meaning but different in sentiment.
+
+We conducted experiments on a product review benchmark dataset. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the style-transfer experiment, we achieve significantly better style transfer scores than previous results, while obtaining better or comparable content preservation scores.  We also show in an ablation test, that the two auxiliary losses can be combined well, each playing its own role in disentangling latent space.
+
+
+\section{Related Work}
+
+
+Disentangling latent space has been widely explored in the image processing domain, where researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics~\cite{gatys2016image}. For other styles, researchers adopt various data augmentation techniques to train a disentangled latent space~\cite{champandard2016semantic,kulkarni2015deep}.
+
+In natural language processing, the ``style'' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \newcite{hu2017toward} manage to control the sentiment by reconstructing sentiment and content based on generated sentences. However, there is no evidence that the latent space could be disentangled by such reconstruction. \newcite{fu2017style} propose two approaches, using style embedding or two specifically trained decoders for style transfer. They apply the adversarial loss on the encoded space to discourage style encoding. \newcite{shen2017style} use an adversarial discriminator to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer.
+
+Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply two auxiliary losses to ensure that each space encodes its own information. Our disentangled space can be directly applied to style-transfer sentence generation, as in the aforementioned studies.
+
+\section{Approach}
+
+In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-overview} depicts both training and prediction processes of our approach.
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{overview}
+	\vspace{-.5cm}
+	\caption{Overview of our approach.}
+	\label{fig:model-overview}
+	\vspace{-.3cm}
+\end{figure}
+
+\subsection{Autoencoder}\label{ss:seq2seq}
+
+An autoencoder encodes an input to a latent vector space, from which it decodes the input itself. By doing so, the autoencoder learns meaningful representations of data. This serves as our primary learning objective. Besides, we also use the autoencoder for text generation in the style-transfer application.
+
+Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sentence. The encoder encodes $\rm x$ by a recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning}, and obtains a hidden state $\bm h$.
+
+Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained with cross-entropy loss, given by
+\vspace{-.5cm}
+\begin{equation}\nonumber
+	J_\text{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log
+	p(x_t|\bm h, x_1\cdots x_{t-1})
+	\vspace{-.3cm}
+\end{equation}
+where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and decoder, respectively.
+
+Since this loss trains the autoencoder to reconstruct $\rmx$, it is also called \textit{reconstruction loss}.
+
+Besides the above reconstruction loss, we design two auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
+
+\subsection{Multi-Task Loss} \label{ss:multi}
+
+Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the style label $s$, which is a part of the training data.
+
+This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predicts its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
+
+In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a binary classifier
+\begin{equation}
+	p(s=1|\bm s;\bm\theta_\text{mult})=\sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
+\end{equation}
+where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning.
+\vspace{-.3cm}
+\begin{align} \label{eqn:Jmult}
+	 & J_\text{mult}(\bm\theta_{E};\bm\theta_\text{mult})=                \\ \nonumber
+	 & -s\log p_\text{mult}(s|\bm s) - (1-s)\log p_\text{mult}(1-s|\bm s)
+	\vspace{-.3cm}
+\end{align}
+where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the unbold letter $s$ represents the binary style label).
+
+
+\subsection{Adversarial Learning} \label{ss:adv}
+
+The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
+
+We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
+
+The idea of adversarial loss is to introduce an adversary that deliberately discriminates style $s$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information.
+
+Concretely, the adversarial discriminator predicts style $s$ by a logistic regression
+\vspace{-.3cm}
+\begin{equation}
+	p_\text{dis}(s=1|\bm c;\bm\theta_\text{adv})=\sigma(\bm w_\text{adv}^\top \bm c + b_\text{adv})
+\end{equation}
+where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary. It is trained by
+\begin{align}
+	 & J_\text{dis}(\bm\theta_\text{dis})=                            \\ \nonumber
+	 & -s\log p_\text{dis}(s|\bm c)-(1-s)\log p_\text{dis}(1-s|\bm c)
+\end{align}
+The adversarial loss appears similar to the multi-task loss as in Eq.~(\ref{eqn:Jmult}). However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
+
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
+\begin{equation}
+	J_\text{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(s|\bm c))
+\end{equation}
+where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
+
+
+
+\subsection{Training Process}
+
+To put it all together, our training process is a loop of the following processes:
+\begin{compactenum}
+	\item minimize $J_\text{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$, and
+	\item minimize $J_\text{rec}(\bm\theta_E, \bm\theta_D) + \lambda_\text{mult}(\bm\theta_E,\bm\theta_\text{mult}) -\lambda_\text{adv}
+		J_\text{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
+\end{compactenum}
+where $\lambda_\text{mult}$ and $\lambda_\text{adv}$ balance these losses.
+
+We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 50 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$ and $\lambda_\text{adv} = 0.3$.
+
+\subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
+
+A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but an opposite sentiment.
+
+Let $\rmx_*$ be an input sentence with $\bm s_*$ and $\bm c_*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
+$\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}$. The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c_*$ for decoding (Figure~\ref{fig:model-overview}b).
+
+\section{Experiments}
+We conducted experiments on an Amazon product review dataset, following~\newcite{fu2017style}. It contains 131072, 2048, 32768 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels.
+
+\subsection{Disentangling Latent Space}
+
+
+We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a logistic classifier based on different latent spaces, and show results in Table~\ref{tab:classification}.
+
+We see that the 128-dimensional content vector is not discriminative for style. It achieves an accuracy of 57\%, slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
+
+
+\begin{table}[!t]
+	\vspace{-.3cm}
+	\centering
+	\resizebox{.6\linewidth}{!}{
+		\begin{tabular}{lr}
+			\hline
+			Random/Majority guess           & 0.5000          \\ \hline
+			Content latent space  ($\bm c$) & 0.5690          \\
+			Style latent space ($\bm s$)    & \textbf{0.7817} \\
+			Combined ($[\bm s;\bm c]$)      & 0.7815          \\
+			\hline
+		\end{tabular}
+	}
+	\caption{Style classification accuracy.}
+	\label{tab:classification}
+\end{table}
+
+\begin{figure}[!t]
+	\includegraphics[width=\linewidth]{tsne-style-and-content}
+	\vspace{-.9cm}
+	\caption{t-SNE plots of (a) style \& (b) content spaces.}
+	\label{fig:tsne}
+	\vspace{-.3cm}
+\end{figure}
+
+
+The latent space can be visualized with t-SNE plots~\cite{maaten2008visualizing} in Figure~\ref{fig:tsne}. As expected, sentences with different sentiments can be nicely separated in the style space (LHS), but are highly mixed in the content space (RHS).
+
+
+\subsection{Style-Transfer Sentence Generation}
+
+We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment (style). We followed~\newcite{fu2017style} and used two metrics: (1) For style transfer, we train a style classifier and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer. (2) For the content-preservation score, we compute a sentence embedding by min, max, and average pooling of word embeddings; then a cosine similarity is computed to evaluate how close two sentences are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed.
+
+We compare our approach with state-of-the-art previous work in Table~\ref{tab:comparison-previous}. We re-conducted the experiments with their publicly available code on our data splits.
+Results show that, our approach achieves a comparable content-preservation score with previous work, but a significantly better style-transfer score, showing that our disentangled latent space can be used for better style-transfer sentence generation.
+
+Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both adversarial loss and reconstruction loss play a role in the strength of style transfer, and that they can be combined to further improve performance.
+
+%\begin{table}[ht!]
+%	\centering
+%	\footnotesize
+%	\begin{tabular}{| R{0.2\linewidth} | R{0.3\linewidth} | R{0.3\linewidth} |}
+%		\hline
+%		\textbf{\tiny{Style Embedding Size}} & \textbf{\tiny{Style Transfer}} & \textbf{\tiny{Content Preservation}} \\
+%		\hline
+%		\hline
+%		8                                    & 0.7708                         & 0.8958                               \\
+%		\hline
+%		32                                   & 0.8507                         & 0.8944                               \\
+%		\hline
+%		128                                  & 0.8801                         & 0.8781                               \\
+%		\hline
+%	\end{tabular}
+%	\caption{Evaluation Results}
+%	\label{tab:evaluation-results}
+%\end{table}
+
+Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
+
+\begin{table}[!t]
+	\vspace{-.3cm}
+	\centering
+	\footnotesize
+	\begin{tabular}{l|rr}
+		\hline
+		\!\!\!\!\!	\multirow{2}{*}{\textbf{Model}}            & \textbf{Style}           & \textbf{Content}\!\!\!            \\
+		                                                     & \!\!\! \textbf{transfer} & \!\!\!\textbf{preservation}\!\!\! \\
+		\hline
+		\hline
+		\!\!\!\!\!	Cross-alignment \cite{shen2017style}\!\!\! & 0.4609                   & 0.8830                            \\  % & 0.0114                               \\
+		\hline
+		\!\!\!\!\!	Sentiment embed. \cite{fu2017style}\!\!\!  & 0.4009                   & 0.9246                            \\ %  & 0.1514                               \\
+		\hline
+		\!\!\!\!\!	Ours                                       & 0.7708                   & 0.8958                            \\ %  & 0.0768                               \\
+		\hline
+	\end{tabular}
+	\caption{Comparison with previous approaches.}
+	\label{tab:comparison-previous}
+\end{table}
+
+\begin{table}[!t]
+	\centering
+	\resizebox{.9\linewidth}{!}{
+		\begin{tabular}{l|rr}
+			\hline
+			\!\!\!\!	\textbf{Training loss}                          & \textbf{{Style transfer}} & \textbf{{Content Preserv.}} \\
+			\hline
+			\hline
+			\!\!\!\!	$J_\text{rec}$                                  & 0.5053                    & 0.9103                      \\
+			\hline
+			\!\!\!\!	$J_\text{rec}$, $J_\text{adv}$                  & 0.5901                    & 0.9121                      \\
+			\hline
+			\!\!\!\!	$J_\text{rec}$, $J_\text{mult}$                 & 0.6445                    & 0.9053                      \\
+			\hline
+			\!\!\!\!	$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$ & 0.7708                    & 0.8958                      \\
+			\hline
+		\end{tabular}}
+	\caption{Ablation test.}
+	\label{tab:ablation-results}
+\end{table}
+
+\begin{table}[!t]
+	\centering
+	\resizebox{\linewidth}{!}{
+		\scriptsize
+		\begin{tabular}{| p{0.5\linewidth} | p{0.5\linewidth} |}
+			\hline
+			\textbf{{Original}}                                                        & \textbf{Transferred (Positive $\rightarrow$ Negative)}                    \\
+			\hline
+			\hline
+			i bought this cuisipro mister to replace my old mister last june-(number)  & i bought this a couple of times and was disappointed in this product      \\
+			\hline
+			quality is good, recevied in time and works as expected.                   & quality is good but i am returning it                                     \\
+			\hline
+			%all in all, i am very happy with this headset.                             & all in all i was expecting a good product                                 \\
+			%\hline
+			\hline
+			\textbf{{Original}}                                                        & \textbf{Transferred (Negative $\rightarrow$ Positive)}                    \\
+			\hline
+			%\hline
+			%i sent it back and requested a refund, and never got the refund.           & i sent it back and gave it a try and it works great                       \\
+			\hline
+			so i tried just one (number) piece each n still the same results.          & so i bought the two sizes and the other ones are great                    \\
+			\hline
+			i am going to buy a replacement and wish i had sent this back for a refund & i am going to go through the same time and i have been using it for years \\
+			\hline
+		\end{tabular}}
+	\caption{Examples of style-transfer generation.}
+	\label{tab:transfer-samples}
+	\vspace{-.3cm}
+\end{table}
+
+\section{Conclusion \& Future Work}
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content-preservation score but significantly higher style-transfer strength compared to previous state-of-the-art work.
+
+In future work, we would like to disentangle the latent space of variational autoencoders (VAEs), as VAE provides a more robust way of generating sentences from a continuous space~\cite{bowman2016generating}. In VAE, the adversarial loss could be applied to posterior distributions, as opposed to an encoded content vector in our paper.
+
+\bibliography{emnlp2018}
+\bibliographystyle{acl-natbib-nourl}
+
+
+
+\end{document}
