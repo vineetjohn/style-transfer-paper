@@ -38,13 +38,9 @@
 
 \author{First Author \\
   Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
   {\tt email@domain} \\\And
   Second Author \\
   Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
   {\tt email@domain} \\}
 
 \date{}
@@ -61,6 +57,13 @@
 \end{abstract}
 
 % 
+
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{model-overview}
+	\caption{Model Overview}
+	\label{fig:model-overview}
+\end{figure*}
 
 \section{Introduction}
 
@@ -92,13 +95,6 @@ Our paper differs from the previous work in that both our style space and conten
 
 In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-overview} depicts both training and prediction processes of our approach.
 
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.9\linewidth]{model-overview}
-	\caption{Model Overview}
-	\label{fig:model-overview}
-\end{figure}
 
 \subsection{Autoencoder} \label{ss:seq2seq}
 
@@ -160,7 +156,17 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \end{equation}
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-dae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
+	\label{fig:dae-tsne}
+\end{figure}
 
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-vae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
+	\label{fig:vae-tsne}
+\end{figure}
 
 \subsection{Training Process}
 
@@ -309,17 +315,6 @@ We see that the 128-dimensional content vector $\bm c$ is not discriminative for
 
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
 
-\begin{figure}[ht]
-	\includegraphics[width=\linewidth]{latent-spaces-dae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
-	\label{fig:dae-tsne}
-\end{figure}
-
-\begin{figure}[ht]
-	\includegraphics[width=\linewidth]{latent-spaces-vae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
-	\label{fig:vae-tsne}
-\end{figure}
 
 As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is significantly smoother and continuous than the one learned by the deterministic autoencoder.
 
@@ -341,8 +336,8 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 	\centering
 	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
-		\multirow{2}{*}{\textbf{Original (Positive)}}          & \textbf{DAE Transferred}                                       & \textbf{VAE Transferred}                                    \\
-		                                                       & \textbf{(Negative)}                                            & \textbf{(Negative)}                                         \\
+		\textbf{Original (Positive)}                           & \textbf{DAE Transferred (Negative)}                            & \textbf{VAE Transferred (Negative)}                         \\
+		\hline
 		\hline
 		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
 		\hline
@@ -359,8 +354,7 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
 		\hline
 		\hline
-		\multirow{2}{*}{\textbf{Original (Negative)}}          & \textbf{DAE Transferred}                                       & \textbf{VAE Transferred}                                    \\
-		                                                       & \textbf{(Positive)}                                            & \textbf{(Positive)}                                         \\
+		\textbf{Original (Negative)}                           & \textbf{DAE Transferred (Positive)}                            & \textbf{VAE Transferred (Positive)}                         \\
 		\hline
 		\hline
 		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
