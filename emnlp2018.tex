@@ -15,16 +15,19 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[hyperref]{emnlp2018}
 \usepackage{times}
-\usepackage{latexsym}
 \usepackage{url}
-\usepackage{graphicx}
-\usepackage{array}
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{paralist}
 \usepackage{color,xcolor}
 \usepackage{bm}
 \usepackage{multirow}
-\newcommand{\rmx}{\mathrm x}
+\usepackage{makecell}
+\usepackage{todonotes}
+
+\newcommand{\rmx}{\mathrm x} % bold x for equations
+\newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  % used for table headers
+\newcommand{\tabc}[2]{\multicolumn{1}{|c|}{\multirow{#1}{*}{\textbf{#2}}}} % used for the top left cell in a table
+
 %\aclfinalcopy % Uncomment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
 
@@ -33,7 +36,6 @@
 % to show all the authors. Please do not make the titlebox
 % smaller than 5cm (the original size); we will check this
 % in the camera-ready version and ask you to change it back.
-\newcommand{\TODO}[1]{{\color{red} [TODO: #1] }}
 \title{Disentangled Representation Learning for Linguistic Style Transfer}
 
 \author{First Author \\
@@ -53,7 +55,7 @@
 
 
 \begin{abstract}
-	This paper tackles the problem of disentangling the style and content latent spaces of language models. We propose a simple yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach. We apply this disentangled latent representation learning method to attribute / label / style transfer in natural language generation. We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores. Our code is made publicly available for reproduction and extension purposes~\footnote{\tiny{\url{https://github.com/vineetjohn/linguistic-style-transfer}}}.
+	This paper tackles the problem of disentangling the style and content latent spaces of language models. We propose a simple yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach. We apply this disentangled latent representation learning method to attribute / label / style transfer in natural language generation. We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores. Our code is made publicly available for reproduction and extension purposes~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
 % 
@@ -156,6 +158,8 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \end{equation}
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
+\todo[inline]{Add note about BoW adversarial objective}
+
 \begin{figure}[ht]
 	\includegraphics[width=\linewidth]{latent-spaces-dae}
 	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
@@ -168,14 +172,31 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adv
 	\label{fig:vae-tsne}
 \end{figure}
 
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l | r | r |}
+		\hline
+		                                        & \tabh{DAE}                  & \tabh{VAE} \\
+		\hline \hline
+		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
+		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
+		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
+		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
+		\hline
+	\end{tabular}
+	\caption{Style classification accuracy.}
+	\label{tab:classification}
+\end{table*}
+
 \subsection{Training Process}
 
 To put it all together, our training process is a loop of the following processes:
-\begin{compactenum}
+\begin{itemize}
 	\item minimize $J_\text{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$, and
 	\item minimize $J_\text{rec}(\bm\theta_E, \bm\theta_D) + \lambda_\text{mult}(\bm\theta_E,\bm\theta_\text{mult}) -\lambda_\text{adv}
-		J_\text{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
-\end{compactenum}
+		      J_\text{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
+\end{itemize}
 where $\lambda_\text{mult}$ and $\lambda_\text{adv}$ balance these losses.
 
 We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 50 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$ and $\lambda_\text{adv} = 0.3$.
@@ -191,26 +212,21 @@ Let $\rmx_*$ be an input sentence with $\bm s_*$ and $\bm c_*$ being the encoded
 The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c_*$ for decoding (Figure~\ref{fig:model-overview}b).
 
 
-\begin{table*}[ht!]
+\begin{table*}[ht]
 	\centering
-	\begin{tabular}{| c | l | r | r | r | r |}
+	\begin{tabular}{| l | r | r | r | r |}
 		\hline
-		\multirow{2}{*}{
-		} & \textbf{Model}        & \textbf{Transfer} & \textbf{Content}      & \textbf{Word}    & \textbf{Language} \\
-		  &                       & \textbf{Strength} & \textbf{Preservation} & \textbf{Overlap} & \textbf{Fluency}  \\
+		\tabc{2}{Model}                       & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		\multirow{2}{*}{
-		} & Cross-Alignment       &                   &                       &                  &                   \\
-		  & \citep{shen2017style} & 0.8087            & 0.8920                & 0.2087           & 23.3886           \\
+		Cross-Alignment \citep{shen2017style} & 0.8087          & 0.8920              & 0.2087         & 23.3886         \\
 		\hline
-		\multirow{2}{*}{
-		} & Style Embedding       &                   &                       &                  &                   \\
-		  & \citep{fu2017style}   & 0.1819            & 0.9586                & 0.6661           & 16.1711           \\
+		Style Embedding \citep{fu2017style}   & 0.1819          & 0.9586              & 0.6661         & 16.1711         \\
 		\hline
-		  & Ours (DAE)            & 0.8425            & 0.8924                & 0.2552           & 16.4808           \\
+		Ours (DAE)                            & 0.8425          & 0.8924              & 0.2552         & 16.4808         \\
 		\hline
-		  & Ours (VAE)            & 0.8903            & 0.8824                & 0.2105           & 14.4099           \\
+		Ours (VAE)                            & 0.8903          & 0.8824              & 0.2105         & 14.4099         \\
 		\hline
 	\end{tabular}
 	\caption{Yelp Dataset - Comparison with previous approaches.}
@@ -219,25 +235,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 \begin{table*}[ht]
 	\centering
-
-	\begin{tabular}{| c | l | r | r | r | r |}
+	\begin{tabular}{| l | r | r | r | r |}
 		\hline
-		\multirow{2}{*}{
-		} & \textbf{Model}        & \textbf{Transfer} & \textbf{Content}      & \textbf{Word}    & \textbf{Language} \\
-		  &                       & \textbf{Strength} & \textbf{Preservation} & \textbf{Overlap} & \textbf{Fluency}  \\
+		\tabc{2}{Model}                       & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		\multirow{2}{*}{
-		} & Cross-Alignment       &                   &                       &                  &                   \\
-		  & \citep{shen2017style} & 0.6063            & 0.8933                & 0.0241           & 26.3093           \\
+		Cross-Alignment \citep{shen2017style} & 0.6063          & 0.8933              & 0.0241         & 26.3093         \\
 		\hline
-		\multirow{2}{*}{
-		} & Style Embedding       &                   &                       &                  &                   \\
-		  & \citep{fu2017style}   & 0.4165            & 0.9332                & 0.3588           & 28.1346           \\
+		Style Embedding \citep{fu2017style}   & 0.4165          & 0.9332              & 0.3588         & 28.1346         \\
 		\hline
-		  & Ours (DAE)            & 0.7032            & 0.9178                & 0.1305           & 32.4184           \\
+		Ours (DAE)                            & 0.7032          & 0.9178              & 0.1305         & 32.4184         \\
 		\hline
-		  & Ours (VAE)            & 0.7259            & 0.9090                & 0.0814           & 28.4953           \\
+		Ours (VAE)                            & 0.7259          & 0.9090              & 0.0814         & 28.4953         \\
 		\hline
 	\end{tabular}
 	\caption{Amazon Dataset - Comparison with previous approaches.}
@@ -245,30 +255,31 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 \end{table*}
 
 
+
 \begin{table*}[ht]
 	\centering
 	\begin{tabular}{| l | r | r | r | r |}
 		\hline
 		\multirow{2}{*}{
-		\textbf{Objectives}}                                             & \textbf{Transfer} & \textbf{Content}      & \textbf{Word}    & \textbf{Language} \\
-		                                                                 & \textbf{Strength} & \textbf{Preservation} & \textbf{Overlap} & \textbf{Fluency}  \\
+		\textbf{Objectives}}                                             & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}     & \tabh{Language}  \\
+		                                                                 & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap}  & \tabh{Fluency}   \\
 		\hline
 		\hline
-		$J_\text{rec}$                                                   & 0.1436            & \textbf{0.9154}       & \textbf{0.3288}  & 14.2781           \\
+		$J_\text{rec}$                                                   & 0.1436          & \textbf{0.9154}     & \textbf{0.3288} & 14.2781          \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$                                   & 0.7274            & 0.8800                & 0.2037           & 14.1567           \\
+		$J_\text{rec}$, $J_\text{adv}$                                   & 0.7274          & 0.8800              & 0.2037          & 14.1567          \\
 		\hline
-		$J_\text{rec}$, $J_\text{mult}$                                  & 0.7894            & 0.8976                & 0.2589           & 14.5607           \\
+		$J_\text{rec}$, $J_\text{mult}$                                  & 0.7894          & 0.8976              & 0.2589          & 14.5607          \\
 		\hline
-		$J_\text{rec}$, $J_\text{badv}$                                  & 0.1677            & 0.9147                & 0.3282           & 14.4486           \\
+		$J_\text{rec}$, $J_\text{badv}$                                  & 0.1677          & 0.9147              & 0.3282          & 14.4486          \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$                  & \textbf{0.8903}   & 0.8824                & 0.2105           & 14.4099           \\
+		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$                  & \textbf{0.8903} & 0.8824              & 0.2105          & 14.4099          \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{badv}$                  & 0.7491            & 0.8827                & 0.2022           & 14.3568           \\
+		$J_\text{rec}$, $J_\text{adv}$, $J_\text{badv}$                  & 0.7491          & 0.8827              & 0.2022          & 14.3568          \\
 		\hline
-		$J_\text{rec}$, $J_\text{mult}$, $J_\text{badv}$                 & 0.7832            & 0.8958                & 0.2567           & 14.3373           \\
+		$J_\text{rec}$, $J_\text{mult}$, $J_\text{badv}$                 & 0.7832          & 0.8958              & 0.2567          & 14.3373          \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$, $J_\text{badv}$ & 0.8846            & 0.8782                & 0.1970           & \textbf{14.0479}  \\
+		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$, $J_\text{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{14.0479} \\
 		\hline
 	\end{tabular}
 	\caption{Ablation test.}
@@ -294,25 +305,6 @@ We first analyze how the style (sentiment) and content of the latent space are d
 
 We see that the 128-dimensional content vector $\bm c$ is not discriminative for style. It achieves an accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
 
-
-\begin{table}[!t]
-	\centering
-	\resizebox{\linewidth}{!}{
-		\begin{tabular}{| l | r | r |}
-			\hline
-			                                        & \textbf{Deterministic}       & \textbf{Variational} \\
-			\hline \hline
-			Random/Majority guess                   & \multicolumn{2}{|c|}{0.6018}                        \\ \hline \hline
-			Content latent space  ($\bm c$)         & 0.6137                       & 0.6567               \\ \hline
-			Style latent space ($\bm s$)            & 0.7927                       & 0.7911               \\ \hline
-			Complete latent space ($[\bm s;\bm c]$) & 0.7918                       & 0.7918               \\
-			\hline
-		\end{tabular}
-	}
-	\caption{Style classification accuracy.}
-	\label{tab:classification}
-\end{table}
-
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
 
 
@@ -332,7 +324,7 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
 
-\begin{table*}[!ht]
+\begin{table*}[ht]
 	\centering
 	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
@@ -382,6 +374,6 @@ In this paper, we propose a simple yet effective approach for disentangling the 
 In future work, we would like to disentangle the latent space of variational autoencoders (VAEs), as VAE provides a more robust way of generating sentences from a continuous space~\cite{bowman2016generating}. In VAE, the adversarial loss could be applied to posterior distributions, as opposed to an encoded content vector in our paper.
 
 \bibliography{emnlp2018}
-\bibliographystyle{acl-natbib-nourl}
+\bibliographystyle{acl-natbib}
 
 \end{document}
