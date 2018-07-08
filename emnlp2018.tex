@@ -27,6 +27,7 @@
 \newcommand{\rmx}{\mathrm x} % bold x for equations
 \newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  % used for table headers
 \newcommand{\tabc}[2]{\multicolumn{1}{|c|}{\multirow{#1}{*}{\textbf{#2}}}} % used for the top left cell in a table
+\newcommand{\loss}[1]{J_\text{#1}}
 
 %\aclfinalcopy % Uncomment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
@@ -93,6 +94,20 @@ In natural language processing, the `style' itself is vague, and as a convenient
 
 Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply two auxiliary losses to ensure that each space encodes its own information. Our disentangled space can be directly applied to style-transfer sentence generation, as in the aforementioned studies.
 
+
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-dae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
+	\label{fig:dae-tsne}
+\end{figure}
+
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-vae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
+	\label{fig:vae-tsne}
+\end{figure}
+
+
 \section{Approach}
 
 In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-overview} depicts both training and prediction processes of our approach.
@@ -106,7 +121,7 @@ Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sentence. The encoder encodes $\rm
 
 Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained with cross-entropy loss, given by
 \begin{equation}\nonumber
-	J_\text{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log
+	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log
 	p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
 where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and decoder, respectively.
@@ -115,19 +130,36 @@ Since this loss trains the autoencoder to reconstruct $\rmx$, it is also called 
 
 Besides the above reconstruction loss, we design two auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l | r | r |}
+		\hline
+		                                        & \tabh{DAE}                  & \tabh{VAE} \\
+		\hline \hline
+		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
+		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
+		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
+		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
+		\hline
+	\end{tabular}
+	\caption{Style classification accuracy.}
+	\label{tab:classification}
+\end{table*}
+
+
 \subsection{Multi-Task Loss} \label{ss:multi}
 
 Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the style label $s$, which is a part of the training data.
 
 This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predicts its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
-In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a binary classifier
+In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a multi-label classifier
 \begin{equation}
 	p(s=1|\bm s;\bm\theta_\text{mult})=\sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
 \end{equation}
 where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning.
 \begin{align} \label{eqn:Jmult}
-	 & J_\text{mult}(\bm\theta_{E};\bm\theta_\text{mult})=                \\ \nonumber
+	 & \loss{mult}(\bm\theta_{E};\bm\theta_\text{mult})=                  \\ \nonumber
 	 & -s\log p_\text{mult}(s|\bm s) - (1-s)\log p_\text{mult}(1-s|\bm s)
 \end{align}
 where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the unbold letter $s$ represents the binary style label).
@@ -147,59 +179,31 @@ Concretely, the adversarial discriminator predicts style $s$ by a logistic regre
 \end{equation}
 where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary. It is trained by
 \begin{align}
-	 & J_\text{dis}(\bm\theta_\text{dis})=                            \\ \nonumber
+	 & \loss{dis}(\bm\theta_\text{dis})=                              \\ \nonumber
 	 & -s\log p_\text{dis}(s|\bm c)-(1-s)\log p_\text{dis}(1-s|\bm c)
 \end{align}
 The adversarial loss appears similar to the multi-task loss as in Eq.~(\ref{eqn:Jmult}). However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
 \begin{equation}
-	J_\text{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(s|\bm c))
+	\loss{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(s|\bm c))
 \end{equation}
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
 \todo[inline]{Add note about BoW adversarial objective}
 
-\begin{figure}[ht]
-	\includegraphics[width=\linewidth]{latent-spaces-dae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
-	\label{fig:dae-tsne}
-\end{figure}
-
-\begin{figure}[ht]
-	\includegraphics[width=\linewidth]{latent-spaces-vae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
-	\label{fig:vae-tsne}
-\end{figure}
-
-
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l | r | r |}
-		\hline
-		                                        & \tabh{DAE}                  & \tabh{VAE} \\
-		\hline \hline
-		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
-		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
-		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
-		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
-		\hline
-	\end{tabular}
-	\caption{Style classification accuracy.}
-	\label{tab:classification}
-\end{table*}
 
 \subsection{Training Process}
 
 To put it all together, our training process is a loop of the following processes:
 \begin{itemize}
-	\item minimize $J_\text{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$, and
-	\item minimize $J_\text{rec}(\bm\theta_E, \bm\theta_D) + \lambda_\text{mult}(\bm\theta_E,\bm\theta_\text{mult}) -\lambda_\text{adv}
-		      J_\text{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
+	\item minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$, and
+	\item minimize $\loss{rec}(\bm\theta_E, \bm\theta_D) + \lambda_\text{mult}(\bm\theta_E,\bm\theta_\text{mult}) -\lambda_\text{adv}
+		      \loss{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
 \end{itemize}
 where $\lambda_\text{mult}$ and $\lambda_\text{adv}$ balance these losses.
 
-We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 50 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$ and $\lambda_\text{adv} = 0.3$.
+We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$ and $\lambda_\text{adv} = 0.3$.
 
 \subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
 
@@ -260,26 +264,25 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\centering
 	\begin{tabular}{| l | r | r | r | r |}
 		\hline
-		\multirow{2}{*}{
-		\textbf{Objectives}}                                             & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}     & \tabh{Language}  \\
-		                                                                 & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap}  & \tabh{Fluency}   \\
+		\tabc{2}{Objectives}                                     & \textbf{Transfer} & \textbf{Content}      & \textbf{Word}    & \textbf{Language} \\
+		                                                         & \textbf{Strength} & \textbf{Preservation} & \textbf{Overlap} & \textbf{Fluency}  \\
 		\hline
 		\hline
-		$J_\text{rec}$                                                   & 0.1436          & \textbf{0.9154}     & \textbf{0.3288} & 14.2781          \\
+		$\loss{rec}$                                             & 0.1436            & \textbf{0.9154}       & \textbf{0.3288}  & 14.2781           \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$                                   & 0.7274          & 0.8800              & 0.2037          & 14.1567          \\
+		$\loss{rec}$, $\loss{adv}$                               & 0.7274            & 0.8800                & 0.2037           & 14.1567           \\
 		\hline
-		$J_\text{rec}$, $J_\text{mult}$                                  & 0.7894          & 0.8976              & 0.2589          & 14.5607          \\
+		$\loss{rec}$, $\loss{mult}$                              & 0.7894            & 0.8976                & 0.2589           & 14.5607           \\
 		\hline
-		$J_\text{rec}$, $J_\text{badv}$                                  & 0.1677          & 0.9147              & 0.3282          & 14.4486          \\
+		$\loss{rec}$, $\loss{badv}$                              & 0.1677            & 0.9147                & 0.3282           & 14.4486           \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$                  & \textbf{0.8903} & 0.8824              & 0.2105          & 14.4099          \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & \textbf{0.8903}   & 0.8824                & 0.2105           & 14.4099           \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{badv}$                  & 0.7491          & 0.8827              & 0.2022          & 14.3568          \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.7491            & 0.8827                & 0.2022           & 14.3568           \\
 		\hline
-		$J_\text{rec}$, $J_\text{mult}$, $J_\text{badv}$                 & 0.7832          & 0.8958              & 0.2567          & 14.3373          \\
+		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.7832            & 0.8958                & 0.2567           & 14.3373           \\
 		\hline
-		$J_\text{rec}$, $J_\text{adv}$, $J_\text{mult}$, $J_\text{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{14.0479} \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846            & 0.8782                & 0.1970           & \textbf{14.0479}  \\
 		\hline
 	\end{tabular}
 	\caption{Ablation test.}
@@ -328,8 +331,8 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 	\centering
 	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
-		\textbf{Original (Positive)}                           & \textbf{DAE Transferred (Negative)}                            & \textbf{VAE Transferred (Negative)}                         \\
-		\hline
+		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
 		\hline
 		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
 		\hline
@@ -346,7 +349,8 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
 		\hline
 		\hline
-		\textbf{Original (Negative)}                           & \textbf{DAE Transferred (Positive)}                            & \textbf{VAE Transferred (Positive)}                         \\
+		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
 		\hline
 		\hline
 		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
