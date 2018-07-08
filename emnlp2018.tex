@@ -19,15 +19,10 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{array}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
+\usepackage{amsmath,amsfonts,amssymb}
 \usepackage{paralist}
 \usepackage{color,xcolor}
 \usepackage{bm}
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \usepackage{multirow}
 \newcommand{\rmx}{\mathrm x}
 %\aclfinalcopy % Uncomment this line for the final submission
@@ -312,14 +307,21 @@ We see that the 128-dimensional content vector $\bm c$ is not discriminative for
 	\label{tab:classification}
 \end{table}
 
-\begin{figure}[!t]
-	\includegraphics[width=\linewidth]{tsne-style-and-content}
-	\caption{t-SNE plots of (a) style \& (b) content spaces.}
-	\label{fig:tsne}
+We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
+
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-dae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
+	\label{fig:dae-tsne}
 \end{figure}
 
+\begin{figure}[ht]
+	\includegraphics[width=\linewidth]{latent-spaces-vae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
+	\label{fig:vae-tsne}
+\end{figure}
 
-The latent space can be visualized with t-SNE plots~\cite{maaten2008visualizing} in Figure~\ref{fig:tsne}. As expected, sentences with different sentiments can be nicely separated in the style space (LHS), but are highly mixed in the content space (RHS).
+As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is significantly smoother and continuous than the one learned by the deterministic autoencoder.
 
 
 \subsection{Style-Transfer Sentence Generation}
@@ -335,35 +337,50 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
 
-\begin{table}[!t]
+\begin{table*}[!ht]
 	\centering
-	\resizebox{\linewidth}{!}{
-		\scriptsize
-		\begin{tabular}{| p{0.5\linewidth} | p{0.5\linewidth} |}
-			\hline
-			\textbf{{Original}}                                                        & \textbf{Transferred (Positive $\rightarrow$ Negative)}                    \\
-			\hline
-			\hline
-			i bought this cuisipro mister to replace my old mister last june-(number)  & i bought this a couple of times and was disappointed in this product      \\
-			\hline
-			quality is good, recevied in time and works as expected.                   & quality is good but i am returning it                                     \\
-			\hline
-			%all in all, i am very happy with this headset.                             & all in all i was expecting a good product                                 \\
-			%\hline
-			\hline
-			\textbf{{Original}}                                                        & \textbf{Transferred (Negative $\rightarrow$ Positive)}                    \\
-			\hline
-			%\hline
-			%i sent it back and requested a refund, and never got the refund.           & i sent it back and gave it a try and it works great                       \\
-			\hline
-			so i tried just one (number) piece each n still the same results.          & so i bought the two sizes and the other ones are great                    \\
-			\hline
-			i am going to buy a replacement and wish i had sent this back for a refund & i am going to go through the same time and i have been using it for years \\
-			\hline
-		\end{tabular}}
+	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
+		\hline
+		\multirow{2}{*}{\textbf{Original (Positive)}}          & \textbf{DAE Transferred}                                       & \textbf{VAE Transferred}                                    \\
+		                                                       & \textbf{(Negative)}                                            & \textbf{(Negative)}                                         \\
+		\hline
+		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
+		\hline
+		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
+		\hline
+		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
+		\hline
+		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
+		\hline
+		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
+		\hline
+		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
+		\hline
+		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
+		\hline
+		\hline
+		\multirow{2}{*}{\textbf{Original (Negative)}}          & \textbf{DAE Transferred}                                       & \textbf{VAE Transferred}                                    \\
+		                                                       & \textbf{(Positive)}                                            & \textbf{(Positive)}                                         \\
+		\hline
+		\hline
+		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
+		\hline
+		consistently slow                                      & consistently awesome                                           & fast service                                                \\
+		\hline
+		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
+		\hline
+		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
+		\hline
+		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
+		\hline
+		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
+		\hline
+		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
+		\hline
+	\end{tabular}
 	\caption{Examples of style-transfer generation.}
 	\label{tab:transfer-samples}
-\end{table}
+\end{table*}
 
 \section{Conclusion and Future Work}
 In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content-preservation score but significantly higher style-transfer strength compared to previous state-of-the-art work.
