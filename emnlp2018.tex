@@ -143,7 +143,7 @@ Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized 
 \begin{align} \label{eqn:vae-rec}
 	\loss{rec}(\bm\theta_E, \bm\theta_D) = \nonumber
 	 & - \mathbb{E}_{q_{E_s}(\bm s|x) q_{E_c}(\bm c|x)} [\log p(x|\bm s, \bm c)] \nonumber \\
-	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                       \\
+	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                      \\
 	 & + \lambda_{\text{ckl}} KL(q_{E_c}(\bm c|\rmx)||p(z))
 \end{align}
 where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms.
@@ -171,25 +171,27 @@ Since these objectives trains the model to reconstruct $\rmx$, they are also cal
 \end{table*}
 
 
-\subsection{Multi-Task Loss} \label{ss:multi}
+\subsection{Multi-Task Classification} \label{ss:multi}
 
 Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the style label $s$, which is a part of the training data.
 
 This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predicts its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
 In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a multi-label classifier
-\begin{equation}
-	p(s=1|\bm s;\bm\theta_\text{mult})=\sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
+\begin{equation} \label{eqn:class-pred}
+	p(y | \bm s; \bm\theta_\text{mult}) = \sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
 \end{equation}
-where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning.
-\begin{align} \label{eqn:Jmult}
-	 & \loss{mult}(\bm\theta_{E};\bm\theta_\text{mult})=                  \\ \nonumber
-	 & -s\log p_\text{mult}(s|\bm s) - (1-s)\log p_\text{mult}(1-s|\bm s)
-\end{align}
+where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning, and $y$ is the true label distribution.
+
+This is trained using a simple cross-entropy loss.
+\begin{equation} \label{eqn:multi-task-loss}
+	\loss{mult}(\bm\theta_{E};\bm\theta_\text{mult}) =
+	- \mathbb{E} [\log p(y | \bm s; \bm\theta_\text{mult})]
+\end{equation}
 where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the unbold letter $s$ represents the binary style label).
 
 
-\subsection{Adversarial Learning} \label{ss:adv}
+\subsection{Adversarial Style Discrimination} \label{ss:adv}
 
 The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
 
@@ -197,16 +199,18 @@ We therefore apply an adversarial loss to disentangle the content space from sty
 
 The idea of adversarial loss is to introduce an adversary that deliberately discriminates style $s$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information.
 
-Concretely, the adversarial discriminator predicts style $s$ by a logistic regression
+Concretely, the adversarial discriminator predicts style $s$ by computing a softmax distribution over the possible class labels
 \begin{equation}
-	p_\text{dis}(s=1|\bm c;\bm\theta_\text{adv})=\sigma(\bm w_\text{adv}^\top \bm c + b_\text{adv})
+	p(y | \bm c; \bm\theta_\text{dis}) = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
 \end{equation}
-where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary. It is trained by
-\begin{align}
-	 & \loss{dis}(\bm\theta_\text{dis})=                              \\ \nonumber
-	 & -s\log p_\text{dis}(s|\bm c)-(1-s)\log p_\text{dis}(1-s|\bm c)
-\end{align}
-The adversarial loss appears similar to the multi-task loss as in Eq.~(\ref{eqn:Jmult}). However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
+where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary, and $y$ is the true label distribution.
+
+It is trained by minimizing the following objective, using a cross-entropy loss.
+\begin{equation} \label{eqn:adv-disc-loss}
+	\loss{dis}(\bm\theta_\text{dis}) =
+	- \mathbb{E} [\log p(y | \bm c; \bm\theta_\text{dis})]
+\end{equation}
+The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
 \begin{equation}
@@ -214,21 +218,50 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \end{equation}
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
-\todo[inline]{Add note about BoW adversarial objective}
-\todo[inline]{Add BoW loss to model architecture diagram}
+
+\section{Adversarial Bag-of-Words Discriminator} \label{sec:adversarial-bow-objective}
+
+In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $x$ are represented as a vector of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 1s and 0s.
+
+The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
+\begin{equation}
+	p(b | \bm s; \bm\theta_\text{bow}) = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
+\end{equation}
+where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier's parameters for bag-of-words prediction, and $b$ is the true word distribution.
+
+This objective is trained in a similar method to the style adversary, using a cross-entropy loss
+\begin{equation} \label{eqn:adv-bow-disc-loss}
+	\loss{bow}(\bm\theta_\text{bow}) =
+	- \mathbb{E} [\log p(b | \bm c; \bm\theta_\text{bow})]
+\end{equation}
+We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the encoder can update are mutually exclusive.
+
+Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
+\begin{equation}
+	\loss{badv}(\bm\theta_E) = \mathcal{H}(p_\text{bow}(b | \bm s))
+\end{equation}
+
+The motivation for this adversarial loss is similar to the one used in the context of the style discriminator. We want to encourage the encoder to learn a representation of style that the bag-of-words discriminator cannot predict most of the original words from.
 
 
 \subsection{Training Process}
 
+The overall loss $\loss{ovr}$ used for the autoencoder is thus comprised of four different objectives: the reconstruction objective, the multi-task objective and the style and content adversaries.
+\begin{align*}
+	\loss{ovr} =
+	 & \loss{rec}(\bm\theta_E, \bm\theta_D) - \lambda_\text{adv} \loss{adv}(\theta_E) +                                \\
+	 & \lambda_\text{mult} \loss{mult} (\bm\theta_E,\bm\theta_\text{mult}) - \lambda_\text{badv} \loss{badv}(\theta_E)
+\end{align*}
+where $\lambda_\text{mult}$, $\lambda_\text{adv}$ and $\lambda_\text{badv}$ balance the model's auxiliary losses.
+
 To put it all together, our training process is a loop of the following processes:
 \begin{itemize}
 	\item minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$, and
-	\item minimize $\loss{rec}(\bm\theta_E, \bm\theta_D) + \lambda_\text{mult}(\bm\theta_E,\bm\theta_\text{mult}) -\lambda_\text{adv}
-		      \loss{adv}(\theta_E)$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
+	\item minimize $\loss{bow}(\bm\theta_\text{bow})$ w.r.t. $\bm\theta_\text{bow}$, and
+	\item minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
 \end{itemize}
-where $\lambda_\text{mult}$ and $\lambda_\text{adv}$ balance these losses.
 
-We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$ and $\lambda_\text{adv} = 0.3$.
+We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$.
 
 \subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
 
@@ -316,13 +349,15 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 \section{Experiments}
 
-We conduct experiments on two datasets, the details for which are given below.
+\subsection{Datasets}
 
-\subsection{Yelp Service Reviews}
+We conduct experiments on two datasets, the details for which are given below. Both of these datasets evaluate the task of sentiment transfer.
+
+\subsubsection{Yelp Service Reviews}
 
 We use a subset of the Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \cite{shen2017style} open-sourced by the authors~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
 
-\subsection{Amazon Product Reviews}
+\subsubsection{Amazon Product Reviews}
 
 We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \cite{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000, 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
 
