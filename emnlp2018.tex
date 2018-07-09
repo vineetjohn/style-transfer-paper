@@ -158,7 +158,7 @@ Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized 
 
 \begin{align} \label{eqn:vae-rec}
 	\loss{rec}(\bm\theta_E, \bm\theta_D) = \nonumber
-	 & - \mathbb{E}_{q_{E_s}(\bm s|x) q_{E_c}(\bm c|x)} [\log p(x|\bm s, \bm c)] \nonumber \\
+	 & - \mathbb{E}_{q_{E_s}(\bm s|\rmx) q_{E_c}(\bm c|\rmx)} [\log p(\rmx|\bm s, \bm c)] \nonumber \\
 	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                      \\
 	 & + \lambda_{\text{ckl}} KL(q_{E_c}(\bm c|\rmx)||p(z))
 \end{align}
