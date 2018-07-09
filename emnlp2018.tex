@@ -129,16 +129,30 @@ An autoencoder encodes an input to a latent vector space, from which it decodes 
 Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sentence. The encoder encodes $\rm x$ by a recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning}, and obtains a hidden state $\bm h$.
 
 Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained with cross-entropy loss, given by
-\begin{equation}\nonumber
-	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log
-	p(x_t|\bm h, x_1\cdots x_{t-1})
+\begin{equation}
+	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
 where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and decoder, respectively.
 
-Since this loss trains the autoencoder to reconstruct $\rmx$, it is also called \textit{reconstruction loss}.
+\subsubsection{Variational Autoencoder}
+
+In addition to the deterministic auto-encoding objective presented above, we also implement a variational autoencoder \cite{kingma2013auto}. The variational sampling and KL divergence losses are applied for both the style space $\bm s$ and the content space $\bm c$, separately. The weights applied to each KL divergence loss are tuned independently as a hyperparameter.
+
+Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized by the model in the VAE variant of our model.
+
+\begin{align} \label{eqn:vae-rec}
+	\loss{rec}(\bm\theta_E, \bm\theta_D) = \nonumber
+	 & - \mathbb{E}_{q_{E_s}(\bm s|x) q_{E_c}(\bm c|x)} [\log p(x|\bm s, \bm c)] \nonumber \\
+	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                       \\
+	 & + \lambda_{\text{ckl}} KL(q_{E_c}(\bm c|\rmx)||p(z))
+\end{align}
+where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms.
+
+The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \cite{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate between and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
 
-Besides the above reconstruction loss, we design two auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
+
+Since these objectives trains the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
 \begin{table*}[ht]
 	\centering
@@ -384,8 +398,6 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 
 \section{Conclusion and Future Work}
 In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content-preservation score but significantly higher style-transfer strength compared to previous state-of-the-art work.
-
-In future work, we would like to disentangle the latent space of variational autoencoders (VAEs), as VAE provides a more robust way of generating sentences from a continuous space~\cite{bowman2016generating}. In VAE, the adversarial loss could be applied to posterior distributions, as opposed to an encoded content vector in our paper.
 
 \bibliography{emnlp2018}
 \bibliographystyle{acl-natbib}
