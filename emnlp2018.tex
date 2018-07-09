@@ -121,6 +121,22 @@ Our paper differs from the previous work in that both our style space and conten
 
 In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict training and prediction processes of our approach, respectively.
 
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l | r | r |}
+		\hline
+		                                        & \tabh{DAE}                  & \tabh{VAE} \\
+		\hline \hline
+		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
+		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
+		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
+		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
+		\hline
+	\end{tabular}
+	\caption{Style classification accuracy.}
+	\label{tab:classification}
+\end{table*}
+
 
 \subsection{Autoencoder} \label{ss:seq2seq}
 
@@ -154,22 +170,6 @@ The motivation for using a variational autoencoder variant to compare the base d
 
 Since these objectives trains the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l | r | r |}
-		\hline
-		                                        & \tabh{DAE}                  & \tabh{VAE} \\
-		\hline \hline
-		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
-		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
-		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
-		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
-		\hline
-	\end{tabular}
-	\caption{Style classification accuracy.}
-	\label{tab:classification}
-\end{table*}
-
 
 \subsection{Multi-Task Classification} \label{ss:multi}
 
@@ -190,88 +190,6 @@ This is trained using a simple cross-entropy loss.
 \end{equation}
 where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the unbold letter $s$ represents the binary style label).
 
-
-\subsection{Adversarial Style Discrimination} \label{ss:adv}
-
-The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
-
-We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
-
-The idea of adversarial loss is to introduce an adversary that deliberately discriminates style $s$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information.
-
-Concretely, the adversarial discriminator predicts style $s$ by computing a softmax distribution over the possible class labels
-\begin{equation}
-	p(y | \bm c; \bm\theta_\text{dis}) = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
-\end{equation}
-where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary, and $y$ is the true label distribution.
-
-It is trained by minimizing the following objective, using a cross-entropy loss.
-\begin{equation} \label{eqn:adv-disc-loss}
-	\loss{dis}(\bm\theta_\text{dis}) =
-	- \mathbb{E} [\log p(y | \bm c; \bm\theta_\text{dis})]
-\end{equation}
-The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
-
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
-\begin{equation}
-	\loss{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(s|\bm c))
-\end{equation}
-where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
-
-
-\section{Adversarial Bag-of-Words Discriminator} \label{sec:adversarial-bow-objective}
-
-In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $x$ are represented as a vector of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 1s and 0s.
-
-The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
-\begin{equation}
-	p(b | \bm s; \bm\theta_\text{bow}) = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
-\end{equation}
-where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier's parameters for bag-of-words prediction, and $b$ is the true word distribution.
-
-This objective is trained in a similar method to the style adversary, using a cross-entropy loss
-\begin{equation} \label{eqn:adv-bow-disc-loss}
-	\loss{bow}(\bm\theta_\text{bow}) =
-	- \mathbb{E} [\log p(b | \bm c; \bm\theta_\text{bow})]
-\end{equation}
-We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the encoder can update are mutually exclusive.
-
-Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
-\begin{equation}
-	\loss{badv}(\bm\theta_E) = \mathcal{H}(p_\text{bow}(b | \bm s))
-\end{equation}
-
-The motivation for this adversarial loss is similar to the one used in the context of the style discriminator. We want to encourage the encoder to learn a representation of style that the bag-of-words discriminator cannot predict most of the original words from.
-
-
-\subsection{Training Process}
-
-The overall loss $\loss{ovr}$ used for the autoencoder is thus comprised of four different objectives: the reconstruction objective, the multi-task objective and the style and content adversaries.
-\begin{align*}
-	\loss{ovr} =
-	 & \loss{rec}(\bm\theta_E, \bm\theta_D) - \lambda_\text{adv} \loss{adv}(\theta_E) +                                \\
-	 & \lambda_\text{mult} \loss{mult} (\bm\theta_E,\bm\theta_\text{mult}) - \lambda_\text{badv} \loss{badv}(\theta_E)
-\end{align*}
-where $\lambda_\text{mult}$, $\lambda_\text{adv}$ and $\lambda_\text{badv}$ balance the model's auxiliary losses.
-
-To put it all together, our training process is a loop of the following processes:
-\begin{itemize}
-	\item minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$,
-	\item minimize $\loss{bow}(\bm\theta_\text{bow})$ w.r.t. $\bm\theta_\text{bow}$, and
-	\item minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
-\end{itemize}
-
-We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$.
-
-\subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
-
-A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but an opposite sentiment.
-
-Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
-\begin{equation*}
-	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
-\end{equation*}
-The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding (Figure~\ref{fig:model-inference-overview}).
 
 
 \begin{table*}[ht]
@@ -317,6 +235,32 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 \end{table*}
 
 
+\subsection{Adversarial Style Discrimination} \label{ss:adv}
+
+The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
+
+We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
+
+The idea of adversarial loss is to introduce an adversary that deliberately discriminates style $s$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information.
+
+Concretely, the adversarial discriminator predicts style $s$ by computing a softmax distribution over the possible class labels
+\begin{equation}
+	p(y | \bm c; \bm\theta_\text{dis}) = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
+\end{equation}
+where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary, and $y$ is the true label distribution.
+
+It is trained by minimizing the following objective, using a cross-entropy loss.
+\begin{equation} \label{eqn:adv-disc-loss}
+	\loss{dis}(\bm\theta_\text{dis}) =
+	- \mathbb{E} [\log p(y | \bm c; \bm\theta_\text{dis})]
+\end{equation}
+The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
+
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
+\begin{equation}
+	\loss{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(s|\bm c))
+\end{equation}
+where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
 \begin{table*}[ht]
 	\centering
@@ -345,6 +289,104 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\end{tabular}
 	\caption{Ablation test.}
 	\label{tab:ablation-results}
+\end{table*}
+
+\subsection{Adversarial Bag-of-Words Discriminator} \label{sec:adversarial-bow-objective}
+
+In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $x$ are represented as a vector of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 1s and 0s.
+
+The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
+\begin{equation}
+	p(b | \bm s; \bm\theta_\text{bow}) = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
+\end{equation}
+where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier's parameters for bag-of-words prediction, and $b$ is the true word distribution.
+
+This objective is trained in a similar method to the style adversary, using a cross-entropy loss
+\begin{equation} \label{eqn:adv-bow-disc-loss}
+	\loss{bow}(\bm\theta_\text{bow}) =
+	- \mathbb{E} [\log p(b | \bm c; \bm\theta_\text{bow})]
+\end{equation}
+We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the encoder can update are mutually exclusive.
+
+Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
+\begin{equation}
+	\loss{badv}(\bm\theta_E) = \mathcal{H}(p_\text{bow}(b | \bm s))
+\end{equation}
+
+The motivation for this adversarial loss is similar to the one used in the context of the style discriminator. We want to encourage the encoder to learn a representation of style that the bag-of-words discriminator cannot predict most of the original words from.
+
+\subsection{Training Process}
+
+The overall loss $\loss{ovr}$ used for the autoencoder is thus comprised of four different objectives: the reconstruction objective, the multi-task objective and the style and content adversaries.
+\begin{align*}
+	\loss{ovr} =
+	 & \loss{rec}(\bm\theta_E, \bm\theta_D) - \lambda_\text{adv} \loss{adv}(\theta_E) +                                \\
+	 & \lambda_\text{mult} \loss{mult} (\bm\theta_E,\bm\theta_\text{mult}) - \lambda_\text{badv} \loss{badv}(\theta_E)
+\end{align*}
+where $\lambda_\text{mult}$, $\lambda_\text{adv}$ and $\lambda_\text{badv}$ balance the model's auxiliary losses.
+
+To put it all together, our training process is a loop of the following processes:
+\begin{itemize}
+	\item minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$,
+	\item minimize $\loss{bow}(\bm\theta_\text{bow})$ w.r.t. $\bm\theta_\text{bow}$, and
+	\item minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
+\end{itemize}
+
+We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$.
+
+\subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
+
+A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but an opposite sentiment.
+
+Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
+\begin{equation*}
+	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
+\end{equation*}
+The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding (Figure~\ref{fig:model-inference-overview}).
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
+		\hline
+		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
+		\hline
+		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
+		\hline
+		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
+		\hline
+		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
+		\hline
+		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
+		\hline
+		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
+		\hline
+		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
+		\hline
+		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
+		\hline
+		\hline
+		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
+		\hline
+		\hline
+		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
+		\hline
+		consistently slow                                      & consistently awesome                                           & fast service                                                \\
+		\hline
+		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
+		\hline
+		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
+		\hline
+		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
+		\hline
+		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
+		\hline
+		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
+		\hline
+	\end{tabular}
+	\caption{Examples of style-transfer generation.}
+	\label{tab:transfer-samples}
 \end{table*}
 
 \section{Experiments}
@@ -395,50 +437,6 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
-		\hline
-		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
-		\hline
-		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
-		\hline
-		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
-		\hline
-		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
-		\hline
-		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
-		\hline
-		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
-		\hline
-		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
-		\hline
-		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
-		\hline
-		\hline
-		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
-		\hline
-		\hline
-		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
-		\hline
-		consistently slow                                      & consistently awesome                                           & fast service                                                \\
-		\hline
-		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
-		\hline
-		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
-		\hline
-		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
-		\hline
-		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
-		\hline
-		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
-		\hline
-	\end{tabular}
-	\caption{Examples of style-transfer generation.}
-	\label{tab:transfer-samples}
-\end{table*}
 
 \section{Conclusion and Future Work}
 In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content- preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work.
