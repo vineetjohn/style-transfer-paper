@@ -22,6 +22,7 @@
 \usepackage{bm}
 \usepackage{multirow}
 \usepackage{makecell}
+\usepackage{caption}
 \usepackage{todonotes}
 
 \newcommand{\rmx}{\mathrm x} % bold x for equations
@@ -63,9 +64,15 @@
 
 \begin{figure*}[ht]
 	\centering
-	\includegraphics[width=0.9\linewidth]{model-overview}
-	\caption{Model Overview}
-	\label{fig:model-overview}
+	\includegraphics[width=0.8\linewidth]{model-overview-training}
+	\caption{Model Training Overview}
+	\label{fig:model-training-overview}
+\end{figure*}
+\begin{figure*}[ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{model-overview-inference}
+	\caption{Model Generation Overview}
+	\label{fig:model-inference-overview}
 \end{figure*}
 
 \section{Introduction}
@@ -96,12 +103,14 @@ Our paper differs from the previous work in that both our style space and conten
 
 
 \begin{figure}[ht]
+	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-dae}
 	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
 	\label{fig:dae-tsne}
 \end{figure}
 
 \begin{figure}[ht]
+	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-vae}
 	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
 	\label{fig:vae-tsne}
@@ -110,7 +119,7 @@ Our paper differs from the previous work in that both our style space and conten
 
 \section{Approach}
 
-In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-overview} depicts both training and prediction processes of our approach.
+In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ss:seq2seq}. Then we introduce two auxiliary losses, multi-task loss and adversarial loss in Subsections~\ref{ss:multi} and \ref{ss:adv}, respectively. Subsection~\ref{ss:prediction} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict training and prediction processes of our approach, respectively.
 
 
 \subsection{Autoencoder} \label{ss:seq2seq}
@@ -128,7 +137,6 @@ where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and deco
 
 Since this loss trains the autoencoder to reconstruct $\rmx$, it is also called \textit{reconstruction loss}.
 
-\todo[inline]{Add note about the VAE model}
 
 Besides the above reconstruction loss, we design two auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
@@ -216,7 +224,7 @@ Let $\rmx_*$ be an input sentence with $\bm s_*$ and $\bm c_*$ being the encoded
 \begin{equation*}
 	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
 \end{equation*}
-The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c_*$ for decoding (Figure~\ref{fig:model-overview}b).
+The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c_*$ for decoding (Figure~\ref{fig:model-inference-overview}).
 
 
 \begin{table*}[ht]
@@ -306,8 +314,7 @@ We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucs
 
 \subsection{Disentangling Latent Space}
 
-
-We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a logistic classifier based on different latent spaces, and show results in Table~\ref{tab:classification}.
+We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a logistic classifier based on different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp Dataset.
 
 We see that the 128-dimensional content vector $\bm c$ is not discriminative for style. It achieves an accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
 
