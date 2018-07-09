@@ -261,17 +261,17 @@ To put it all together, our training process is a loop of the following processe
 	\item minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
 \end{itemize}
 
-We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$.
+We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$.
 
 \subsection{Generating Style-Transferred Sentences} \label{ss:prediction}
 
 A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but an opposite sentiment.
 
-Let $\rmx_*$ be an input sentence with $\bm s_*$ and $\bm c_*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
+Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
 \begin{equation*}
 	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
 \end{equation*}
-The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c_*$ for decoding (Figure~\ref{fig:model-inference-overview}).
+The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding (Figure~\ref{fig:model-inference-overview}).
 
 
 \begin{table*}[ht]
