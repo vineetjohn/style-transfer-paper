@@ -128,6 +128,8 @@ where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and deco
 
 Since this loss trains the autoencoder to reconstruct $\rmx$, it is also called \textit{reconstruction loss}.
 
+\todo[inline]{Add note about the VAE model}
+
 Besides the above reconstruction loss, we design two auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
 \begin{table*}[ht]
@@ -191,6 +193,7 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
 \todo[inline]{Add note about BoW adversarial objective}
+\todo[inline]{Add BoW loss to model architecture diagram}
 
 
 \subsection{Training Process}
