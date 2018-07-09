@@ -414,6 +414,9 @@ We evaluate our method using four metrics: style transfer strength, content pres
 	\item \textbf{Language Fluency:} We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The negative log-likelihood scores, as predicted by the Kneser-Ney language model and aggregated over the generated corpus, is reported as the indicator for language fluency. Lower scores indicate better fluency.
 \end{itemize}
 
+
+\section{Discussion}
+
 \subsection{Disentangling Latent Space}
 
 We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a logistic classifier based on different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp Dataset.
