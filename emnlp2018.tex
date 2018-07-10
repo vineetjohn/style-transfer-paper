@@ -1,17 +1,3 @@
-%
-% File emnlp2018.tex
-%
-%% Based on the style files for EMNLP 2018, which were
-%% Based on the style files for ACL 2018, which were
-%% Based on the style files for ACL-2015, with some improvements
-%%  taken from the NAACL-2016 style
-%% Based on the style files for ACL-2014, which were, in turn,
-%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
-%% EACL-2009, IJCNLP-2008...
-%% Based on the style files for EACL 2006 by 
-%%e.agirre@ehu.es or Sergi.Balari@uab.es
-%% and that of ACL 08 by Joakim Nivre and Noah Smith
-
 \documentclass[11pt,a4paper]{article}
 \usepackage[hyperref]{emnlp2018}
 \usepackage{times}
@@ -25,12 +11,16 @@
 \usepackage{caption}
 \usepackage{todonotes}
 
-\newcommand{\rmx}{\mathrm x} % bold x for equations
-\newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  % used for table headers
-\newcommand{\tabc}[2]{\multicolumn{1}{|c|}{\multirow{#1}{*}{\textbf{#2}}}} % used for the top left cell in a table
+% bold x for equations
+\newcommand{\rmx}{\mathrm x} 
+% used for table headers
+\newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  
+% used for the top left cell in a table
+\newcommand{\tabc}[2]{\multicolumn{1}{|c|}{\multirow{#1}{*}{\textbf{#2}}}} 
+% used for denoting the loss symbol with a subscript
 \newcommand{\loss}[1]{J_\text{#1}}
 
-%\aclfinalcopy % Uncomment this line for the final submission
+%\aclfinalcopy % Un-comment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
 
 %\setlength\titlebox{5cm}
@@ -79,15 +69,13 @@
 
 The neural network has been a successful learning machine during the past decade due to its high modeling capability, which arises from multiple layers of non-linear transformation of input features. Such transformations, however, make intermediate features `latent', in that they do not have explicit meaning and are not explainable. Therefore, neural networks are usually treated as black-box machinery.
 
-Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \newcite{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \newcite{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing (NLP).
+Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing (NLP).
 
 In this paper, we address the problem of disentangling neural networks' latent space for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with different features, namely, \textit{style} and \textit{content}.
 
-To accomplish this, we propose a simple approach that combines multi-task loss and adversarial loss. We artificially divide the latent representation into two parts: style space and content space.
-We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information.
-The adversarial objective, on the contrary, operates on the content space to minimize the predictability of style. In this way, the style and content parts can be disentangled from each other.
+To accomplish this, we propose a simple approach that combines multi-task loss and adversarial loss. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content parts can be disentangled from each other.
 
-The disentangled latent space can be directly used for style transfer in sentence generation~\cite{fu2017style,shen2017style}, where a system can generate a sentence with the same content, but a different style. We simply apply an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the autoencoder for decoding. Using this grafting technique, we generate a new sentence similar in meaning but different in sentiment.
+These representation learning objectives can be directly used for style transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different style. We simply apply an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the autoencoder for decoding. Using this grafting technique, we generate a new sentence similar in meaning but different in sentiment.
 
 We conducted experiments on a product review benchmark dataset. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the style-transfer experiment, we achieve significantly better style transfer scores than previous results, while obtaining better or comparable content preservation scores.  We also show in an ablation test, that the two auxiliary losses can be combined well, each playing its own role in disentangling latent space.
 
@@ -97,7 +85,7 @@ We conducted experiments on a product review benchmark dataset. Both qualitative
 
 Disentangling latent space has been widely explored in the image processing domain, where researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics~\cite{gatys2016image}. For other styles, researchers adopt various data augmentation techniques to train a disentangled latent space~\cite{champandard2016semantic,kulkarni2015deep}.
 
-In natural language processing, the `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \newcite{hu2017toward} manage to control the sentiment by reconstructing sentiment and content based on generated sentences. However, there is no evidence that the latent space could be disentangled by such reconstruction. \newcite{fu2017style} propose two approaches, using style embedding or two specifically trained decoders for style transfer. They apply the adversarial loss on the encoded space to discourage style encoding. \newcite{shen2017style} use an adversarial discriminator to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer.
+In natural language processing, the `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by reconstructing sentiment and content based on generated sentences. However, there is no evidence that the latent space could be disentangled by such reconstruction. \citet{fu2017style} propose two approaches, using style embedding or two specifically trained decoders for style transfer. They apply the adversarial loss on the encoded space to discourage style encoding. \citet{shen2017style} use an adversarial discriminator to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer.
 
 Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply two auxiliary losses to ensure that each space encodes its own information. Our disentangled space can be directly applied to style-transfer sentence generation, as in the aforementioned studies.
 
@@ -159,7 +147,7 @@ Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized 
 \begin{align} \label{eqn:vae-rec}
 	\loss{rec}(\bm\theta_E, \bm\theta_D) = \nonumber
 	 & - \mathbb{E}_{q_{E_s}(\bm s|\rmx) q_{E_c}(\bm c|\rmx)} [\log p(\rmx|\bm s, \bm c)] \nonumber \\
-	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                      \\
+	 & + \lambda_{\text{skl}} KL(q_{E_s}(\bm s|\rmx)||p(z)) \nonumber                               \\
 	 & + \lambda_{\text{ckl}} KL(q_{E_c}(\bm c|\rmx)||p(z))
 \end{align}
 where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms.
@@ -188,7 +176,7 @@ This is trained using a simple cross-entropy loss.
 	\loss{mult}(\bm\theta_{E};\bm\theta_\text{mult}) =
 	- \mathbb{E} [\log p(y | \bm s; \bm\theta_\text{mult})]
 \end{equation}
-where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the unbold letter $s$ represents the binary style label).
+where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the regular letter $s$ represents the binary style label).
 
 
 
