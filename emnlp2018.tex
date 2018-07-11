@@ -174,8 +174,7 @@ This is trained using a simple cross-entropy loss.
 	\loss{mult}(\bm\theta_{E};\bm\theta_\text{mult}) =
 	- \mathbb{E} [\log p(y | \bm s; \bm\theta_\text{mult})]
 \end{equation}
-where $\bm\theta_E$ are the encoder's parameters. (Notice that the bold letter $\bm s$ represents the encoded style vector, whereas the regular letter $s$ represents the binary style label).
-
+where $\bm\theta_E$ are the encoder's parameters.
 
 
 \begin{table*}[ht]
@@ -227,7 +226,7 @@ The above multi-task loss only operates on the style space, but does not have an
 
 We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
 
-The idea of adversarial loss is to introduce an adversary that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information.
+The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information from it.
 
 Concretely, the adversarial discriminator predicts style $y$ by computing a softmax distribution over the possible class labels
 \begin{equation}
@@ -240,9 +239,9 @@ It is trained by minimizing the following objective, using a cross-entropy loss.
 	\loss{dis}(\bm\theta_\text{dis}) =
 	- \mathbb{E} [\log p(y | \bm c; \bm\theta_\text{dis})]
 \end{equation}
-The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e., $\bm c$ is treated as shallow features.
+The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the entropy of the adversary's prediction, given by
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the Shannon entropy of the adversary's prediction, given by
 \begin{equation}
 	\loss{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(y|\bm c))
 \end{equation}
@@ -279,7 +278,7 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adv
 
 \subsection{Adversarial Bag-of-Words Discriminator} \label{sec:adversarial-bow-objective}
 
-In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $x$ are represented as a vector of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 1s and 0s.
+In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 0s and 1s.
 
 The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
 \begin{equation}
@@ -292,18 +291,18 @@ This objective is trained in a similar method to the style adversary, using a cr
 	\loss{bow}(\bm\theta_\text{bow}) =
 	- \mathbb{E} [\log p(b | \bm c; \bm\theta_\text{bow})]
 \end{equation}
-We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the encoder can update are mutually exclusive.
+We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
 
 Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
 \begin{equation}
 	\loss{badv}(\bm\theta_E) = \mathcal{H}(p_\text{bow}(b | \bm s))
 \end{equation}
 
-The motivation for this adversarial loss is similar to the one used in the context of the style discriminator. We want to encourage the encoder to learn a representation of style that the bag-of-words discriminator cannot predict most of the original words from.
+The motivation for this adversarial loss is similar to the one used in the context of the style discriminator. We want to encourage the encoder to learn a representation of style $\bm s$ that the bag-of-words discriminator cannot predict most of the original words from.
 
 \subsection{Training Process}
 
-The overall loss $\loss{ovr}$ used for the autoencoder is thus comprised of four different objectives: the reconstruction objective, the multi-task objective and the style and content adversaries.
+The overall loss $\loss{ovr}$, used for the autoencoder, is thus comprised of four different objectives: the reconstruction objective, the multi-task objective and the style and content adversaries.
 \begin{align*}
 	\loss{ovr} =
 	 & \loss{rec}(\bm\theta_E, \bm\theta_D) - \lambda_\text{adv} \loss{adv}(\theta_E) +                                \\
@@ -383,11 +382,11 @@ We conduct experiments on two datasets, the details for which are given below. B
 
 \subsubsection{Yelp Service Reviews}
 
-We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \cite{shen2017style} open-sourced by the authors~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
+We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citet{shen2017style} open-sourced by the authors~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
 
-We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \cite{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000, 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
+We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citet{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000, 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Evaluation Metrics}
 
@@ -405,9 +404,9 @@ We evaluate our method using four metrics: style transfer strength, content pres
 
 \subsection{Disentangling Latent Space}
 
-We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a logistic classifier based on different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp Dataset.
+We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a classifiers on the different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp Dataset.
 
-We see that the 128-dimensional content vector $\bm c$ is not discriminative for style. It achieves an accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
+We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style. It achieves accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
 
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
 
