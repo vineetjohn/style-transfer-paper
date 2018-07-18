@@ -252,25 +252,25 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adv
 	\centering
 	\begin{tabular}{| l | r | r | r | r |}
 		\hline
-		\tabc{2}{Objectives}                                     & \textbf{Transfer} & \textbf{Content}      & \textbf{Word}    & \textbf{Language} \\
-		                                                         & \textbf{Strength} & \textbf{Preservation} & \textbf{Overlap} & \textbf{Fluency}  \\
+		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}     & \tabh{Language}  \\
+		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap}  & \tabh{Fluency}   \\
 		\hline
 		\hline
-		$\loss{rec}$                                             & 0.1436            & \textbf{0.9154}       & \textbf{0.3288}  & 14.2781           \\
+		$\loss{rec}$                                             & 0.1436          & \textbf{0.9154}     & \textbf{0.3288} & 14.2781          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$                               & 0.7274            & 0.8800                & 0.2037           & 14.1567           \\
+		$\loss{rec}$, $\loss{adv}$                               & 0.7274          & 0.8800              & 0.2037          & 14.1567          \\
 		\hline
-		$\loss{rec}$, $\loss{mult}$                              & 0.7894            & 0.8976                & 0.2589           & 14.5607           \\
+		$\loss{rec}$, $\loss{mult}$                              & 0.7894          & 0.8976              & 0.2589          & 14.5607          \\
 		\hline
-		$\loss{rec}$, $\loss{badv}$                              & 0.1677            & 0.9147                & 0.3282           & 14.4486           \\
+		$\loss{rec}$, $\loss{badv}$                              & 0.1677          & 0.9147              & 0.3282          & 14.4486          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & \textbf{0.8903}   & 0.8824                & 0.2105           & 14.4099           \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & \textbf{0.8903} & 0.8824              & 0.2105          & 14.4099          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.7491            & 0.8827                & 0.2022           & 14.3568           \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.7491          & 0.8827              & 0.2022          & 14.3568          \\
 		\hline
-		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.7832            & 0.8958                & 0.2567           & 14.3373           \\
+		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.7832          & 0.8958              & 0.2567          & 14.3373          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846            & 0.8782                & 0.1970           & \textbf{14.0479}  \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{14.0479} \\
 		\hline
 	\end{tabular}
 	\caption{Ablation test.}
@@ -395,12 +395,17 @@ We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucs
 
 We evaluate our method using four metrics: style transfer strength, content preservation, word overlap, and language fluency
 
-\begin{itemize}
-	\item \textbf{Style Transfer:} We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}.
-	\item \textbf{Content Preservation:} We compute a sentence embedding by min, max, and average pooling of word embeddings; then a cosine similarity is computed to evaluate how close two sentences are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}.
-	\item \textbf{Word Overlap:} We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
-	\item \textbf{Language Fluency:} We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The negative log-likelihood scores, as predicted by the Kneser-Ney language model and aggregated over the generated corpus, is reported as the indicator for language fluency. Lower scores indicate better fluency.
-\end{itemize}
+\subsubsection{Style Transfer}
+We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}.
+
+\subsubsection{Content Preservation}
+We compute a sentence embedding by min, max, and average pooling of word embeddings; then a cosine similarity is computed to evaluate how close two sentences are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}.
+
+\subsubsection{Word Overlap}
+We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
+
+\subsubsection{Language Fluency}
+We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The negative log-likelihood scores, as predicted by the Kneser-Ney language model and aggregated over the generated corpus, is reported as the indicator for language fluency. Lower scores indicate better fluency.
 
 
 \section{Discussion}
