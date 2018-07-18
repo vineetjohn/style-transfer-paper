@@ -252,25 +252,25 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy. The adv
 	\centering
 	\begin{tabular}{| l | r | r | r | r |}
 		\hline
-		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}     & \tabh{Language}  \\
-		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap}  & \tabh{Fluency}   \\
+		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}     & \tabh{Language}   \\
+		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap}  & \tabh{Fluency}    \\
 		\hline
 		\hline
-		$\loss{rec}$                                             & 0.1436          & \textbf{0.9154}     & \textbf{0.3288} & 14.2781          \\
+		$\loss{rec}$                                             & 0.1436          & \textbf{0.9154}     & \textbf{0.3288} & -14.2781          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$                               & 0.7274          & 0.8800              & 0.2037          & 14.1567          \\
+		$\loss{rec}$, $\loss{adv}$                               & 0.7274          & 0.8800              & 0.2037          & -14.1567          \\
 		\hline
-		$\loss{rec}$, $\loss{mult}$                              & 0.7894          & 0.8976              & 0.2589          & 14.5607          \\
+		$\loss{rec}$, $\loss{mult}$                              & 0.7894          & 0.8976              & 0.2589          & -14.5607          \\
 		\hline
-		$\loss{rec}$, $\loss{badv}$                              & 0.1677          & 0.9147              & 0.3282          & 14.4486          \\
+		$\loss{rec}$, $\loss{badv}$                              & 0.1677          & 0.9147              & 0.3282          & -14.4486          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & \textbf{0.8903} & 0.8824              & 0.2105          & 14.4099          \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & \textbf{0.8903} & 0.8824              & 0.2105          & -14.4099          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.7491          & 0.8827              & 0.2022          & 14.3568          \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.7491          & 0.8827              & 0.2022          & -14.3568          \\
 		\hline
-		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.7832          & 0.8958              & 0.2567          & 14.3373          \\
+		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.7832          & 0.8958              & 0.2567          & -14.3373          \\
 		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{14.0479} \\
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{-14.0479} \\
 		\hline
 	\end{tabular}
 	\caption{Ablation test.}
@@ -339,6 +339,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
 		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
 		\hline
+		\hline
 		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
 		\hline
 		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
@@ -352,6 +353,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
 		\hline
 		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
+		\hline
 		\hline
 		\hline
 		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
@@ -405,7 +407,7 @@ We compute a sentence embedding by min, max, and average pooling of word embeddi
 We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
 
 \subsubsection{Language Fluency}
-We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The negative log-likelihood scores, as predicted by the Kneser-Ney language model and aggregated over the generated corpus, is reported as the indicator for language fluency. Lower scores indicate better fluency.
+We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, is reported as the indicator for language fluency.
 
 
 \section{Discussion}
