@@ -9,6 +9,7 @@
 \usepackage{multirow}
 \usepackage{makecell}
 \usepackage{caption}
+\usepackage[linesnumbered,lined]{algorithm2e}
 \usepackage{todonotes}
 
 % bold x for equations
@@ -67,17 +68,17 @@
 
 \section{Introduction}
 
-The neural network has been a successful learning machine during the past decade due to its high modeling capability, which arises from multiple layers of non-linear transformation of input features. Such transformations, however, make intermediate features `latent', in that they do not have explicit meaning and are not explainable. Therefore, neural networks are usually treated as black-box machinery.
+The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformation of input features. Such transformations, however, make intermediate features `latent', in that they do not have explicit meaning and are not explainable. Therefore, neural networks are usually treated as black-box machinery.
 
-Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing (NLP).
+Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing.
 
-In this paper, we address the problem of disentangling neural networks' latent space for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with different features, namely, \textit{style} and \textit{content}.
+In this paper, we address the problem of disentangling the latent space of neural networks' for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
 
-To accomplish this, we propose a simple approach that combines multi-task loss and adversarial loss. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content parts can be disentangled from each other.
+To accomplish this, we propose a simple approach that combines multi-task and adversarial objectives. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content variables can be disentangled from each other.
 
-These representation learning objectives can be directly used for style transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different sentiment. We simply apply an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the autoencoder for decoding. Using this grafting technique, we generate a new sentence similar in content but different in style.
+These representation learning objectives can be directly used for style transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different style. We simply use an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the autoencoder for decoding. Using this grafting technique, we generate a new sentence similar in content but different in style.
 
-We conducted experiments on two customer review benchmark datasets. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the empirical style-transfer evaluations, we achieve significantly better style transfer scores than previous results, while obtaining better or comparable content preservation scores.  We also show in an ablation test, that the auxiliary losses can be combined well, each playing its own role in disentangling latent space.
+We conducted experiments on two customer review benchmark datasets. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the empirical style-transfer evaluations, we achieve significantly better style transfer scores than previous results, while obtaining better or comparable content preservation scores. We also show, using ablation tests, that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
 
 
 \begin{figure}[ht]
@@ -97,9 +98,9 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 \section{Related Work}
 
-Disentangling latent space has been widely explored in the image processing domain, where researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics~\cite{gatys2016image}. For other styles, researchers adopt various data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
+Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other work, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
-In natural language processing, the `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space could be disentangled by such reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, using style embedding or two specifically trained decoders for style transfer. They apply an adversarial loss on the encoded space to discourage style encoding.
+In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding or (b) using style-specific decoders for style transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
 Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning functions can then be directly applied to style-transfer sentence generation, as in the aforementioned studies.
 
@@ -311,11 +312,13 @@ The overall loss $\loss{ovr}$, used for the autoencoder, is thus comprised of fo
 where $\lambda_\text{mult}$, $\lambda_\text{adv}$ and $\lambda_\text{badv}$ balance the model's auxiliary losses.
 
 To put it all together, our training process is a loop of the following processes:
-\begin{itemize}
-	\item minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$,
-	\item minimize $\loss{bow}(\bm\theta_\text{bow})$ w.r.t. $\bm\theta_\text{bow}$, and
-	\item minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$.
-\end{itemize}
+\begin{algorithm}[ht]
+	\While{epochs remaining}{
+		minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$\;
+		minimize $\loss{bow}(\bm\theta_\text{bow})$ w.r.t. $\bm\theta_\text{bow}$\;
+		minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{mult}$\;
+	}
+\end{algorithm}
 
 We use the Adam optimizer \cite{kingma2014adam} with an initial learning rate of $10^{-3}$ and train the model for 20 epochs. Both the autoencoder and its adversary are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$.
 
