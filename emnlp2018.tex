@@ -186,13 +186,17 @@ where $\bm\theta_E$ are the encoder's parameters.
 		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \citep{shen2017style} & 0.8087          & 0.8920              & 0.2087         & 23.3886         \\
+		Cross-Alignment \citep{shen2017style} & 0.8087          & 0.8920              & 0.2087         & -23.3886        \\
 		\hline
-		Style Embedding \citep{fu2017style}   & 0.1819          & 0.9586              & 0.6661         & 16.1711         \\
+		Style Embedding \citep{fu2017style}   & 0.1819          & 0.9586              & 0.6661         & -16.1711        \\
 		\hline
-		Ours (DAE)                            & 0.8425          & 0.8924              & 0.2552         & 16.4808         \\
+		Ours (DAE)                            & 0.8425          & 0.8924              & 0.2552         & -16.4808        \\
 		\hline
-		Ours (VAE)                            & 0.8903          & 0.8824              & 0.2105         & 14.4099         \\
+		Ours (VAE)                            & 0.8903          & 0.8824              & 0.2105         & -14.4099        \\
+		\hline
+		Ours (WAE-IMQ)                        & 0.8262          & 0.8844              & 0.2219         & -15.2464        \\
+		\hline
+		Ours (WAE-RBF)                        & 0.8138          & 0.8848              & 0.2229         & -14.8628        \\
 		\hline
 	\end{tabular}
 	\caption{Yelp Dataset - Comparison with previous approaches.}
@@ -207,13 +211,13 @@ where $\bm\theta_E$ are the encoder's parameters.
 		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \citep{shen2017style} & 0.6063          & 0.8933              & 0.0241         & 26.3093         \\
+		Cross-Alignment \citep{shen2017style} & 0.6063          & 0.8933              & 0.0241         & -26.3093        \\
 		\hline
-		Style Embedding \citep{fu2017style}   & 0.4165          & 0.9332              & 0.3588         & 28.1346         \\
+		Style Embedding \citep{fu2017style}   & 0.4165          & 0.9332              & 0.3588         & -28.1346        \\
 		\hline
-		Ours (DAE)                            & 0.7032          & 0.9178              & 0.1305         & 32.4184         \\
+		Ours (DAE)                            & 0.7032          & 0.9178              & 0.1305         & -32.4184        \\
 		\hline
-		Ours (VAE)                            & 0.7259          & 0.9090              & 0.0814         & 28.4953         \\
+		Ours (VAE)                            & 0.7259          & 0.9090              & 0.0814         & -28.4953        \\
 		\hline
 	\end{tabular}
 	\caption{Amazon Dataset - Comparison with previous approaches.}
