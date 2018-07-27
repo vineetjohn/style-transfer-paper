@@ -53,18 +53,6 @@
 
 % 
 
-\begin{figure*}[ht]
-	\centering
-	\includegraphics[width=0.8\linewidth]{model-overview-training}
-	\caption{Model Training Overview}
-	\label{fig:model-training-overview}
-\end{figure*}
-\begin{figure*}[ht]
-	\centering
-	\includegraphics[width=0.8\linewidth]{model-overview-inference}
-	\caption{Model Generation Overview}
-	\label{fig:model-inference-overview}
-\end{figure*}
 
 \section{Introduction}
 
@@ -82,18 +70,18 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 
 \begin{figure}[ht]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{latent-spaces-dae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
-	\label{fig:dae-tsne}
+	\centering
+	\includegraphics[width=0.8\linewidth]{model-overview-training}
+	\caption{Model Training Overview}
+	\label{fig:model-training-overview}
+\end{figure}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{model-overview-inference}
+	\caption{Model Generation Overview}
+	\label{fig:model-inference-overview}
 \end{figure}
 
-\begin{figure}[ht]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{latent-spaces-vae}
-	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
-	\label{fig:vae-tsne}
-\end{figure}
 
 
 \section{Related Work}
@@ -109,21 +97,20 @@ Our paper differs from the previous work in that both our style space and conten
 
 In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ssec:seq2seq-autoencoder}. Then we introduce three auxiliary losses, a multi-task classification loss, a style adversarial loss, and a content adversarial loss in Subsections~\ref{ssec:multitask-classification-objective}, \ref{ssec:adversarial-style-objective} and \ref{sec:adversarial-bow-objective}, respectively. Subsection~\ref{ssec:sentence-generation} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict training and prediction processes of our approach, respectively.
 
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l | r | r |}
-		\hline
-		                                        & \tabh{DAE}                  & \tabh{VAE} \\
-		\hline \hline
-		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
-		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
-		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
-		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
-		\hline
-	\end{tabular}
-	\caption{Style classification accuracy.}
-	\label{tab:classification}
-\end{table*}
+
+\begin{figure}[ht]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{latent-spaces-dae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - DAE Model}
+	\label{fig:dae-tsne}
+\end{figure}
+
+\begin{figure}[ht]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{latent-spaces-vae}
+	\caption{T-SNE Plots: (a) Style and (b) Content Spaces - VAE Model}
+	\label{fig:vae-tsne}
+\end{figure}
 
 
 \subsection{Autoencoder} \label{ssec:seq2seq-autoencoder}
@@ -157,6 +144,23 @@ The motivation for using a variational autoencoder variant to compare the base d
 
 Since these objectives train the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
+
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l | r | r |}
+		\hline
+		                                        & \tabh{DAE}                  & \tabh{VAE} \\
+		\hline \hline
+		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
+		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
+		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
+		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
+		\hline
+	\end{tabular}
+	\caption{Style classification accuracy.}
+	\label{tab:classification}
+\end{table*}
 
 \subsection{Multi-Task Classification} \label{ssec:multitask-classification-objective}
 
