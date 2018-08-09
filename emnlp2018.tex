@@ -222,10 +222,10 @@ where $\bm\theta_E$ are the encoder's parameters.
 		Ours (DAE)                            & 0.7032          & 0.9178              & 0.1305         & -32.4184        \\
 		\hline
 		Ours (VAE)                            & 0.7259          & 0.9090              & 0.0814         & -28.4953        \\
-		 \hline
-		 Ours (WAE-IMQ)                        & 0.6830          & 0.9125              & 0.1074         & -30.7064        \\
-		 \hline
-		 Ours (WAE-RBF)                        & 0.6895          & 0.9169              & 0.1272         & -32.1801        \\
+		\hline
+		Ours (WAE-IMQ)                        & 0.6830          & 0.9125              & 0.1074         & -30.7064        \\
+		\hline
+		Ours (WAE-RBF)                        & 0.6895          & 0.9169              & 0.1272         & -32.1801        \\
 		\hline
 	\end{tabular}
 	\caption{Amazon Dataset - Comparison with previous approaches.}
@@ -344,6 +344,27 @@ Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded
 	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
 \end{equation*}
 The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding (Figure~\ref{fig:model-inference-overview}).
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{| l | r | r | r | r |}
+		\hline
+		\tabc{2}{Model}       & \tabh{Language} \\
+		                      & \tabh{Quality}  \\
+		\hline
+		\hline
+		\citet{shen2017style} & 3.188           \\
+		\hline
+		\citet{fu2017style}   & 3.784           \\
+		\hline
+		Ours (DAE)            & 3.460           \\
+		\hline
+		Ours (VAE)            & 3.824           \\
+		\hline
+	\end{tabular}
+	\caption{Results - Human Evaluation}
+	\label{tab:human-evaluation}
+\end{table}
 
 \begin{table*}[ht]
 	\centering
