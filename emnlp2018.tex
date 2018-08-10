@@ -149,21 +149,22 @@ The motivation for using a variational autoencoder variant to compare the base d
 
 Since these objectives train the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
 
-\begin{table*}[ht]
+\begin{table}[ht]
 	\centering
 	\begin{tabular}{| l | r | r |}
 		\hline
-		                                        & \tabh{DAE}                  & \tabh{VAE} \\
+		\textit{Random/Majority guess}   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                  & \tabh{VAE} \\
 		\hline \hline
-		Random/Majority guess                   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
-		Content latent space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
-		Style latent space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
-		Complete latent space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
+		Content space  ($\bm c$)         & 0.6137                      & 0.6567     \\ \hline
+		Style space ($\bm s$)            & 0.7927                      & 0.7911     \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.7918                      & 0.7918     \\
 		\hline
 	\end{tabular}
-	\caption{Style classification accuracy.}
+	\caption{Style Classification Accuracy}
 	\label{tab:classification}
-\end{table*}
+\end{table}
 
 \subsection{Multi-Task Classification} \label{ssec:multitask-classification-objective}
 
@@ -206,7 +207,7 @@ where $\bm\theta_E$ are the encoder's parameters.
 		% Ours (WAE-RBF)                        & 0.8138          & 0.8848              & 0.2229         & -14.8628        \\
 		% \hline
 	\end{tabular}
-	\caption{Yelp Dataset - Comparison with previous approaches.}
+	\caption{Yelp Dataset - Comparison}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -231,7 +232,7 @@ where $\bm\theta_E$ are the encoder's parameters.
 		% Ours (WAE-RBF)                        & 0.6895          & 0.9169              & 0.1272         & -32.1801        \\
 		% \hline
 	\end{tabular}
-	\caption{Amazon Dataset - Comparison with previous approaches.}
+	\caption{Amazon Dataset - Comparison}
 	\label{tab:amazon-comparison-previous}
 \end{table*}
 
@@ -288,7 +289,7 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ 
 		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.8846          & 0.8782              & 0.1970          & \textbf{-14.0479} \\
 		\hline
 	\end{tabular}
-	\caption{Ablation test.}
+	\caption{Ablation Tests}
 	\label{tab:ablation-results}
 \end{table*}
 
@@ -412,7 +413,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
 		\hline
 	\end{tabular}
-	\caption{Examples of style-transfer generation.}
+	\caption{Examples of Style-Transfer Generation}
 	\label{tab:transfer-samples}
 \end{table*}
 
