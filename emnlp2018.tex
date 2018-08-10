@@ -264,7 +264,7 @@ The adversarial loss appears similar to the multi-task loss as in Equation \ref{
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the Shannon entropy of the adversary's prediction, given by
 \begin{equation}
-	\loss{adv}(\bm\theta_E)=\mathcal{H}(p_\text{dis}(y|\bm c))
+	\loss{adv}(\bm\theta_E)=\mathcal{H}(y|\bm c; \bm\theta_\text{dis})
 \end{equation}
 where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder.
 
@@ -314,13 +314,13 @@ where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier
 This objective is trained in a similar method to the style adversary, using a cross-entropy loss
 \begin{equation} \label{eqn:adv-bow-disc-loss}
 	\loss{bow}(\bm\theta_\text{bow}) =
-	- \mathbb{E} [\log p(b' | \bm c; \bm\theta_\text{bow})]
+	- \mathbb{E} [\log p(b' | \bm s; \bm\theta_\text{bow})]
 \end{equation}
 We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
 
 Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
 \begin{equation}
-	\loss{badv}(\bm\theta_E) = \mathcal{H}(p_\text{bow}(b | \bm s))
+	\loss{badv}(\bm\theta_E) = \mathcal{H}(b | \bm s; \bm\theta_\text{bow})
 \end{equation}
 where $b$ is the predicted word distribution.
 
