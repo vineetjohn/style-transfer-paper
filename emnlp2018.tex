@@ -90,7 +90,6 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 \end{figure}
 
 
-
 \section{Related Work}
 
 Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other work, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
@@ -102,7 +101,7 @@ Our paper differs from the previous work in that both our style space and conten
 
 \section{Approach}
 
-In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ssec:seq2seq-autoencoder}. Then we introduce three auxiliary losses, a multi-task classification loss, a style adversarial loss, and a content adversarial loss in Subsections~\ref{ssec:multitask-classification-objective}, \ref{ssec:adversarial-style-objective} and \ref{sec:adversarial-bow-objective}, respectively. Subsection~\ref{ssec:sentence-generation} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict training and prediction processes of our approach, respectively.
+In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection~\ref{ssec:seq2seq-autoencoder}. Then we introduce three auxiliary losses, a multi-task classification loss, a style adversarial loss, and a content adversarial loss in Subsections~\ref{ssec:multitask-classification-objective}, \ref{ssec:adversarial-style-objective} and \ref{ssec:adversarial-bow-objective}, respectively. Subsection~\ref{ssec:sentence-generation} presents the approach to transfer style in natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict training and prediction processes of our approach, respectively.
 
 
 \begin{figure}[ht]
@@ -148,10 +147,7 @@ where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each
 
 The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \cite{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
-
 Since these objectives train the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
-
-
 
 \begin{table*}[ht]
 	\centering
@@ -296,7 +292,7 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ 
 	\label{tab:ablation-results}
 \end{table*}
 
-\subsection{Adversarial Bag-of-Words Discriminator} \label{sec:adversarial-bow-objective}
+\subsection{Adversarial Bag-of-Words Discriminator} \label{ssec:adversarial-bow-objective}
 
 In addition to the auxiliary losses used above, we also propose a novel bag-of-words discriminator on the style space. The motivation for having this objective is to try and emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 0s and 1s.
 
@@ -450,6 +446,10 @@ We also utilize a simpler unigram overlap metric. Given a source sentence $x$ an
 \subsubsection{Language Fluency}
 We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, is reported as the indicator for language fluency.
 
+\subsubsection{Human Evaluation of Language Quality}
+
+
+
 
 \section{Discussion}
 
@@ -461,7 +461,6 @@ We see that the 128-dimensional content vector $\bm c$ is not particularly discr
 
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
 
-
 As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is significantly smoother and continuous than the one learned by the deterministic autoencoder.
 
 
@@ -472,7 +471,9 @@ We apply the disentangled latent space to a style-transfer sentence generation t
 We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We re-conducted the experiments with their publicly available code and data.
 Results show that, our approach achieves a comparable content-preservation and word overlap scores to previous work, but significantly better style-transfer scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model is also the most fluent for the Yelp dataset task.
 
-Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score.
+Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. However, we notice that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
+
+We also perform human evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting annotators to rate them on a 1-5 Likert Scale \citep{likert1932technique} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}. The results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models are correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
