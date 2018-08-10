@@ -36,10 +36,14 @@
 	University of Waterloo \\
 	{\tt vineet.john@uwaterloo.ca} \\
 	\And
+	Hareesh Bahuleyan \\
+	University of Waterloo \\
+	{\tt hpallika@uwaterloo.ca} \\
+	\AND
 	Lili Mou \\
 	AdeptMind Research \\
 	{\tt doublepower.mou@gmail.com}\\{\tt lili@adeptmind.ai} \\
-	\AND
+	\And
 	Olga Vechtomova \\
 	University of Waterloo \\
 	{\tt ovechtom@uwaterloo.ca} \\
@@ -67,7 +71,7 @@ The neural network has been a successful learning machine during the past decade
 
 Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing.
 
-In this paper, we address the problem of disentangling the latent space of neural networks' for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
+In this paper, we address the problem of disentangling the latent space of neural networks for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by decoding the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
 
 To accomplish this, we propose a simple approach that combines multi-task and adversarial objectives. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it does contain style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content variables can be disentangled from each other.
 
@@ -92,7 +96,7 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 \section{Related Work}
 
-Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other work, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
+Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other works, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
 In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding or (b) using style-specific decoders for style transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
@@ -145,9 +149,9 @@ Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized 
 \end{align}
 where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms.
 
-The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \cite{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
+The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \citet{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
-Since these objectives train the model to reconstruct $\rmx$, they are also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the below auxiliary losses.
+Since this objective is used to train the model to reconstruct $\rmx$, it is also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the auxiliary losses described below.
 
 \begin{table}[ht]
 	\centering
@@ -170,7 +174,7 @@ Since these objectives train the model to reconstruct $\rmx$, they are also call
 
 Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the true style label $y$, which is a part of the training data.
 
-This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predicts its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
+This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predict its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
 In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a multi-label classifier
 \begin{equation} \label{eqn:class-pred}
@@ -243,7 +247,7 @@ The above multi-task loss only operates on the style space, but does not have an
 
 We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
 
-The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn such a content vector space that its adversary cannot predict style information from it.
+The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
 
 Concretely, the adversarial discriminator predicts style $y$ by computing a softmax distribution over the possible class labels
 \begin{equation}
@@ -449,7 +453,7 @@ We compute a sentence embedding by min, max, and average pooling of word embeddi
 We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
 
 \subsubsection{Language Fluency}
-We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, is reported as the indicator for language fluency.
+We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, are reported as the indicator for language fluency.
 
 \subsubsection{Human Evaluation of Language Quality}
 We perform human evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting annotators to rate them on a 1-5 Likert Scale \citep{likert1932technique} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}.
