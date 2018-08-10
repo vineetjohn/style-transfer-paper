@@ -182,7 +182,7 @@ In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2
 \end{equation}
 where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning, and $y'$ is the true label distribution.
 
-This is trained using a simple cross-entropy loss.
+This is trained using a simple cross-entropy loss
 \begin{equation} \label{eqn:multi-task-loss}
 	\loss{mult}(\bm\theta_{E};\bm\theta_\text{mult}) =
 	- \mathbb{E} [\log p(y' | \bm s; \bm\theta_\text{mult})]
@@ -456,38 +456,37 @@ We also utilize a simpler unigram overlap metric. Given a source sentence $x$ an
 We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, are reported as the indicator for language fluency.
 
 \subsubsection{Human Evaluation of Language Quality}
-We perform human evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting annotators to rate them on a 1-5 Likert Scale \citep{likert1932technique} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}.
+We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \citep{stent2005evaluating} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}.
 
 
 \section{Discussion}
 
 \subsection{Disentangling Latent Space}
 
-We first analyze how the style (sentiment) and content of the latent space are disentangled. We train a classifiers on the different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp Dataset.
+We first analyze how the style (sentiment) and content of the latent space are disentangled. We train classifiers on the different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp dataset.
 
 We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style. It achieves accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
 
-We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively. As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is significantly smoother and continuous than the one learned by the deterministic autoencoder.
+We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively. As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
 
 
 \subsection{Style-Transfer Sentence Generation}
 
 We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment (style).
 
-We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We re-conducted the experiments with their publicly available code and data.
-Results show that, our approach achieves a comparable content-preservation and word overlap scores to previous work, but significantly better style-transfer scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model is also the most fluent for the Yelp dataset task.
+We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data. Results show that, our approach achieves comparable content preservation and word overlap scores to previous work, but significantly better style-transfer strength scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model is also the most fluent for the Yelp dataset task.
 
 Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. However, we notice that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
-The manual human evaluation results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models are correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
+The manual human evaluation results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
 
 \section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content- preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work.
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work.
 
-For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning the each encoded style distribution to a unique prior, which could be sampled from at inference time for style transfer, as opposed to using the empirical mean of training-time style embeddings.
+For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style transfer, as opposed to using the empirical mean of training-time style embeddings.
 
 \section{Acknowledgements}
 We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award. The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
