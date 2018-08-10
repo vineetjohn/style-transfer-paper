@@ -297,7 +297,7 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ 
 
 In addition to the auxiliary losses used above, we also propose a bag-of-words discriminator on the style space to make our approach complete.
 
-The motivation is to emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style. 
+The motivation is to emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
 
 The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 0s and 1s.
 
@@ -452,8 +452,7 @@ We also utilize a simpler unigram overlap metric. Given a source sentence $x$ an
 We use a trigram based Kneser–Ney Smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, is reported as the indicator for language fluency.
 
 \subsubsection{Human Evaluation of Language Quality}
-
-
+We perform human evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting annotators to rate them on a 1-5 Likert Scale \citep{likert1932technique} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}.
 
 
 \section{Discussion}
@@ -478,7 +477,7 @@ Results show that, our approach achieves a comparable content-preservation and w
 
 Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. However, we notice that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
-We also perform human evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting annotators to rate them on a 1-5 Likert Scale \citep{likert1932technique} \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible}. The results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models are correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
+The manual human evaluation results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models are correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
 Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
