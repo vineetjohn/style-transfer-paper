@@ -427,7 +427,7 @@ We also utilize a simpler unigram overlap metric. Given a source sentence $x$ an
 \subsubsection{Language Fluency}
 We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, are reported as the indicator for language fluency.
 
-\subsubsection{Human Evaluation of Language Quality}
+\subsubsection{Manual Evaluation of Language Quality}
 We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible} \citep{stent2005evaluating}. The aggregate score of all the evaluators is presented as a measure of language quality.
 
 
@@ -467,11 +467,11 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 		Ours (VAE)            & 3.824           \\
 		\hline
 	\end{tabular}
-	\caption{Results - Human Evaluation}
-	\label{tab:human-evaluation}
+	\caption{Results - Manual Evaluation}
+	\label{tab:manual-evaluation}
 \end{table}
 
-The manual human evaluation results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
+The manual evaluation results are presented in Table \ref{tab:manual-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
 Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
