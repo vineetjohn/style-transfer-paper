@@ -59,7 +59,7 @@
 
 
 \begin{abstract}
-	This paper tackles the problem of disentangling the style and content latent spaces of language models. We propose a simple yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach. We apply this disentangled latent representation learning method to attribute (e.g. style) transfer in natural language generation. We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores. Our code is made publicly available for replicability and extension purposes~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
+	This paper tackles the problem of disentangling the style and content latent spaces of language models. We propose a simple yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach. We apply this disentangled latent representation learning method to attribute (e.g. style) transfer in natural language generation. We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores. Our code is made publicly available for replicability and extension purposes.
 \end{abstract}
 
 % 
@@ -488,7 +488,7 @@ Some examples of style-transfer sentence generation are illustrated in Table~\re
 
 
 \section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work.
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work. Our code is publicly available~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 
 For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style transfer, as opposed to using the empirical mean of training-time style embeddings.
 
