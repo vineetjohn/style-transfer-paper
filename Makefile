@@ -11,7 +11,7 @@ read: all
 	xdg-open $(build-dir)/$(filename).pdf &> /dev/null 
 
 indent:
-	latexindent -w ${filename}
+	latexindent -w ${filename} &> /dev/null
 	mv ${filename}.bak0 indent.log ${build-dir}
 
 clean:
