@@ -249,7 +249,7 @@ We therefore apply an adversarial loss to disentangle the content space from sty
 
 The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
 
-Concretely, the adversarial discriminator predicts style $y$ by computing a softmax distribution over the possible class labels
+Concretely, the adversarial discriminator predicts style by computing a softmax distribution over the possible class labels
 \begin{equation}
 	p(y' | \bm c; \bm\theta_\text{dis}) = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
 \end{equation}
