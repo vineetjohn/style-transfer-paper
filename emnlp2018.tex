@@ -172,7 +172,7 @@ Since this objective is used to train the model to reconstruct $\rmx$, it is als
 
 \subsection{Multi-Task Classification Loss} \label{ssec:multitask-classification-objective}
 
-Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the true style label $y$, which is a part of the training data.
+Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the true style label $y'$, which is part of the training data.
 
 This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predict its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
@@ -262,7 +262,7 @@ It is trained by minimizing the following objective, using a cross-entropy loss.
 \end{equation}
 where $y'$ is the true label distribution.
 
-The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features.
+The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features.
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the Shannon entropy of the adversary's prediction, given by
 \begin{equation}
@@ -307,7 +307,7 @@ The motivation is to emulate the adversarial signal provided by the style discri
 
 The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 0s and 1s.
 
-The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
+The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict the probability of each word's occurrence in the original sentence, between 0 and 1.
 \begin{equation}
 	b = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
 \end{equation}
@@ -441,7 +441,7 @@ We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced f
 
 \subsubsection{Amazon Product Reviews}
 
-We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citet{fu2017style}. The reviews were sourced from the code repository accompanying the paper.\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}} It contains 559142, 2000, 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
+We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citet{fu2017style}. The reviews were sourced from the code repository accompanying the paper.\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}} It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Evaluation Metrics}
 
@@ -484,7 +484,7 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 
 The manual human evaluation results are presented in Table \ref{tab:human-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
-Some examples of style-transfer sentence generation are illustrated in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
+Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
 
 
 \section{Conclusion and Future Work}
