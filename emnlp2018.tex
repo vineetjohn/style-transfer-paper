@@ -247,7 +247,7 @@ The above multi-task loss only operates on the style space, but does not have an
 
 We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
 
-The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label $y$ on the content vector $\bm c$. Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
+The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label using the content vector $\bm c$. Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
 
 Concretely, the adversarial discriminator predicts style by computing a softmax distribution over the possible class labels
 \begin{equation}
