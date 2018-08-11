@@ -349,7 +349,7 @@ To put it all together, our training process is a loop of the following processe
 	}
 \end{algorithm}
 
-We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{bow} = 0.001$. We append the latent vector $[s;c]$ to the hidden state at every time step of the decoder \citep{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$, and use the $tanh$ KL-divergence annealing schedule proposed by \citet{bahuleyan2017variational}.
+We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{badv} = 0.001$. We append the latent vector $[s;c]$ to the hidden state at every time step of the decoder \citep{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$, and use the $tanh$ KL-divergence annealing schedule proposed by \citet{bahuleyan2017variational}.
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
 
