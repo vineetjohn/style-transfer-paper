@@ -178,16 +178,16 @@ This loss can be viewed as a \textit{multi-task} loss, which makes the neural ne
 
 In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a multi-label classifier
 \begin{equation} \label{eqn:class-pred}
-	p(y' | \bm s; \bm\theta_\text{mult}) = \sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
+	y = \sigma(\bm w_\text{mult}^\top \bm s + b_\text{mult})
 \end{equation}
-where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning, and $y'$ is the true label distribution.
+where $\bm\theta_\text{mult}=[\bm w_\text{mult}; b_\text{mult}]$ are the classifier's parameters for multi-task learning, and $y$ is the predicted label distribution.
 
 This is trained using a simple cross-entropy loss
 \begin{equation} \label{eqn:multi-task-loss}
 	\loss{mult}(\bm\theta_{E};\bm\theta_\text{mult}) =
 	- \mathbb{E} [\log p(y' | \bm s; \bm\theta_\text{mult})]
 \end{equation}
-where $\bm\theta_E$ are the encoder's parameters.
+where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label distribution.
 
 
 \begin{table*}[ht]
@@ -251,15 +251,17 @@ The idea of adversarial loss is to introduce an objective that deliberately disc
 
 Concretely, the adversarial discriminator predicts style by computing a softmax distribution over the possible class labels
 \begin{equation}
-	p(y' | \bm c; \bm\theta_\text{dis}) = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
+	y = \sigma(\bm w_\text{dis}^\top \bm c + b_\text{dis})
 \end{equation}
-where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary, and $y'$ is the true label distribution.
+where $\bm\theta_\text{dis}=[\bm w_\text{dis}; b_\text{dis}]$ are the parameters of the adversary, and $y$ is the predicted label distribution.
 
 It is trained by minimizing the following objective, using a cross-entropy loss.
 \begin{equation} \label{eqn:adv-disc-loss}
 	\loss{dis}(\bm\theta_\text{dis}) =
 	- \mathbb{E} [\log p(y' | \bm c; \bm\theta_\text{dis})]
 \end{equation}
+where $y'$ is the true label distribution.
+
 The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:multi-task-loss}. However, it should be emphasized that, for the adversary, the gradient is not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features.
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style. In other words, we penalize the Shannon entropy of the adversary's prediction, given by
@@ -307,15 +309,17 @@ The input sentences $\rmx$ are represented as vectors of the same size as the co
 
 The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict a probability of each word's occurrence in the original sentence, between 0 and 1.
 \begin{equation}
-	p(b' | \bm s; \bm\theta_\text{bow}) = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
+	b = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
 \end{equation}
-where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier's parameters for bag-of-words prediction, and $b'$ is the true word distribution.
+where $\bm\theta_\text{bow}=[\bm w_\text{bow}; b_\text{bow}]$ are the classifier's parameters for bag-of-words prediction, and $b$ is the predicted word distribution.
 
 This objective is trained in a similar method to the style adversary, using a cross-entropy loss
 \begin{equation} \label{eqn:adv-bow-disc-loss}
 	\loss{bow}(\bm\theta_\text{bow}) =
 	- \mathbb{E} [\log p(b' | \bm s; \bm\theta_\text{bow})]
 \end{equation}
+where $b'$ is the true word distribution.
+
 We also refrain from propagating the effects of this discriminator loss $\loss{bow}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
 
 Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
