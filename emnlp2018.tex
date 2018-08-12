@@ -133,7 +133,7 @@ where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and deco
 
 \subsubsection{Variational Autoencoder}
 
-In addition to the deterministic auto-encoding objective presented above, we also implement a variational autoencoder (VAE) \cite{kingma2013auto}. The variational sampling and KL divergence losses are applicable to both the style space $\bm s$ and the content space $\bm c$, separately. The weights applied to each KL divergence loss are tuned independently as model hyperparameters.
+In addition to the deterministic auto-encoding objective presented above, we also implement a variational autoencoder (VAE) \cite{kingma2013auto}. The variational sampling and Kullback-Leibler (KL) divergence \citep{kullback1951information} losses are applicable to both the style space $\bm s$ and the content space $\bm c$, separately. The weights applied to each KL divergence loss are tuned independently as model hyperparameters.
 
 Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized in the VAE variant of our model.
 
