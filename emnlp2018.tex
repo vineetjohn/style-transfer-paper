@@ -112,14 +112,14 @@ In this section, we describe our approach in detail. Our model is built upon an 
 \begin{figure}[ht]
 	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-dae}
-	\caption{t-SNE Plots: DAE Model}
+	\caption{t-SNE Plots: Deterministic Autoencoder}
 	\label{fig:dae-tsne}
 \end{figure}
 
 \begin{figure}[ht]
 	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-vae}
-	\caption{t-SNE Plots: VAE Model}
+	\caption{t-SNE Plots: Variational Autoencoder}
 	\label{fig:vae-tsne}
 \end{figure}
 
@@ -128,7 +128,7 @@ In this section, we describe our approach in detail. Our model is built upon an 
 
 An autoencoder encodes an input to a latent vector space, which is usually of a much lower dimensionality than the input data. From this latent space, it decodes the input itself. By doing so, the autoencoder learns salient and compact representations of data. This serves as our primary learning objective. Besides, we also use the autoencoder for text generation in the style-transfer application.
 
-Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens. The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$. Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained using a sequence-aggregated cross-entropy loss, given by
+Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens. The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$. Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the deterministic autoencoder (DAE) is trained using a sequence-aggregated cross-entropy loss, given by
 \begin{equation}
 	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
@@ -150,7 +150,7 @@ where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each
 
 The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \citet{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
-Since this objective is used to train the model to reconstruct $\rmx$, it is also called \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the auxiliary losses described in the subsequent sections.
+Since this objective is used to train the model to reconstruct $\rmx$, it is also called the \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the auxiliary losses described in the subsequent sections.
 
 \begin{table}[ht]
 	\centering
@@ -419,7 +419,7 @@ We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucs
 We evaluate our method using four metrics: style-transfer strength, content preservation, word overlap, and language fluency.
 
 \subsubsection{Style-Transfer Strength}
-We train a convolutional neural network (CNN) style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2017style}. The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively. The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
+We train a convolutional neural network (CNN) style classifier \cite{kim2014convolutional} and predict the style of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2017style}. The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively. The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
 
 \subsubsection{Content Preservation}
 We compute a sentence embedding by min, max, and average pooling its constituent word embeddings. Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}. The cosine similarity is reported as the content preservation score.
@@ -438,18 +438,20 @@ We perform manual evaluations by randomly sampling sentences generated from each
 
 \subsection{Disentangling Latent Space}
 
-We first analyze how the style (sentiment) and content of the latent space are disentangled. We train classifiers on the different latent spaces, and show results in Table~\ref{tab:classification}. These are results from the experiments on the Yelp dataset.
+We first analyze how the style (sentiment) and content of the latent space are disentangled. We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Table~\ref{tab:classification}. These are results from the experiments on the Yelp dataset.
 
-We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style. It achieves accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space doesn't.
+We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style. It achieves accuracies that are only slightly better than random/majority guess. However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy. When combining content and style vectors, we achieve no further improvement. These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space does not.
 
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively. As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS). It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
 
 
 \subsection{Style-Transfer Sentence Generation}
 
-We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
+We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment. We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data.
 
-We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data. Results show that, our approach achieves comparable content preservation and word overlap scores to previous work, but significantly better style-transfer strength scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
+We observe that the style embedding model \citep{fu2017style} performs poorly on the style-transfer objective, resulting in inflated content preservation and word overlap scores. A qualitative analysis indicates that this model resorts to simply reconstructing most of the source sentences, and is not very effective at transferring style.
+
+Results show that, our approach achieves comparable content preservation and word overlap scores to previous work \citep{shen2017style}, and significantly better style-transfer strength scores than either of the models compared to, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
 Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
