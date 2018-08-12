@@ -67,7 +67,7 @@ The neural network has been a successful learning machine during the past decade
 
 Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing.
 
-In this paper, we address the problem of disentangling the latent space of neural networks for text generation. Our model is built on an autoencoder that learns the latent space (vector representation) of a sentence by learning to reconstruct the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
+In this paper, we address the problem of disentangling the latent space of neural networks for text generation. Our model is built on an autoencoder that encodes the latent space (vector representation) of a sentence by learning to reconstruct the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
 
 To accomplish this, we propose a simple approach that combines multi-task and adversarial objectives. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it encodes style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content variables can be disentangled from each other.
 
@@ -94,9 +94,9 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other works, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
-In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) sentences with a given style and (b) sentences to be transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding, and (b) using style-specific decoders for style transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
+In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding, and (b) using style-specific decoders for style transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
-Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning functions can then be directly applied to style-transfer sentence generation, as in the aforementioned studies.
+Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning function can then be directly applied to text style transfer tasks, as in the aforementioned studies.
 
 
 \section{Approach}
@@ -123,9 +123,7 @@ In this section, we describe our approach in detail. Our model is built upon an 
 
 An autoencoder encodes an input to a latent vector space, which is usually of a much lower dimensionality than the input data, from which it decodes the input itself. By doing so, the autoencoder learns meaningful and compact representations of data. This serves as our primary learning objective. Besides, we also use the autoencoder for text generation in the style-transfer application.
 
-Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens. The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$.
-
-Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained with cross-entropy loss, given by
+Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens. The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$. Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself. Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the autoencoder is trained using a sequence-aggregated cross-entropy loss, given by
 \begin{equation}
 	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
@@ -170,7 +168,7 @@ Since this objective is used to train the model to reconstruct $\rmx$, it is als
 
 Our first auxiliary loss ensures the style space does contain style information. We build a classifier on the style space $\bm s$ predicting the true style label $y'$, which is part of the training data.
 
-This loss can be viewed as a \textit{multi-task} loss, which makes the neural network not only decode the sentence, but also predict its sentiment. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
+This loss can be viewed as a \textit{multi-task} loss, which incentivizes the model to not only decode the sentence, but also predict its sentiment from a fixed subset of the latent variables. Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
 In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest. We introduce a multi-label classifier
 \begin{equation} \label{eqn:class-pred}
@@ -256,7 +254,7 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \begin{equation}
 	\loss{adv}(\bm\theta_E)=\mathcal{H}(y|\bm c; \bm\theta_\text{dis})
 \end{equation}
-where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder. This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution.
+where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder. This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution.
 
 \begin{table*}[ht]
 	\centering
@@ -295,7 +293,7 @@ The motivation is to emulate the adversarial signal provided by the style discri
 
 The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only $0$s and $1$s.
 
-The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict the probability of each word's occurrence in the original sentence, between 0 and 1.
+The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict the probability of each word's occurrence in the original sentence, between $0$ and $1$.
 \begin{equation}
 	b = \sigma(\bm w_\text{bow}^\top \bm s + b_\text{bow})
 \end{equation}
@@ -401,22 +399,22 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 \subsection{Datasets}
 
-We conduct experiments on two datasets, the details for which are given below. Both of these datasets evaluate the task of sentiment transfer.
+We conduct experiments on two datasets, the details for which are given below. Both of these datasets are comprised of sentences accompanied by binary sentiment labels and are, therefore, used to evaluate the task of sentiment transfer.
 
 \subsubsection{Yelp Service Reviews}
 
-We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citet{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
+We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citet{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively. The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
 
-We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citet{fu2017style}. The reviews were sourced from the code repository accompanying the paper.\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}} It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 20, and the vocabulary size is about 58000.
+We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citet{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively. The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Evaluation Metrics}
 
-We evaluate our method using four metrics: style transfer strength, content preservation, word overlap, and language fluency
+We evaluate our method using four metrics: style transfer strength, content preservation, word overlap, and language fluency.
 
 \subsubsection{Style Transfer Strength}
-We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}. The classifier accuracy - considering the target style to be the true label - is reported as the style transfer strength.
+We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}. The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively. The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style transfer strength.
 
 \subsubsection{Content Preservation}
 We compute a sentence embedding by min, max, and average pooling its constituent word embeddings. Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}. The cosine similarity is reported as the content preservation score.
@@ -425,7 +423,7 @@ We compute a sentence embedding by min, max, and average pooling its constituent
 We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \citep{hu2004mining} and stopwords \citep{bird2004nltk}. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
 
 \subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation of Language Quality}
 We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible} \citep{stent2005evaluating}. The aggregate score of all the evaluators is presented as a measure of language quality.
