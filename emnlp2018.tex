@@ -36,13 +36,13 @@
 	University of Waterloo \\
 	{\tt vineet.john@uwaterloo.ca} \\
 	\And
-	Hareesh Bahuleyan \\
-	University of Waterloo \\
-	{\tt hpallika@uwaterloo.ca} \\
-	\AND
 	Lili Mou \\
 	AdeptMind Research \\
 	{\tt doublepower.mou@gmail.com}\\{\tt lili@adeptmind.ai} \\
+	\AND
+	Hareesh Bahuleyan \\
+	University of Waterloo \\
+	{\tt hpallika@uwaterloo.ca} \\
 	\And
 	Olga Vechtomova \\
 	University of Waterloo \\
@@ -337,7 +337,7 @@ To put it all together, the model training consists of a loop involving the foll
 	}
 \end{algorithm}
 
-We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{badv} = 0.001$. The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$. We append the latent vector $[s;c]$ to the hidden state at every time step of the decoder \citep{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$. These weights are used to balance the logistic annealed KL-weight proposed by \citet{bahuleyan2017variational}.
+We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{badv} = 0.001$. The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$. We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \citep{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citet{bahuleyan2018probabilistic}.
 
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
