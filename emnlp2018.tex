@@ -55,7 +55,12 @@
 \graphicspath{{images/}}
 
 \begin{abstract}
-	This paper tackles the problem of disentangling the style and content latent spaces of language models. We propose a simple yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively. We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach. This disentangled latent representation learning method is applied to attribute (e.g. style) transfer on non-parallel corpora. We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores. Our code is made publicly available for replicability and extension purposes.
+	This paper tackles the problem of disentangling the latent variables of style and content in language models.
+	We propose a simple, yet effective approach, which incorporates auxiliary objectives: a multi-task classification objective, and dual adversarial objectives for label prediction and bag-of-words prediction, respectively.
+	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space, using this approach.
+	This disentangled latent representation learning method is applied to attribute (e.g. style) transfer on non-parallel corpora.
+	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores.
+	Our code is made publicly available for replicability and extension purposes.
 \end{abstract}
 
 % 
@@ -71,9 +76,9 @@ In this paper, we address the problem of disentangling the latent space of neura
 
 To accomplish this, we propose a simple approach that combines multi-task and adversarial objectives. We artificially divide the latent representation into two parts: style space and content space. We learn model parameters that produce separate style and content latent spaces from the encoded sentence representation. The multi-task objective operates on the style space to ensure it encodes style information. The adversarial style objective, on the contrary, operates on the content space to minimize the predictability of style. In addition, the bag-of-words adversary minimizes the predictability of original words of the sentence in the style space. In this way, the style and content variables can be disentangled from each other.
 
-These representation learning objectives can be directly used for style transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different style. We simply use an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the decoder. Using this grafting technique, we generate a new sentence similar in content but different in style.
+These representation learning objectives can be directly used for style-transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different style. We simply use an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector. Then we infer from the training data, an empirical embedding of the style that we want to transfer. The encoded content vector and the inferred style vector are concatenated and fed to the decoder. Using this grafting technique, we generate a new sentence similar in content but different in style.
 
-We conducted experiments on two customer review benchmark datasets. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the empirical style-transfer evaluations, we achieve significantly better style transfer scores than previous results, while obtaining better or comparable content preservation scores. We also show, using ablation tests, that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
+We conducted experiments on two customer review benchmark datasets. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the empirical style-transfer evaluations, we achieve significantly better style-transfer strength scores than previous results, while obtaining better or comparable content preservation scores. We also show, using ablation tests, that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
 
 
 \begin{figure}[ht]
@@ -94,9 +99,9 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 Disentangling latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image styles (e.g. artistic style) can be well captured by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other works, researchers adopt data augmentation techniques to train a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
-In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding, and (b) using style-specific decoders for style transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
+In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style-transfer. \citet{fu2017style} propose two approaches, (a) using a style embedding, and (b) using style-specific decoders for style-transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
-Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning function can then be directly applied to text style transfer tasks, as in the aforementioned studies.
+Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning function can then be directly applied to text style-transfer tasks, as in the aforementioned studies.
 
 
 \section{Approach}
@@ -231,7 +236,7 @@ where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label dis
 
 The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
 
-We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style transfer~\cite{fu2017style}.
+We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{fu2017style}.
 
 The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label using the content vector $\bm c$. Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
 
@@ -340,7 +345,7 @@ We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSP
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
 
-A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but a different style (e.g. sentiment).
+A direct application of our disentangled latent space is style-transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but a different style (e.g. sentiment).
 
 Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
 \begin{equation*}
@@ -411,19 +416,19 @@ We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucs
 
 \subsection{Evaluation Metrics}
 
-We evaluate our method using four metrics: style transfer strength, content preservation, word overlap, and language fluency.
+We evaluate our method using four metrics: style-transfer strength, content preservation, word overlap, and language fluency.
 
-\subsubsection{Style Transfer Strength}
-We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}. The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively. The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style transfer strength.
+\subsubsection{Style-Transfer Strength}
+We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2017style}. The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively. The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
 
 \subsubsection{Content Preservation}
 We compute a sentence embedding by min, max, and average pooling its constituent word embeddings. Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}. The cosine similarity is reported as the content preservation score.
 
 \subsubsection{Word Overlap}
-We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \citep{hu2004mining} and stopwords \citep{bird2004nltk}. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
+We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \citep{hu2004mining} and stopwords \citep{bird2004nltk}. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
 
 \subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style-transfer models with. The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation of Language Quality}
 We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible} \citep{stent2005evaluating}. The aggregate score of all the evaluators is presented as a measure of language quality.
@@ -446,7 +451,7 @@ We apply the disentangled latent space to a style-transfer sentence generation t
 
 We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data. Results show that, our approach achieves comparable content preservation and word overlap scores to previous work, but significantly better style-transfer strength scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
-Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
+Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
 \begin{table}[ht]
 	\centering
@@ -475,9 +480,9 @@ Some examples of style-transfer sentence generation are presented in Table~\ref{
 
 
 \section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly better style transfer strength scores compared to previous state-of-the-art work. Our code is publicly available~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly better style-transfer strength scores compared to previous state-of-the-art work. Our code is publicly available~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 
-For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style transfer, as opposed to using the empirical mean of training-time style embeddings.
+For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style-transfer, as opposed to using the empirical mean of training-time style embeddings.
 
 \section{Acknowledgements}
 We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award. The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
