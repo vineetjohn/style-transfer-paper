@@ -17,7 +17,7 @@
 % used for table headers
 \newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  
 % used for the top left cell in a table
-\newcommand{\tabc}[2]{\multicolumn{1}{|c|}{\multirow{#1}{*}{\textbf{#2}}}} 
+\newcommand{\tabc}[2]{\multicolumn{1}{|c||}{\multirow{#1}{*}{\textbf{#2}}}} 
 % used for denoting the loss symbol with a subscript
 \newcommand{\loss}[1]{J_\text{#1}}
 
@@ -151,7 +151,7 @@ Since this objective is used to train the model to reconstruct $\rmx$, it is als
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{| l | r | r |}
+	\begin{tabular}{| l || r | r |}
 		\hline
 		\textit{Random/Majority guess}   & \multicolumn{2}{c|}{0.6018}              \\ \hline \hline
 		\hline
@@ -188,7 +188,7 @@ where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label dis
 
 \begin{table*}[ht]
 	\centering
-	\begin{tabular}{| l | c | c | c | c |}
+	\begin{tabular}{| l || c | c | c | c |}
 		\hline
 		\tabc{2}{Model}                       & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
 		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
@@ -209,7 +209,7 @@ where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label dis
 
 \begin{table*}[ht]
 	\centering
-	\begin{tabular}{| l | c | c | c | c |}
+	\begin{tabular}{| l || c | c | c | c |}
 		\hline
 		\tabc{2}{Model}                       & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
 		                                      & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
@@ -260,7 +260,7 @@ where $\mathcal{H}=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ 
 
 \begin{table*}[ht]
 	\centering
-	\begin{tabular}{| l | c | c | c | c |}
+	\begin{tabular}{| l || c | c | c | c |}
 		\hline
 		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
 		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
@@ -293,7 +293,7 @@ In addition to the auxiliary losses used above, we also propose a bag-of-words d
 
 The motivation is to emulate the adversarial signal provided by the style discriminator, and do the same for the content. Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
 
-The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector a discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only 0s and 1s.
+The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the discrete probability of a word's presence in the sentence. Therefore, this bag-of-words representation is comprised of only $0$s and $1$s.
 
 The bag-of-words discriminator uses the style vector $\bm s$ produced by the autoencoder model and tries to predict the true bag-of-words distribution using a set of parameters that are distinct from those of the autoencoder. The discriminator uses a logistic regression to predict the probability of each word's occurrence in the original sentence, between 0 and 1.
 \begin{equation}
@@ -342,7 +342,7 @@ We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSP
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
 
-A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but an opposite sentiment.
+A direct application of our disentangled latent space is style transfer for natural language generation. For example, we can generate a sentence with generally the same meaning (content) but a different style (e.g. sentiment).
 
 Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded, disentangled style and content vectors, respectively. If we would like to transfer its content to a different style, we compute an empirical estimate of the target style's vector $\hat{\bm s}$ by
 \begin{equation*}
@@ -352,7 +352,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 \begin{table*}[ht]
 	\centering
-	\begin{tabular}{| p{0.3\linewidth} | p{0.3\linewidth} | p{0.3\linewidth} |}
+	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
 		\tabc{2}{Original (Positive)}                                   & \tabh{DAE Transferred}                                                  & \tabh{VAE Transferred}                                               \\
 		                                                                & \tabh{(Negative)}                                                       & \tabh{(Negative)}                                                    \\
@@ -405,7 +405,7 @@ We conduct experiments on two datasets, the details for which are given below. B
 
 \subsubsection{Yelp Service Reviews}
 
-We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citet{shen2017style} open-sourced by the authors~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
+We use a Yelp review dataset \citep{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citet{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 126670 and 63483 sentences for train, validation, and test, respectively, each sampling accompanied by binary sentiment labels. The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
 
@@ -415,17 +415,17 @@ We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucs
 
 We evaluate our method using four metrics: style transfer strength, content preservation, word overlap, and language fluency
 
-\subsubsection{Style Transfer}
-We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}.
+\subsubsection{Style Transfer Strength}
+We train a CNN style classifier \cite{kim2014convolutional} and predict the accuracy of the generated sentences. While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style transfer \cite{hu2017toward,shen2017style,fu2017style}. The classifier accuracy - considering the target style to be the true label - is reported as the style transfer strength.
 
 \subsubsection{Content Preservation}
-We compute a sentence embedding by min, max, and average pooling of word embeddings; then a cosine similarity is computed to evaluate how close two sentences are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}.
+We compute a sentence embedding by min, max, and average pooling its constituent word embeddings. Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning. Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}. The cosine similarity is reported as the content preservation score.
 
 \subsubsection{Word Overlap}
-We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
+We also utilize a simpler unigram overlap metric. Given a source sentence $x$ and an attribute style transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \citep{hu2004mining} and stopwords \citep{bird2004nltk}. Then, the word overlap score can be calculated using $$\text{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target.
 
 \subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood scores, as predicted by the Kneser-Ney language model, and aggregated over the generated corpus, are reported as the indicator for language fluency.
+We use a trigram Kneser-Ney smoothed language model \citep{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences. It calculates the probability distribution of trigrams in a document based on their occurrence statistics, to build a language model. We train this language model on the complete corpus that we evaluate our style transfer models with. The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation of Language Quality}
 We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible} \citep{stent2005evaluating}. The aggregate score of all the evaluators is presented as a measure of language quality.
@@ -446,13 +446,13 @@ We show t-SNE plots of both the deterministic autoencoder (DAE) and the variatio
 
 We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment (style).
 
-We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data. Results show that, our approach achieves comparable content preservation and word overlap scores to previous work, but significantly better style-transfer strength scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model is also the most fluent for the Yelp dataset task.
+We compare our approach with state-of-the-art previous work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data. Results show that, our approach achieves comparable content preservation and word overlap scores to previous work, but significantly better style-transfer strength scores, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
 Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{| l | c |}
+	\begin{tabular}{| l || c |}
 		\hline
 		\tabc{2}{Model}       & \tabh{Language} \\
 		                      & \tabh{Quality}  \\
@@ -473,11 +473,11 @@ Table~\ref{tab:ablation-results} presents the results of an ablation test. We se
 
 The manual evaluation results are presented in Table \ref{tab:manual-evaluation}. Our VAE model attains the best score amongst all the evaluated models, and we observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
 
-Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can flexibly control the sentiment of generated sentences.
+Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
 
 \section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly higher style transfer strength compared to previous state-of-the-art work. Our code is publicly available~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks by multi-task loss and adversarial loss. Our disentangled space can be applied to style-transfer sentence generation, achieving similar content preservation scores but significantly better style transfer strength scores compared to previous state-of-the-art work. Our code is publicly available~\footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 
 For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles. We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style transfer, as opposed to using the empirical mean of training-time style embeddings.
 
