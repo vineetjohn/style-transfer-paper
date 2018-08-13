@@ -20,6 +20,8 @@
 \newcommand{\tabc}[2]{\multicolumn{1}{|c||}{\multirow{#1}{*}{\textbf{#2}}}} 
 % used for denoting the loss symbol with a subscript
 \newcommand{\loss}[1]{J_\text{#1}}
+% custom author-year citation
+\newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
 % \aclfinalcopy % Un-comment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
@@ -71,7 +73,7 @@
 
 The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformations of input features. Such transformations, however, make intermediate features `latent', in that they do not have explicit meaning and are not explainable. Therefore, neural networks are usually treated as black-box machinery.
 
-Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citeauthor{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citeauthor{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing.
+Disentangling the latent space of neural networks has become an increasingly important research topic. In the image domain, for example, \citeay{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models. \citeay{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective. However, this problem is not well explored in natural language processing.
 
 In this paper, we address the problem of disentangling the latent space of neural networks for text generation. Our model is built on an autoencoder that encodes the latent space (vector representation) of a sentence by learning to reconstruct the sentence itself. We would like the latent space to be disentangled with respect to different features, namely, \textit{style} and \textit{content}.
 
@@ -100,7 +102,7 @@ We conducted experiments on two customer review benchmark datasets. Both qualita
 
 Disentanglement of latent spaces has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image characteristics (e.g. artistic style) can be captured well by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other works, researchers adopt data augmentation techniques to learn a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
-In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citeauthor{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citeauthor{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style-transfer. \citeauthor{fu2017style} propose two approaches, (a) using a style embedding matrix, and (b) using style-specific decoders for style-transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
+In natural language processing, the definition of `style' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text. \citeay{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences. However, there is no evidence that the latent space would be disentangled by this reconstruction. \citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of (a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style-transfer. \citeay{fu2017style} propose two approaches, (a) using a style embedding matrix, and (b) using style-specific decoders for style-transfer. They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
 Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply three auxiliary losses to ensure that each space encodes its own information, including a novel bag-of-words adversary that helps disentangle the style space from sentence content. Our disentangled representation learning function can then be directly applied to text style-transfer tasks, as in the aforementioned studies.
 
@@ -133,7 +135,7 @@ Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized 
 \end{align}
 where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms, and $p(z)$ is the standard normal distribution $\mathcal{N}(0,I)$ that both the encoded style and content distributions are aligned to.
 
-The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \citeauthor{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
+The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \citeay{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
 \begin{figure}[t]
 	\captionsetup{justification=centering}
@@ -326,7 +328,7 @@ To put it all together, the model training consists of a loop involving the proc
 	\label{alg:training-process}
 \end{algorithm}
 
-We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{badv} = 0.001$. The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$. We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeauthor{bahuleyan2018probabilistic}.
+We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs. Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{mult} = 1$, $\lambda_\text{adv} = 0.3$ and $\lambda_\text{badv} = 0.001$. The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$. We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}. For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
 
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
@@ -394,11 +396,11 @@ We conduct experiments on two datasets, the details for which are given below. B
 
 \subsubsection{Yelp Service Reviews}
 
-We use a Yelp review dataset \cite{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citeauthor{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 63483 and 126670 sentences for train, validation, and test, respectively. The maximum sentence length is 15, and the vocabulary size is about 9200.
+We use a Yelp review dataset \cite{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citeay{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}. It contains 444101, 63483 and 126670 sentences for train, validation, and test, respectively. The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
 
-We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citeauthor{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively. The maximum sentence length is 20, and the vocabulary size is about 58000.
+We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citeay{fu2017style}. The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}. It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively. The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Evaluation Metrics}
 
