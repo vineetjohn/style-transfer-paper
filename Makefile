@@ -1,4 +1,4 @@
-filename=emnlp2018
+filename=main
 build-dir=build
 
 all:
@@ -16,4 +16,3 @@ indent:
 
 clean:
 	rm -rf ${build-dir}
-
