@@ -136,7 +136,7 @@ where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each
 
 The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \cite{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
-\begin{figure}[ht]
+\begin{figure}[t]
 	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-dae}
 	\caption{t-SNE Plots: Deterministic Autoencoder}
@@ -146,7 +146,7 @@ The motivation for using a variational autoencoder variant to compare the base d
 Since this objective is used to train the model to reconstruct $\rmx$, it is also called the \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the auxiliary losses described in the subsequent sections.
 
 
-\begin{figure}[ht]
+\begin{figure}[t]
 	\captionsetup{justification=centering}
 	\includegraphics[width=\linewidth]{latent-spaces-vae}
 	\caption{t-SNE Plots: Variational Autoencoder}
