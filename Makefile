@@ -2,7 +2,7 @@ filename=main
 build-dir=build
 
 all:
-	latexmk -pdf -outdir=$(build-dir) $(filename)
+	latexmk -xelatex -pdf -outdir=$(build-dir) $(filename)
 
 bib:
 	bibtex $(build-dir)/$(filename)
