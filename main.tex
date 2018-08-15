@@ -252,7 +252,7 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \begin{equation}
 	\loss{adv}(\bm\theta_E)=\mathcal{H}(y|\bm c; \bm\theta_\text{dis})
 \end{equation}
-where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder. This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution.
+where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder. This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
 
 \begin{table*}[ht]
 	\centering
