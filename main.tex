@@ -1,7 +1,11 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage{aaai}
-\usepackage{times}
-\usepackage{url}
+\documentclass[letterpaper]{article} %DO NOT CHANGE THIS
+\usepackage{aaai19}  %Required
+\usepackage{times}  %Required
+\usepackage{helvet}  %Required
+\usepackage{courier}  %Required
+\usepackage{url}  %Required
+\usepackage{graphicx}  %Required
+
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{paralist}
 \usepackage{color,xcolor}
@@ -11,6 +15,17 @@
 \usepackage{caption}
 \usepackage[linesnumbered,lined]{algorithm2e}
 \usepackage{todonotes}
+
+\frenchspacing  %Required
+\setlength{\pdfpagewidth}{8.5in}  %Required
+\setlength{\pdfpageheight}{11in}  %Required
+
+%PDF Info Is Required:
+\pdfinfo{
+	/Title (Disentangled Representation Learning for Text Style Transfer)
+	/Author (Vineet John, Lili Mou, Hareesh Bahuleyan, Olga Vechtomova)
+}
+
 
 % bold x for equations
 \newcommand{\rmx}{\mathrm x} 
@@ -23,14 +38,6 @@
 % custom author-year citation
 \newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
-% \aclfinalcopy % Un-comment this line for the final submission
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
-
-%\setlength\titlebox{5cm}
-% You can expand the titlebox if you need extra space
-% to show all the authors. Please do not make the titlebox
-% smaller than 5cm (the original size); we will check this
-% in the camera-ready version and ask you to change it back.
 \title{Disentangled Representation Learning for Text Style Transfer}
 
 \author{
@@ -317,7 +324,7 @@ The overall loss $\loss{ovr}$, used for the autoencoder, is thus comprised of fo
 \end{align*}
 where $\lambda_\text{mult}$, $\lambda_\text{adv}$ and $\lambda_\text{badv}$ balance the model's auxiliary losses.
 
-To put it all together, the model training consists of a loop involving the processes as shown in Algorithm \ref{alg:training-process}.
+To put it all together, the model training consists of a loop involving the processes shown in Algorithm \ref{alg:training-process}.
 \begin{algorithm}[ht]
 	\While{epochs remaining}{
 		minimize $\loss{dis}(\bm\theta_\text{dis})$ w.r.t. $\bm\theta_\text{dis}$\;
