@@ -91,20 +91,6 @@ For style transfer, we simply use an autoencoder to encode the content vector of
 We conducted experiments on two customer review benchmark datasets. Both qualitative and quantitative results show that the style vector does contain most style information, whereas the content vector contains little (if any). In the style-transfer evaluation, we achieve significantly better style-transfer strength compared with previous results, while obtaining better or comparable content preservation scores.  Ablation tests also show that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
 
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.8\linewidth]{model-overview-training}
-	\caption{Model Training Overview}
-	\label{fig:model-training-overview}
-\end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.8\linewidth]{model-overview-inference}
-	\caption{Model Generation Overview}
-	\label{fig:model-inference-overview}
-\end{figure}
-
-
 \section{Related Work}
 
 Disentanglement of latent spaces has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}. Some image characteristics (e.g. artistic style) can be captured well by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}. In other works, researchers adopt data augmentation techniques to learn a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
@@ -117,6 +103,19 @@ Our paper differs from the previous work in that both our style space and conten
 \section{Approach}
 
 In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}. Then, we introduce three auxiliary losses: a multi-task classification loss, a style adversarial loss, and a content adversarial loss. Following this, we present our approach to transfer style in the context of natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict the training and style-transferred sentence generation processes of our approach, respectively.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{model-overview-training}
+	\caption{Model Training Overview}
+	\label{fig:model-training-overview}
+\end{figure}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{model-overview-inference}
+	\caption{Model Generation Overview}
+	\label{fig:model-inference-overview}
+\end{figure}
 
 \subsection{Autoencoder} \label{ssec:seq2seq-autoencoder}
 
@@ -144,22 +143,7 @@ where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each
 
 The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from. \citeay{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
 
-\begin{figure}[t]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{latent-spaces-dae}
-	\caption{t-SNE Plots: Deterministic Autoencoder}
-	\label{fig:dae-tsne}
-\end{figure}
-
 Since this objective is used to train the model to reconstruct $\rmx$, it is also called the \textit{reconstruction loss}. Besides the above reconstruction loss, we design three auxiliary losses to disentangle the latent space $\bm h$. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation. This is accomplished by the auxiliary losses described in the subsequent sections.
-
-
-\begin{figure}[t]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{latent-spaces-vae}
-	\caption{t-SNE Plots: Variational Autoencoder}
-	\label{fig:vae-tsne}
-\end{figure}
 
 
 \subsection{Multi-Task Classification Loss} \label{ssec:multitask-classification-objective}
@@ -180,49 +164,6 @@ This is trained using a simple cross-entropy loss
 	- \mathbb{E} [\log p(y' | \bm s; \bm\theta_\text{mult})]
 \end{equation}
 where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label distribution.
-
-
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		Cross-Alignment \cite{shen2017style} & 0.809           & 0.892               & 0.209          & -23.39          \\
-		\hline
-		Style Embedding \cite{fu2017style}   & 0.182           & 0.959               & 0.666          & -16.17          \\
-		\hline
-		Ours (DAE)                           & 0.843           & 0.892               & 0.255          & -16.48          \\
-		\hline
-		Ours (VAE)                           & 0.890           & 0.882               & 0.211          & -14.41          \\
-		\hline
-	\end{tabular}
-	\caption{Yelp Dataset - Comparison}
-	\label{tab:yelp-comparison-previous}
-\end{table*}
-
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		Cross-Alignment \cite{shen2017style} & 0.606           & 0.893               & 0.024          & -26.31          \\
-		\hline
-		Style Embedding \cite{fu2017style}   & 0.417           & 0.933               & 0.359          & -28.13          \\
-		\hline
-		Ours (DAE)                           & 0.703           & 0.918               & 0.131          & -32.42          \\
-		\hline
-		Ours (VAE)                           & 0.726           & 0.909               & 0.081          & -28.50          \\
-		\hline
-	\end{tabular}
-	\caption{Amazon Dataset - Comparison}
-	\label{tab:amazon-comparison-previous}
-\end{table*}
 
 
 \subsection{Adversarial Style Discrimination} \label{ssec:adversarial-style-objective}
@@ -254,34 +195,6 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \end{equation}
 where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels. The adversarial objective is maximized, in this phase, with respect to the encoder. This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
 
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		$\loss{rec}$                                             & 0.144           & 0.915               & 0.329          & -14.28          \\
-		\hline
-		$\loss{rec}$, $\loss{adv}$                               & 0.727           & 0.880               & 0.204          & -14.16          \\
-		\hline
-		$\loss{rec}$, $\loss{mult}$                              & 0.789           & 0.898               & 0.259          & -14.56          \\
-		\hline
-		$\loss{rec}$, $\loss{badv}$                              & 0.168           & 0.915               & 0.328          & -14.45          \\
-		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & 0.890           & 0.882               & 0.211          & -14.41          \\
-		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.749           & 0.883               & 0.202          & -14.36          \\
-		\hline
-		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.783           & 0.896               & 0.257          & -14.34          \\
-		\hline
-		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.885           & 0.878               & 0.197          & -14.05          \\
-		\hline
-	\end{tabular}
-	\caption{Ablation Tests}
-	\label{tab:ablation-results}
-\end{table*}
 
 \subsection{Adversarial Bag-of-Words Discriminator} \label{ssec:adversarial-bow-objective}
 
@@ -348,55 +261,63 @@ Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded
 \end{equation*}
 The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding style-transferred sentences (Figure~\ref{fig:model-inference-overview}).
 
-\begin{table*}[ht]
-	\centering
-	\small
-	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
-		\hline
-		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
-		\hline
-		\hline
-		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
-		\hline
-		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
-		\hline
-		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
-		\hline
-		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
-		\hline
-		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
-		\hline
-		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
-		\hline
-		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
-		\hline
-		\hline
-		\hline
-		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
-		\hline
-		\hline
-		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
-		\hline
-		consistently slow                                      & consistently awesome                                           & fast service                                                \\
-		\hline
-		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
-		\hline
-		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
-		\hline
-		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
-		\hline
-		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
-		\hline
-		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
-		\hline
-	\end{tabular}
-	\caption{Examples of Style-Transfer Generation}
-	\label{tab:transfer-samples}
-\end{table*}
+\begin{figure}[t]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{dae-latent-spaces}
+	\caption{t-SNE Plots: Deterministic Autoencoder}
+	\label{fig:dae-tsne}
+\end{figure}
+
+\begin{figure}[t]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{vae-latent-spaces}
+	\caption{t-SNE Plots: Variational Autoencoder}
+	\label{fig:vae-tsne}
+\end{figure}
 
 \section{Experiments}
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline
+		Cross-Alignment \cite{shen2017style} & 0.809           & 0.892               & 0.209          & -23.39          \\
+		\hline
+		Style Embedding \cite{fu2017style}   & 0.182           & 0.959               & 0.666          & -16.17          \\
+		\hline
+		Ours (DAE)                           & 0.843           & 0.892               & 0.255          & -16.48          \\
+		\hline
+		Ours (VAE)                           & 0.890           & 0.882               & 0.211          & -14.41          \\
+		\hline
+	\end{tabular}
+	\caption{Yelp Dataset - Comparison}
+	\label{tab:yelp-comparison-previous}
+\end{table*}
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline
+		Cross-Alignment \cite{shen2017style} & 0.606           & 0.893               & 0.024          & -26.31          \\
+		\hline
+		Style Embedding \cite{fu2017style}   & 0.417           & 0.933               & 0.359          & -28.13          \\
+		\hline
+		Ours (DAE)                           & 0.703           & 0.918               & 0.131          & -32.42          \\
+		\hline
+		Ours (VAE)                           & 0.726           & 0.909               & 0.081          & -28.50          \\
+		\hline
+	\end{tabular}
+	\caption{Amazon Dataset - Comparison}
+	\label{tab:amazon-comparison-previous}
+\end{table*}
 
 \subsection{Datasets}
 
@@ -435,6 +356,35 @@ We perform manual evaluations by randomly sampling sentences generated from each
 \subsection{Disentangling Latent Space}
 
 We first analyze how the style (sentiment) and content of the latent space are disentangled. We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Table~\ref{tab:classification}. These are results from the experiments on the Yelp dataset.
+
+\begin{table*}[ht]
+	\centering
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Objectives}                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline
+		$\loss{rec}$                                             & 0.144           & 0.915               & 0.329          & -14.28          \\
+		\hline
+		$\loss{rec}$, $\loss{adv}$                               & 0.727           & 0.880               & 0.204          & -14.16          \\
+		\hline
+		$\loss{rec}$, $\loss{mult}$                              & 0.789           & 0.898               & 0.259          & -14.56          \\
+		\hline
+		$\loss{rec}$, $\loss{badv}$                              & 0.168           & 0.915               & 0.328          & -14.45          \\
+		\hline
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$                & 0.890           & 0.882               & 0.211          & -14.41          \\
+		\hline
+		$\loss{rec}$, $\loss{adv}$, $\loss{badv}$                & 0.749           & 0.883               & 0.202          & -14.36          \\
+		\hline
+		$\loss{rec}$, $\loss{mult}$, $\loss{badv}$               & 0.783           & 0.896               & 0.257          & -14.34          \\
+		\hline
+		$\loss{rec}$, $\loss{adv}$, $\loss{mult}$, $\loss{badv}$ & 0.885           & 0.878               & 0.197          & -14.05          \\
+		\hline
+	\end{tabular}
+	\caption{Ablation Tests}
+	\label{tab:ablation-results}
+\end{table*}
 
 \begin{table}[ht]
 	\centering
@@ -493,6 +443,53 @@ The manual evaluation results are presented in Table \ref{tab:manual-evaluation}
 
 Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}. We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
+\begin{table*}[ht]
+	\centering
+	\small
+	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
+		\hline
+		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
+		\hline
+		\hline
+		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
+		\hline
+		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
+		\hline
+		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
+		\hline
+		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
+		\hline
+		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
+		\hline
+		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
+		\hline
+		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
+		\hline
+		\hline
+		\hline
+		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
+		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
+		\hline
+		\hline
+		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
+		\hline
+		consistently slow                                      & consistently awesome                                           & fast service                                                \\
+		\hline
+		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
+		\hline
+		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
+		\hline
+		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
+		\hline
+		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
+		\hline
+		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
+		\hline
+	\end{tabular}
+	\caption{Examples of Style-Transfer Generation}
+	\label{tab:transfer-samples}
+\end{table*}
 
 \section{Conclusion and Future Work}
 In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks using multi-task and adversarial objectives. Our learned disentanglement approach can be applied to text style-transfer tasks. It achieves similar content preservation scores, and significantly better style-transfer strength scores compared to previous state-of-the-art work.
