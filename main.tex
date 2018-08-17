@@ -500,8 +500,36 @@ For future work, we intend to evaluate the effects of disentangling the style sp
 \section{Acknowledgements}
 We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award. The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
 
-
 \bibliography{main}
 \bibliographystyle{aaai}
+
+\pagebreak
+
+\appendix
+
+\section{Appendix}
+
+\subsection{Ablation Test t-SNE plots}
+
+\begin{figure}[h]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{vae-latent-spaces-only-rec}
+	\caption{t-SNE Plots: VAE with only $\loss{rec}$}
+	\label{fig:vae-tsne-only-rec}
+\end{figure}
+
+\begin{figure}[h]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{vae-latent-spaces-rec-adv}
+	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{adv}$}
+	\label{fig:vae-tsne-rec-adv}
+\end{figure}
+
+\begin{figure}[h]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{vae-latent-spaces-rec-mult}
+	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{mult}$}
+	\label{fig:vae-tsne-rec-mult}
+\end{figure}
 
 \end{document}
