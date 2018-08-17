@@ -261,19 +261,6 @@ Let $\rmx^*$ be an input sentence with $\bm s^*$ and $\bm c^*$ being the encoded
 \end{equation*}
 The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding style-transferred sentences (Figure~\ref{fig:model-inference-overview}).
 
-\begin{figure}[t]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{dae-latent-spaces}
-	\caption{t-SNE Plots: Deterministic Autoencoder}
-	\label{fig:dae-tsne}
-\end{figure}
-
-\begin{figure}[t]
-	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{vae-latent-spaces}
-	\caption{t-SNE Plots: Variational Autoencoder}
-	\label{fig:vae-tsne}
-\end{figure}
 
 \section{Experiments}
 
@@ -409,6 +396,21 @@ We show t-SNE plots of both the deterministic autoencoder (DAE) and the variatio
 
 
 \subsection{Style-Transfer Sentence Generation}
+
+\begin{figure}[b]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{dae-latent-spaces}
+	\caption{t-SNE Plots: Deterministic Autoencoder}
+	\label{fig:dae-tsne}
+\end{figure}
+
+\begin{figure}[b]
+	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{vae-latent-spaces}
+	\caption{t-SNE Plots: Variational Autoencoder}
+	\label{fig:vae-tsne}
+\end{figure}
+
 
 We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment. We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}. We replicated the experiments with their publicly available code and data.
 
