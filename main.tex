@@ -62,7 +62,6 @@
 \begin{document}
 \maketitle
 \graphicspath{{images/}}
-\setcounter{secnumdepth}{2}
 
 \begin{abstract}
 	This paper tackles the problem of disentangling the latent variables of style and content in language models.
@@ -116,7 +115,7 @@ Our paper differs from the previous work in that both our style space and conten
 
 \section{Approach}
 
-In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}, as described in Subsection \ref{ssec:seq2seq-autoencoder}. Then, we introduce three auxiliary losses: a multi-task classification loss, a style adversarial loss, and a content adversarial loss in Subsections~\ref{ssec:multitask-classification-objective}, \ref{ssec:adversarial-style-objective} and \ref{ssec:adversarial-bow-objective}, respectively. Subsection~\ref{ssec:sentence-generation} presents the approach to transfer style in the context of natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict the training and style-transferred sentence generation processes of our approach, respectively.
+In this section, we describe our approach in detail. Our model is built upon an autoencoder with a sequence-to-sequence (Seq2Seq) neural network~\cite{sutskever2014sequence}. Then, we introduce three auxiliary losses: a multi-task classification loss, a style adversarial loss, and a content adversarial loss. Following this, we present our approach to transfer style in the context of natural language generation. Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-overview} depict the training and style-transferred sentence generation processes of our approach, respectively.
 
 \subsection{Autoencoder} \label{ssec:seq2seq-autoencoder}
 
@@ -466,7 +465,7 @@ We observe that the style embedding model \cite{fu2017style} performs poorly on 
 
 Results show that, our approach achieves comparable content preservation and word overlap scores to previous work \cite{shen2017style}, and significantly better style-transfer strength scores than either of the models compared to, showing that our disentangled latent space can be used for better style-transfer sentence generation. Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
-Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary described in Section \ref{ssec:adversarial-bow-objective} does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
+Table~\ref{tab:ablation-results} presents the results of an ablation test. We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance. Also, the combination of all the losses described yields the best language fluency score. We observe that the bag-of-words adversary does not provide much of an improvement in terms of our evaluation metrics. However, this idea can be improved upon in future work.
 
 \begin{table}[ht]
 	\centering
