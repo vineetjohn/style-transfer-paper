@@ -113,13 +113,13 @@ Ablation tests also show that the auxiliary losses can be combined well, each pl
 \section{Related Work}
 
 Disentangling neural networks' latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}.
-Some image characteristics (e.g., artistic style) can be captured well by certain statistics, like minimizing the L2 loss between a noise image and a pair of style and content images~\cite{gatys2016image}.
+Some image characteristics (e.g., artistic style) can be captured well by certain statistics \cite{gatys2016image}.
 In other work, researchers adopt data augmentation techniques to learn a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
 In natural language processing, the definition of ``style'' itself is vague, and as a convenient starting point, NLP researchers typically treat sentiment as a salient style of text.
 \citeay{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences.
 However, there is no evidence that the latent space would be disentangled by this reconstruction.
-\citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of sentences with different styles.%(a) original sentences with a given style and (b) sentences transferred to the given style, thereby performing style-transfer.
+\citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
 \citeay{fu2017style} propose two approaches: using a style embedding matrix, and using style-specific decoders for style-transfer.
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
 
