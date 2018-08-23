@@ -21,10 +21,10 @@
 \setlength{\pdfpageheight}{11in}  %Required
 
 %PDF Info Is Required:
-\pdfinfo{
-	/Title (Disentangled Representation Learning for Text Style Transfer)
-	/Author (Vineet John, Lili Mou, Hareesh Bahuleyan, Olga Vechtomova)
-}
+%\pdfinfo{
+%	/Title (Disentangled Representation Learning for Text Style Transfer)
+%	/Author (Vineet John, Lili Mou, Hareesh Bahuleyan, Olga Vechtomova)
+%}
 
 
 % bold x for equations
@@ -38,25 +38,25 @@
 % custom author-year citation
 \newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
-\title{Disentangled Representation Learning for Text Style Transfer}
+\title{Disentangled Representation Learning for Unaligned Text Style Transfer}
 
-\author{
-	Vineet John \\
-	University of Waterloo \\
-	{\tt vineet.john@uwaterloo.ca} \\
-	\And
-	Lili Mou \\
-	AdeptMind Research \\
-	{\tt doublepower.mou@gmail.com}\\{\tt lili@adeptmind.ai} \\
-	\AND
-	Hareesh Bahuleyan \\
-	University of Waterloo \\
-	{\tt hpallika@uwaterloo.ca} \\
-	\And
-	Olga Vechtomova \\
-	University of Waterloo \\
-	{\tt ovechtom@uwaterloo.ca} \\
-}
+%\author{
+%	Vineet John \\
+%	University of Waterloo \\
+%	{\tt vineet.john@uwaterloo.ca} \\
+%	\And
+%	Lili Mou \\
+%	AdeptMind Research \\
+%	{\tt doublepower.mou@gmail.com}\\{\tt lili@adeptmind.ai} \\
+%	\AND
+%	Hareesh Bahuleyan \\
+%	University of Waterloo \\
+%	{\tt hpallika@uwaterloo.ca} \\
+%	\And
+%	Olga Vechtomova \\
+%	University of Waterloo \\
+%	{\tt ovechtom@uwaterloo.ca} \\
+%}
 
 \date{}
 \begin{document}
@@ -601,9 +601,9 @@ It achieves similar content preservation scores, and significantly better style-
 For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles.
 We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style-transfer, as opposed to using the empirical mean of training-time style embeddings.
 
-\section{Acknowledgements}
-We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award.
-The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
+%\section{Acknowledgements}
+%We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award.
+%The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
 
 \bibliography{main}
 \bibliographystyle{aaai}
