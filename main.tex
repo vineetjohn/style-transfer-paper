@@ -122,6 +122,7 @@ However, there is no evidence that the latent space would be disentangled by thi
 \citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
 \citeay{fu2017style} propose two approaches: using a style embedding matrix, and using style-specific decoders for style-transfer.
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model.
+\citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles.
 
 Our paper differs from the previous work in that both our style space and content space are encoded from the input.
 We apply several auxiliary losses to ensure that each space encodes its own information.
