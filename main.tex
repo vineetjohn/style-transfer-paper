@@ -332,17 +332,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \cite{shen2017style} & 0.809           & 0.892               & 0.209          & -23.39          \\
+		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892               & 0.209          & -23.39          \\
 		\hline
-		Style Embedding \cite{fu2017style}   & 0.182           & 0.959               & 0.666          & -16.17          \\
+		Style-Embedding \cite{fu2017style}         & 0.182           & 0.959               & 0.666          & -16.17          \\
 		\hline
-		Ours (DAE)                           & 0.843           & 0.892               & 0.255          & -16.48          \\
+		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883               & 0.272          & -20.95          \\
 		\hline
-		Ours (VAE)                           & 0.890           & 0.882               & 0.211          & -14.41          \\
+		Ours (DAE)                                 & 0.843           & 0.892               & 0.255          & -16.48          \\
+		\hline
+		Ours (VAE)                                 & 0.890           & 0.882               & 0.211          & -14.41          \\
 		\hline
 	\end{tabular}
 	\caption{Yelp Dataset - Comparison}
@@ -353,17 +355,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Model}                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                     & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \cite{shen2017style} & 0.606           & 0.893               & 0.024          & -26.31          \\
+		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893               & 0.024          & -26.31          \\
 		\hline
-		Style Embedding \cite{fu2017style}   & 0.417           & 0.933               & 0.359          & -28.13          \\
+		Style Embedding \cite{fu2017style}         & 0.417           & 0.933               & 0.359          & -28.13          \\
 		\hline
-		Ours (DAE)                           & 0.703           & 0.918               & 0.131          & -32.42          \\
+		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926               & 0.169          & -34.70          \\
 		\hline
-		Ours (VAE)                           & 0.726           & 0.909               & 0.081          & -28.50          \\
+		Ours (DAE)                                 & 0.703           & 0.918               & 0.131          & -32.42          \\
+		\hline
+		Ours (VAE)                                 & 0.726           & 0.909               & 0.081          & -28.50          \\
 		\hline
 	\end{tabular}
 	\caption{Amazon Dataset - Comparison}
