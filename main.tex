@@ -70,7 +70,7 @@
 	This disentangled latent representation learning method is applied to attribute (e.g. style) transfer on non-parallel corpora.
 	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores.
 	Our code is made publicly available for replicability and extension purposes
-	\footnote{\url{https://www.dropbox.com/s/snvimfxm1ghf8cs/linguistic-style-transfer.zip?dl=0}}.
+	\footnote{\url{https://www.dropbox.com/s/snvimfxm1ghf8cs/linguistic-style-transfer.zip?dl=0://www.dropbox.com/s/snvimfxm1ghf8cs/linguistic-style-transfer.zip?dl=0}}.
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -440,10 +440,10 @@ These are results from the experiments on the Yelp dataset.
 	\centering
 	\begin{tabular}{| l || r | r |}
 		\hline
-		\textit{Random/Majority guess}   & \multicolumn{2}{c|}{0.602}              \\ \hline \hline
-		\hline
-		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE}\\
 		\hline \hline
+        Majority guess & \multicolumn{2}{c|}{0.602}\\
+        \hline
 		Content space  ($\bm c$)         & 0.614                      & 0.657      \\ \hline
 		Style space ($\bm s$)            & 0.793                      & 0.791      \\ \hline
 		Complete space ($[\bm s;\bm c]$) & 0.792                      & 0.792      \\
