@@ -100,7 +100,8 @@ The adversarial style loss, on the contrary, operates on the content space to mi
 In this way, the style and content variables can be disentangled from each other.
 
 These representation learning objectives can be directly used for style-transfer in sentence generation~\cite{hu2017toward,shen2017style,fu2017style}, in which a model can generate a sentence with the same content, but a different style.
-We adopt the variational version of autoencoders~\cite{kingma2013auto}, where the latent space is regularized to generate smooth sentences.
+Since it is difficult to obtain pairs of sentences with the same content and differing styles, we use non-parallel (unaligned) style-labelled corpora, train a sequence autoencoding objective, and rely on modifying the latent style space at inference time to achieve style transfer.
+We also adopt variational autoencoders~\cite{kingma2013auto}, where the latent space is regularized to encode smooth distributions.
 For style transfer, we simply use an autoencoder to encode the content vector of a sentence, but ignore its encoded style vector.
 Then we infer from the training data an empirical embedding of the style that we would like to transfer to.
 The encoded content vector and the inferred style vector are concatenated and fed to the decoder.
