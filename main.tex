@@ -476,25 +476,41 @@ These are results from the experiments on the Yelp dataset.
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                      & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                                          & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Objectives}                                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{rec}$                                              & 0.144           & 0.915               & 0.329          & -14.28          \\
+		$\loss{rec}$                                                             & 0.144           & 0.915               & 0.329          & -14.28          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$                               & 0.727           & 0.880               & 0.204          & -14.16          \\
+		$\loss{rec}$, $\loss{smul}$                                              & 0.789           & 0.898               & 0.259          & -14.56          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$                               & 0.789           & 0.898               & 0.259          & -14.56          \\
+		$\loss{rec}$, $\loss{cmul}$                                              & 0.116           & 0.947               & 0.595          & -12.00          \\
 		\hline
-		$\loss{rec}$, $\loss{cadv}$                               & 0.168           & 0.915               & 0.328          & -14.45          \\
+		$\loss{rec}$, $\loss{sadv}$                                              & 0.727           & 0.880               & 0.204          & -14.16          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{smul}$                & 0.890           & 0.882               & 0.211          & -14.41          \\
+		$\loss{rec}$, $\loss{cadv}$                                              & 0.168           & 0.915               & 0.328          & -14.45          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{cadv}$                & 0.749           & 0.883               & 0.202          & -14.36          \\
+		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$                               & 0.890           & 0.882               & 0.211          & -14.41          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{cadv}$                & 0.783           & 0.896               & 0.257          & -14.34          \\
+		$\loss{rec}$, $\loss{smul}$, $\loss{cmul}$                               & 0.660           & 0.941               & 0.554          & -12.47          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{smul}$, $\loss{cadv}$ & 0.885           & 0.878               & 0.197          & -14.05          \\
+		$\loss{rec}$, $\loss{smul}$, $\loss{cadv}$                               & 0.783           & 0.896               & 0.257          & -14.34          \\
+		\hline
+		$\loss{rec}$, $\loss{sadv}$, $\loss{cmul}$                               & 0.733           & 0.910               & 0.446          & -11.53          \\
+		\hline
+		$\loss{rec}$, $\loss{sadv}$, $\loss{cadv}$                               & 0.749           & 0.883               & 0.202          & -14.36          \\
+		\hline
+		$\loss{rec}$, $\loss{cmul}$, $\loss{cadv}$                               & 0.114           & 0.949               & 0.595          & -12.29          \\
+		\hline
+		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$, $\loss{cmul}$                & 0.877           & 0.899               & 0.402          & -10.19          \\
+		\hline
+		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$, $\loss{cadv}$                & 0.885           & 0.878               & 0.197          & -14.05          \\
+		\hline
+		$\loss{rec}$, $\loss{smul}$, $\loss{cmul}$, $\loss{cadv}$                & 0.657           & 0.939               & 0.545          & -12.39          \\
+		\hline
+		$\loss{rec}$, $\loss{sadv}$, $\loss{cmul}$, $\loss{cadv}$                & 0.759           & 0.909               & 0.439          & -10.92          \\
+		\hline
+		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$, $\loss{cmul}$, $\loss{cadv}$ & 0.887           & 0.888               & 0.290          & -12.95          \\
 		\hline
 	\end{tabular}
 	\caption{Ablation Tests}
