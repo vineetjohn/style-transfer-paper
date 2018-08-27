@@ -33,8 +33,16 @@
 \newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  
 % used for the top left cell in a table
 \newcommand{\tabc}[2]{\multicolumn{1}{|c||}{\multirow{#1}{*}{\textbf{#2}}}} 
-% used for denoting the loss symbol with a subscript
-\newcommand{\loss}[1]{J_\text{#1}}
+% used for denoting the loss symbol with a subscript & superscript
+\newcommand{\loss}[2]{J_{\text{#1}}^{\text{#2}}}
+% used for denoting the lambda symbol with a subscript & superscript
+\newcommand{\hyp}[2]{\lambda_{\text{#1}}^{\text{#2}}}
+% used for denoting the theta symbol with a subscript & superscript
+\newcommand{\nnweight}[2]{\bm{\theta_{\text{#1}}^{\text{#2}}}}
+% used for denoting the weight symbol (w) with a subscript & superscript
+\newcommand{\weight}[2]{\bm{w_{\text{#1}}^{\text{#2}}}}
+% used for denoting the bias symbol (b) with a subscript & superscript
+\newcommand{\bias}[2]{b_{\text{#1}}^{\text{#2}}}
 % custom author-year citation
 \newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
@@ -166,9 +174,9 @@ The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cit
 Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself.
 Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$, then the deterministic autoencoder (DAE) is trained using a sequence-aggregated cross-entropy loss, given by
 \begin{equation}
-	\loss{rec}(\bm\theta_E,\bm\theta_D)= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
+	\loss{rec}{}(\nnweight{E}{},\nnweight{D}{})= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
-where $\bm\theta_E$ and $\bm\theta_D$ are the parameters of the encoder and decoder, respectively.
+where $\nnweight{E}{}$ and $\nnweight{D}{}$ are the parameters of the encoder and decoder, respectively.
 
 \subsubsection{Variational Autoencoder}
 
@@ -179,12 +187,12 @@ The weights applied to each KL divergence loss are tuned independently as model 
 Equation \ref{eqn:vae-rec} shows the reconstruction objective that is minimized in the VAE variant of our model.
 
 \begin{align} \label{eqn:vae-rec}
-	\loss{rec}(\bm\theta_E, \bm\theta_D) = \nonumber
+	\loss{rec}{}(\nnweight{E}{}, \nnweight{D}{}) = \nonumber
 	 & - \mathbb{E}_{q_{E}(\bm s|\rmx) q_{E}(\bm c|\rmx)} [\log p(\rmx|\bm s, \bm c)] \nonumber \\
-	 & + \lambda_{\text{skl}} KL(q_{E}(\bm s|\rmx)||p(z)) \nonumber                             \\
-	 & + \lambda_{\text{ckl}} KL(q_{E}(\bm c|\rmx)||p(z))
+	 & + \hyp{kl}{s} KL(q_{E}(\bm s|\rmx)||p(z)) \nonumber                                      \\
+	 & + \hyp{kl}{c} KL(q_{E}(\bm c|\rmx)||p(z))
 \end{align}
-where $\lambda_{\text{skl}}$ and $\lambda_{\text{ckl}}$ are the weights for each of the KL divergence terms, and $p(z)$ is the standard normal distribution $\mathcal{N}(0,I)$ that both the encoded style and content distributions are aligned to.
+where $\hyp{kl}{s}$ and $\hyp{kl}{c}$ are the weights for each of the KL divergence terms, and $p(z)$ is the standard normal distribution $\mathcal{N}(0,I)$ that both the encoded style and content distributions are aligned to.
 
 The motivation for using a variational autoencoder variant to compare the base deterministic autoencoder model to, is the property of VAEs that enable them to learn smooth and continuous latent spaces, without many dead zones in the latent space that cannot be decoded from.
 \citeay{bowman2016generating} show this empirically by using the latent space of a text variational autoencoder to interpolate and generate novel sentences from the latent spaces between two valid sentences from a corpus.
@@ -206,16 +214,16 @@ Similar multi-task losses are used in previous work for sequence-to-sequence lea
 In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest.
 We introduce a multi-label classifier
 \begin{equation} \label{eqn:class-pred}
-	y = \sigma(\bm w_\text{smul}^\top \bm s + b_\text{smul})
+	y = \sigma({\weight{mul}{s}}^\top \bm s + \bias{mul}{s})
 \end{equation}
-where $\bm\theta_\text{smul}=[\bm w_\text{smul}; b_\text{smul}]$ are the classifier's parameters for multi-task learning, and $y$ is the predicted label distribution.
+where $\nnweight{mul}{s}=[\weight{mul}{s}; \bias{mul}{s}]$ are the classifier's parameters for multi-task learning, and $y$ is the predicted label distribution.
 
 This is trained using a simple cross-entropy loss
 \begin{equation} \label{eqn:style-multi-task-loss}
-	\loss{smul}(\bm\theta_{E};\bm\theta_\text{smul}) =
-	- \mathbb{E} [\log p(y' | \bm s; \bm\theta_\text{smul})]
+	\loss{mul}{s}(\nnweight{E}{};\nnweight{mul}{s}) =
+	- \mathbb{E} [\log p(y' | \bm s; \nnweight{mul}{s})]
 \end{equation}
-where $\bm\theta_E$ are the encoder's parameters, and $y'$ is the true label distribution.
+where $\nnweight{E}{}$ are the encoder's parameters, and $y'$ is the true label distribution.
 
 
 \subsection{Adversarial Style Discrimination} \label{ssec:adversarial-style-objective}
@@ -229,14 +237,14 @@ Then the autoencoder is trained to learn a content vector space that its adversa
 
 Concretely, the adversarial discriminator predicts style by computing a softmax distribution over the possible class labels
 \begin{equation}
-	y = \sigma(\bm w_\text{sdis}^\top \bm c + b_\text{sdis})
+	y = \sigma({\weight{dis}{s}}^\top \bm c + \bias{dis}{s})
 \end{equation}
-where $\bm\theta_\text{sdis}=[\bm w_\text{sdis}; b_\text{sdis}]$ are the parameters of the adversary, and $y$ is the predicted label distribution.
+where $\nnweight{dis}{s}=[\weight{dis}{s}; \bias{dis}{s}]$ are the parameters of the adversary, and $y$ is the predicted label distribution.
 
 It is trained by minimizing the following objective, using a cross-entropy loss.
 \begin{equation} \label{eqn:adv-disc-loss}
-	\loss{sdis}(\bm\theta_\text{sdis}) =
-	- \mathbb{E} [\log p(y' | \bm c; \bm\theta_\text{sdis})]
+	\loss{dis}{s} (\nnweight{dis}{s}) =
+	- \mathbb{E} [\log p(y' | \bm c; \nnweight{dis}{s})]
 \end{equation}
 where $y'$ is the true label distribution.
 
@@ -246,7 +254,7 @@ However, it should be emphasized that, for the adversary, the gradients are not 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style.
 In other words, we penalize the Shannon entropy of the adversary's prediction, given by
 \begin{equation}
-	\loss{sadv}(\bm\theta_E)=\mathcal{H}(y|\bm c; \bm\theta_\text{sdis})
+	\loss{adv}{s}(\nnweight{E}{})=\mathcal{H}(y|\bm c; \nnweight{dis}{s})
 \end{equation}
 where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels.
 The adversarial objective is maximized, in this phase, with respect to the encoder.
@@ -264,16 +272,16 @@ We exclude stopwords and sentiment words \cite{hu2004mining} from the BoW repres
 
 We introduce a multi-label classifier over the BoW vocabulary
 \begin{equation} \label{eqn:bow-pred}
-	v = \sigma(\bm w_\text{cmul}^\top \bm s + b_\text{cmul})
+	v = \sigma({\weight{mul}{c}}^\top \bm s + \bias{mul}{c})
 \end{equation}
-where $\bm\theta_\text{cmul}=[\bm w_\text{cmul}; b_\text{cmul}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
+where $\nnweight{mul}{c}=[\weight{mul}{c}; \bias{mul}{c}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
 
 This is trained using a simple cross-entropy loss
 \begin{equation} \label{eqn:content-multi-task-loss}
-	\loss{cmul}(\bm\theta_{E};\bm\theta_\text{cmul}) =
-	- \mathbb{E} [\log p(v' | \bm s; \bm\theta_\text{cmul})]
+	\loss{mul}{c}(\nnweight{E}{};\nnweight{mul}{c}) =
+	- \mathbb{E} [\log p(v' | \bm s; \nnweight{mul}{c})]
 \end{equation}
-where $\bm\theta_E$ are the encoder's parameters, and $v'$ is the true BoW distribution.
+where $\nnweight{E}{}$ are the encoder's parameters, and $v'$ is the true BoW distribution.
 
 
 \subsection{Adversarial Content Discrimination} \label{ssec:adversarial-content-objective}
@@ -284,22 +292,22 @@ The motivation is to emulate the adversarial signal provided by the style discri
 The BoW discriminator uses the style vector $\bm s$ produced by the autoencoder model, and tries to predict the true BoW distribution using a set of parameters that are distinct from those of the autoencoder.
 The discriminator uses a softmax activation to predict the occurrence frequency of each word in the original sentence, between $0$ and $1$.
 \begin{equation}
-	v = \sigma(\bm w_\text{cdis}^\top \bm s + b_\text{cdis})
+	v = \sigma({\weight{dis}{c}}^\top \bm s + \bias{dis}{c})
 \end{equation}
-where $\bm\theta_\text{cdis}=[\bm w_\text{cdis}; b_\text{cdis}]$ are the classifier's parameters for BoW prediction, and $v$ is the predicted BoW distribution.
+where $\nnweight{dis}{c}=[\weight{dis}{c}; \bias{dis}{c}]$ are the classifier's parameters for BoW prediction, and $v$ is the predicted BoW distribution.
 
 This objective is trained in a similar method to the style adversary, using a cross-entropy loss
 \begin{equation} \label{eqn:adv-bow-disc-loss}
-	\loss{cdis}(\bm\theta_\text{cdis}) =
-	- \mathbb{E} [\log p(v' | \bm s; \bm\theta_\text{cdis})]
+	\loss{dis}{c}(\nnweight{dis}{c}) =
+	- \mathbb{E} [\log p(v' | \bm s; \nnweight{dis}{c})]
 \end{equation}
 where $v'$ is the true BoW distribution.
 
-We also refrain from propagating the effects of this discriminator loss $\loss{cdis}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
+We also refrain from propagating the effects of this discriminator loss $\loss{dis}{c}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
 
 Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
 \begin{equation}
-	\loss{cadv}(\bm\theta_E) = \mathcal{H}(v | \bm s; \bm\theta_\text{cdis})
+	\loss{adv}{c}(\nnweight{E}{}) = \mathcal{H}(v | \bm s; \nnweight{dis}{c})
 \end{equation}
 where $v$ is the predicted word distribution.
 
@@ -308,21 +316,21 @@ We want to encourage the encoder to learn a representation of style $\bm s$ that
 
 \subsection{Training Process}
 
-The overall loss $\loss{ovr}$, used for the autoencoder, is thus comprised of four distinct objectives: the reconstruction objective, the multi-task objective, and the adversarial objectives for style and content.
+The overall loss $\loss{ovr}{}$, used for the autoencoder, is thus comprised of four distinct objectives: the reconstruction objective, the multi-task objectives, and the adversarial objectives for style and content.
 \begin{align*}
-	\loss{ovr} =
-	 & \loss{rec}(\bm\theta_E, \bm\theta_D)                                                                                 \\
-	 & + \lambda_\text{smul} \loss{smul} (\bm\theta_E,\bm\theta_\text{smul}) - \lambda_\text{sadv} \loss{sadv}(\bm\theta_E) \\
-	 & + \lambda_\text{cmul} \loss{cmul} (\bm\theta_E,\bm\theta_\text{cmul}) - \lambda_\text{cadv} \loss{cadv}(\bm\theta_E)
+	\loss{ovr}{} =
+	 & \loss{rec}{}(\nnweight{E}{}, \nnweight{D}{})                                                                 \\
+	 & + \hyp{mul}{s} \loss{mul}{s} (\nnweight{E}{},\nnweight{mul}{s}) - \hyp{adv}{s} \loss{adv}{s}(\nnweight{E}{}) \\
+	 & + \hyp{mul}{c} \loss{mul}{c} (\nnweight{E}{},\nnweight{mul}{c}) - \hyp{adv}{c} \loss{adv}{c}(\nnweight{E}{})
 \end{align*}
-where $\lambda_\text{smul}$, $\lambda_\text{sadv}$ and $\lambda_\text{cadv}$ balance the model's auxiliary losses.
+where $\hyp{mul}{s}$, $\hyp{adv}{s}$ and $\hyp{adv}{c}$ balance the model's auxiliary losses.
 
 To put it all together, the model training consists of a loop involving the processes shown in Algorithm \ref{alg:training-process}.
 \begin{algorithm}[ht]
 	\While{epochs remaining}{
-		minimize $\loss{sdis}(\bm\theta_\text{sdis})$ w.r.t. $\bm\theta_\text{sdis}$\;
-		minimize $\loss{cdis}(\bm\theta_\text{cdis})$ w.r.t. $\bm\theta_\text{cdis}$\;
-		minimize $\loss{ovr}$ w.r.t. $\bm\theta_E, \bm\theta_D, \bm\theta_\text{smul}, \bm\theta_\text{cmul}$\;
+		minimize $\loss{dis}{s}(\nnweight{dis}{s})$ w.r.t. $\nnweight{dis}{s}$\;
+		minimize $\loss{dis}{c}(\nnweight{dis}{c})$ w.r.t. $\nnweight{dis}{c}$\;
+		minimize $\loss{ovr}{}$ w.r.t. $\nnweight{E}{}, \nnweight{D}{}, \nnweight{mul}{s}, \nnweight{mul}{c}$\;
 	}
 	\caption{Training Process}
 	\label{alg:training-process}
@@ -330,10 +338,10 @@ To put it all together, the model training consists of a loop involving the proc
 
 We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
 The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
-Both the autoencoder and the discriminators are trained once per epoch with $\lambda_\text{smul} = 1$, $\lambda_\text{cmul} = 1$, $\lambda_\text{sadv} = 0.3$ and $\lambda_\text{cadv} = 0.001$.
+Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul}{s} = 1$, $\hyp{mul}{c} = 1$, $\hyp{adv}{s} = 0.3$ and $\hyp{adv}{c} = 0.001$.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
-For the VAE model, we set $\lambda_{\text{skl}} = 0.03$ and $\lambda_{\text{ckl}} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
+For the VAE model, we set $\hyp{kl}{s} = 0.03$ and $\hyp{kl}{c} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
 
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
@@ -476,41 +484,41 @@ These are results from the experiments on the Yelp dataset.
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                                     & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                                                         & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Objectives}                                                               & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
+		                                                                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{rec}$                                                             & 0.144           & 0.915               & 0.329          & -14.28          \\
+		$\loss{rec}{}$                                                                     & 0.144           & 0.915               & 0.329          & -14.28          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$                                              & 0.789           & 0.898               & 0.259          & -14.56          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$                                                    & 0.789           & 0.898               & 0.259          & -14.56          \\
 		\hline
-		$\loss{rec}$, $\loss{cmul}$                                              & 0.116           & 0.947               & 0.595          & -12.00          \\
+		$\loss{rec}{}$, $\loss{mul}{c}$                                                    & 0.116           & 0.947               & 0.595          & -12.00          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$                                              & 0.727           & 0.880               & 0.204          & -14.16          \\
+		$\loss{rec}{}$, $\loss{adv}{s}$                                                    & 0.727           & 0.880               & 0.204          & -14.16          \\
 		\hline
-		$\loss{rec}$, $\loss{cadv}$                                              & 0.168           & 0.915               & 0.328          & -14.45          \\
+		$\loss{rec}{}$, $\loss{adv}{c}$                                                    & 0.168           & 0.915               & 0.328          & -14.45          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$                               & 0.890           & 0.882               & 0.211          & -14.41          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{s}$                                   & 0.890           & 0.882               & 0.211          & -14.41          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{cmul}$                               & 0.660           & 0.941               & 0.554          & -12.47          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{mul}{c}$                                   & 0.660           & 0.941               & 0.554          & -12.47          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{cadv}$                               & 0.783           & 0.896               & 0.257          & -14.34          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{c}$                                   & 0.783           & 0.896               & 0.257          & -14.34          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{cmul}$                               & 0.733           & 0.910               & 0.446          & -11.53          \\
+		$\loss{rec}{}$, $\loss{adv}{s}$, $\loss{mul}{c}$                                   & 0.733           & 0.910               & 0.446          & -11.53          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{cadv}$                               & 0.749           & 0.883               & 0.202          & -14.36          \\
+		$\loss{rec}{}$, $\loss{adv}{s}$, $\loss{adv}{c}$                                   & 0.749           & 0.883               & 0.202          & -14.36          \\
 		\hline
-		$\loss{rec}$, $\loss{cmul}$, $\loss{cadv}$                               & 0.114           & 0.949               & 0.595          & -12.29          \\
+		$\loss{rec}{}$, $\loss{mul}{c}$, $\loss{adv}{c}$                                   & 0.114           & 0.949               & 0.595          & -12.29          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$, $\loss{cmul}$                & 0.877           & 0.899               & 0.402          & -10.19          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{s}$, $\loss{mul}{c}$                  & 0.877           & 0.899               & 0.402          & -10.19          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{sadv}$, $\loss{cadv}$                & 0.885           & 0.878               & 0.197          & -14.05          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{s}$, $\loss{adv}{c}$                  & 0.885           & 0.878               & 0.197          & -14.05          \\
 		\hline
-		$\loss{rec}$, $\loss{smul}$, $\loss{cmul}$, $\loss{cadv}$                & 0.657           & 0.939               & 0.545          & -12.39          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{mul}{c}$, $\loss{adv}{c}$                  & 0.657           & 0.939               & 0.545          & -12.39          \\
 		\hline
-		$\loss{rec}$, $\loss{sadv}$, $\loss{cmul}$, $\loss{cadv}$                & 0.759           & 0.909               & 0.439          & -10.92          \\
+		$\loss{rec}{}$, $\loss{adv}{s}$, $\loss{mul}{c}$, $\loss{adv}{c}$                  & 0.759           & 0.909               & 0.439          & -10.92          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(a)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & 0.887           & 0.888               & 0.290          & -12.95          \\
+		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{s}$, $\loss{mul}{c}$, $\loss{adv}{c}$ & 0.887           & 0.888               & 0.290          & -12.95          \\
 		\hline
 	\end{tabular}
 	\caption{Ablation Tests}
@@ -671,14 +679,14 @@ We would also like to explore the possibility of aligning each encoded style dis
 % \begin{figure}[h]
 % 	\captionsetup{justification=centering}
 % 	\includegraphics[width=\linewidth]{vae-latent-spaces-rec-adv}
-% 	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{sadv}$}
+% 	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{adv}{s}$}
 % 	\label{fig:vae-tsne-rec-adv}
 % \end{figure}
 
 % \begin{figure}[h]
 % 	\captionsetup{justification=centering}
 % 	\includegraphics[width=\linewidth]{vae-latent-spaces-rec-mult}
-% 	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{smul}$}
+% 	\caption{t-SNE Plots: VAE with $\loss{rec} + \loss{mul}{s}$}
 % 	\label{fig:vae-tsne-rec-mult}
 % \end{figure}
 
