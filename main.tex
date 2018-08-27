@@ -554,39 +554,6 @@ A qualitative analysis indicates that this model resorts to simply reconstructin
 Results show that, our approach achieves comparable content preservation and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
 Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
-Table~\ref{tab:ablation-results} presents the results of an ablation test.
-We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
-Also, the combination of all the losses described yields the best language fluency score.
-We observe that the bag-of-words adversary does not provide much of an improvement in terms of our evaluation metrics.
-However, this idea can be improved upon in future work.
-
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{| l || c |}
-		\hline
-		\tabc{2}{Model}                      & \tabh{Language} \\
-		                                     & \tabh{Quality}  \\
-		\hline
-		\hline
-		Cross-Alignment \cite{shen2017style} & 3.188           \\
-		\hline
-		Style Embedding \cite{fu2017style}   & 3.784           \\
-		\hline
-		Ours (DAE)                           & 3.460           \\
-		\hline
-		Ours (VAE)                           & 3.824           \\
-		\hline
-	\end{tabular}
-	\caption{Results - Manual Evaluation}
-	\label{tab:manual-evaluation}
-\end{table}
-
-The manual evaluation results are presented in Table \ref{tab:manual-evaluation}.
-Our VAE model attains the best score for generated sentence quality amongst all the evaluated models.
-We also observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
-
-Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
-We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
 \begin{table*}[ht]
 	\centering
@@ -635,6 +602,41 @@ We see that, with the empirically estimated style vector, we can reliably contro
 	\caption{Examples of Style-Transfer Generation}
 	\label{tab:transfer-samples}
 \end{table*}
+
+
+Table~\ref{tab:ablation-results} presents the results of an ablation test.
+We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
+Also, the combination of all the losses described yields the best language fluency score.
+We observe that the bag-of-words adversary does not provide much of an improvement in terms of our evaluation metrics.
+However, this idea can be improved upon in future work.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{| l || c |}
+		\hline
+		\tabc{2}{Model}                      & \tabh{Language} \\
+		                                     & \tabh{Quality}  \\
+		\hline
+		\hline
+		Cross-Alignment \cite{shen2017style} & 3.188           \\
+		\hline
+		Style Embedding \cite{fu2017style}   & 3.784           \\
+		\hline
+		Ours (DAE)                           & 3.460           \\
+		\hline
+		Ours (VAE)                           & 3.824           \\
+		\hline
+	\end{tabular}
+	\caption{Results - Manual Evaluation}
+	\label{tab:manual-evaluation}
+\end{table}
+
+The manual evaluation results are presented in Table \ref{tab:manual-evaluation}.
+Our VAE model attains the best score for generated sentence quality amongst all the evaluated models.
+We also observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
+
+Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
+We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
 \section{Conclusion and Future Work}
 In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks using multi-task and adversarial objectives.
