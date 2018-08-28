@@ -148,14 +148,12 @@ Figure~\ref{fig:model-training-overview} and Figure~\ref{fig:model-inference-ove
 
 \begin{figure}[ht]
 	\centering
-\includegraphics[width=0.8\linewidth]{model-overview-training}
-	\caption{Model Training Overview}
+	\includegraphics[width=0.8\linewidth]{model-overview-training}
+	\caption{Overview of model training.}
 	\label{fig:model-training-overview}
-\end{figure}
-\begin{figure}[ht]
-	\centering
+
 	\includegraphics[width=0.8\linewidth]{model-overview-inference}
-	\caption{Model Generation Overview}
+	\caption{Overview of model inference.}
 	\label{fig:model-inference-overview}
 \end{figure}
 
@@ -330,7 +328,7 @@ To put it all together, the model training consists of a loop involving the proc
 		minimize $\loss{dis}{c}(\nnweight{dis}{c})$ w.r.t. $\nnweight{dis}{c}$\;
 		minimize $\loss{ovr}{}$ w.r.t. $\nnweight{E}{}, \nnweight{D}{}, \nnweight{mul}{s}, \nnweight{mul}{c}$\;
 	}
-	\caption{Training Process}
+	\caption{Training process.}
 	\label{alg:training-process}
 \end{algorithm}
 
@@ -376,7 +374,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		Ours (VAE)                                 & 0.890           & 0.882               & 0.211          & -14.41          \\
 		\hline
 	\end{tabular}
-	\caption{Yelp Dataset - Comparison}
+	\caption{Comparison using the Yelp dataset.}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -399,7 +397,7 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		Ours (VAE)                                 & 0.726           & 0.909               & 0.081          & -28.50          \\
 		\hline
 	\end{tabular}
-	\caption{Amazon Dataset - Comparison}
+	\caption{Comparison using the Amazon dataset.}
 	\label{tab:amazon-comparison-previous}
 \end{table*}
 
@@ -474,7 +472,7 @@ These are results from the experiments on the Yelp dataset.
 		Complete space ($[\bm s;\bm c]$) & 0.792                      & 0.792      \\
 		\hline
 	\end{tabular}
-	\caption{Style Classification Accuracy}
+	\caption{Classification accuracy on latent spaces.}
 	\label{tab:classification}
 \end{table}
 
@@ -519,7 +517,7 @@ These are results from the experiments on the Yelp dataset.
 		$\loss{rec}{}$, $\loss{mul}{s}$, $\loss{adv}{s}$, $\loss{mul}{c}$, $\loss{adv}{c}$ & 0.887           & 0.888               & 0.290          & -12.95          \\
 		\hline
 	\end{tabular}
-	\caption{Ablation Tests}
+	\caption{Ablation tests.}
 	\label{tab:ablation-results}
 \end{table*}
 
@@ -542,15 +540,13 @@ We replicated the experiments with their publicly available code and data.
 
 \begin{figure}[ht]
 	\captionsetup{justification=centering}
-	\includegraphics[width=\linewidth]{dae-latent-spaces}
-	\caption{t-SNE Plots: Deterministic Autoencoder}
-	\label{fig:dae-tsne}
-\end{figure}
 
-\begin{figure}[ht]
-	\captionsetup{justification=centering}
+	\includegraphics[width=\linewidth]{dae-latent-spaces}
+	\caption{Deterministic autoencoder t-SNE plots.}
+	\label{fig:dae-tsne}
+
 	\includegraphics[width=\linewidth]{vae-latent-spaces}
-	\caption{t-SNE Plots: Variational Autoencoder}
+	\caption{Variational autoencoder t-SNE plots.}
 	\label{fig:vae-tsne}
 \end{figure}
 
@@ -605,12 +601,12 @@ Our VAE model also produces the most fluent sentences for the Yelp dataset task,
 		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
 		\hline
 	\end{tabular}
-	\caption{Examples of Style-Transfer Generation}
+	\caption{Examples of style transfer sentence generation.}
 	\label{tab:transfer-samples}
 \end{table*}
 
 
-Table~\ref{tab:ablation-results} presents the results of an ablation test.
+Table~\ref{tab:ablation-results} presents the results of ablation tests.
 We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
 Also, the combination of all the losses described yields the best language fluency score.
 We observe that the bag-of-words adversary does not provide much of an improvement in terms of our evaluation metrics.
@@ -633,7 +629,7 @@ However, this idea can be improved upon in future work.
 		Ours (VAE)                           & 3.824           \\
 		\hline
 	\end{tabular}
-	\caption{Results - Manual Evaluation}
+	\caption{Manual evaluation results.}
 	\label{tab:manual-evaluation}
 \end{table}
 
