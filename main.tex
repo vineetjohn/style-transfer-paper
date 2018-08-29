@@ -101,7 +101,7 @@ We would like the latent space to be disentangled with respect to different feat
 To accomplish this, we propose a simple yet effective approach that combines multi-task and adversarial objectives.
 We artificially divide the latent representation into two parts: the style space and content space.
 We design auxiliary losses, enforcing our model to separate style and content latent spaces.
-In particular, the multi-task loss operates on a latent space to ensure that the space does contain the information we wish to encoder into it.
+In particular, the multi-task loss operates on a latent space to ensure that the space does contain the information we wish to encode into it.
 The adversarial loss, on the contrary, operates on a latent space to minimize the predictability of information that should not be contained in that space.
 In this way, the style and content variables can be disentangled from each other.
 
