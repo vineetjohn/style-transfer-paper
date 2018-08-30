@@ -443,24 +443,6 @@ We also utilize a simpler unigram overlap metric to evaluate the similarity betw
 Given a source sentence $x$ and an attribute style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
 Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
 
-\subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences.
-It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
-We train this language model on the complete corpus that we evaluate our style-transfer models with.
-The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
-
-\subsubsection{Manual Evaluation of Language Quality}
-We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
-The aggregate score of all the evaluators is reported.
-
-
-\section{Results and Analysis}
-
-\subsection{Disentangling Latent Space}
-
-We first analyze how the style (sentiment) and content of the latent space are disentangled.
-We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables \ref{tab:classification-yelp} and \ref{tab:classification-amazon}.
-
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{| l || r | r |}
@@ -490,6 +472,16 @@ We train classifiers on the different latent spaces, and report their inference-
 	\caption{Classification accuracy on latent spaces (Amazon).}
 	\label{tab:classification-amazon}
 \end{table}
+
+\subsubsection{Language Fluency}
+We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences.
+It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
+We train this language model on the complete corpus that we evaluate our style-transfer models with.
+The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+
+\subsubsection{Manual Evaluation of Language Quality}
+We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+The aggregate score of all the evaluators is reported.
 
 \begin{table*}[ht]
 	\centering
@@ -535,6 +527,14 @@ We train classifiers on the different latent spaces, and report their inference-
 	\caption{Ablation tests.}
 	\label{tab:ablation-results}
 \end{table*}
+
+
+\section{Results and Analysis}
+
+\subsection{Disentangling Latent Space}
+
+We first analyze how the style (sentiment) and content of the latent space are disentangled.
+We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables \ref{tab:classification-yelp} and \ref{tab:classification-amazon}.
 
 We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style.
 It achieves accuracies that are only slightly better than random/majority guess.
