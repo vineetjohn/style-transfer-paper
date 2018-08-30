@@ -200,7 +200,9 @@ In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and
 This is accomplished by the auxiliary losses described in the subsequent sections.
 
 
-\subsection{Multi-Task Style Prediction} \label{ssec:multitask-style-objective}
+\subsection{Multi-Task Classifiers}
+
+\subsubsection{Style Classifier} \label{ssec:multitask-style-objective}
 
 Our first auxiliary loss ensures the style space does contain style information.
 We build a classifier on the style space $\bm s$ with the objective of predicting the true style label $y'$, which is part of the training data.
@@ -222,12 +224,36 @@ This is trained using a simple cross-entropy loss
 \end{equation}
 where $\nnweight{E}$ are the encoder's parameters, and $y'$ is the true label distribution.
 
+\subsubsection{Content Classifier} \label{ssec:multitask-content-objective}
 
-\subsection{Adversarial Style Discrimination} \label{ssec:adversarial-style-objective}
+In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
+Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
 
-The above multi-task loss only operates on the style space, but does not have an effect on the content space $\bm c$.
+The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
+For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by $\frac{\sum_{i=1}^{N}{(1 | w_i = w_*)}}{N}$.
+We exclude stopwords and sentiment words \cite{hu2004mining} from the BoW representation.
 
-We therefore apply an adversarial loss to disentangle the content space from style information, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{shen2017style}.
+We introduce a multi-label classifier over the BoW vocabulary
+\begin{equation} \label{eqn:bow-pred}
+	v = \sigma({\weight{mul(c)}}^\top \bm s + \bias{mul(c)})
+\end{equation}
+where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
+
+This is trained using a simple cross-entropy loss
+\begin{equation} \label{eqn:content-multi-task-loss}
+	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
+	- \mathbb{E} [\log p(v' | \bm s; \nnweight{mul(c)})]
+\end{equation}
+where $\nnweight{E}$ are the encoder's parameters, and $v'$ is the true BoW distribution.
+
+
+\subsection{Adversarial Discriminators}
+
+The above multi-task losses, although essential for improving the style and content predictability from the separate spaces, does not guarantee that the style is not present in the content space and vice-versa. For this purpose, we use adversarial training objectives, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{shen2017style,fu2017style}.
+
+\subsubsection{Style Discriminator} \label{ssec:adversarial-style-objective}
+
+We apply an adversarial loss to disentangle the content space from style information.
 
 The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label using the content vector $\bm c$.
 Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
@@ -257,31 +283,7 @@ where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $
 The adversarial objective is maximized, in this phase, with respect to the encoder.
 This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
 
-
-\subsection{Multi-Task Content Prediction} \label{ssec:multitask-content-objective}
-
-In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
-Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
-
-The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
-For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by $\frac{\sum_{i=1}^{N}{(1 | w_i = w_*)}}{N}$.
-We exclude stopwords and sentiment words \cite{hu2004mining} from the BoW representation.
-
-We introduce a multi-label classifier over the BoW vocabulary
-\begin{equation} \label{eqn:bow-pred}
-	v = \sigma({\weight{mul(c)}}^\top \bm s + \bias{mul(c)})
-\end{equation}
-where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
-
-This is trained using a simple cross-entropy loss
-\begin{equation} \label{eqn:content-multi-task-loss}
-	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
-	- \mathbb{E} [\log p(v' | \bm s; \nnweight{mul(c)})]
-\end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $v'$ is the true BoW distribution.
-
-
-\subsection{Adversarial Content Discrimination} \label{ssec:adversarial-content-objective}
+\subsubsection{Content Discriminator} \label{ssec:adversarial-content-objective}
 
 We also propose a bag-of-words (BoW) discriminator on the style space to make our approach complete.
 The motivation is to emulate the adversarial signal provided by the style discriminator, and do the same for the content.
