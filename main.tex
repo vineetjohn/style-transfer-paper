@@ -499,37 +499,37 @@ We train classifiers on the different latent spaces, and report their inference-
 		                                                                                 & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{rec}$                                                                     &                 &                   &                &                 \\
+		$\loss{rec}$                                                                     & 0.106           & 0.939             & 0.472          & -12.58          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$                                                    &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(s)}$                                                    & 0.767           & 0.911             & 0.331          & -12.17          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(c)}$                                                    &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(c)}$                                                    & 0.155           & 0.931             & 0.626          & -11.21          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$                                                    &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{adv(s)}$                                                    & 0.782           & 0.886             & 0.230          & -12.03          \\
 		\hline
 		$\loss{rec}$, $\loss{adv(c)}$                                                    &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   &                 &                   &                &                 \\
-		\hline
 		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   &                 &                   &                &                 \\
+		\hline
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   &                 &                   &                &                 \\
 		\hline
 		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$                                   &                 &                   &                &                 \\
-		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   &                 &                   &                &                 \\
 		\hline
 		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$                  &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                  &                 &                   &                &                 \\
 		\hline
 		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ &                 &                   &                &                 \\
+		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
+		\hline
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ &                 &                   &                &                 \\
 		\hline
 	\end{tabular}
 	\caption{Ablation tests.}
