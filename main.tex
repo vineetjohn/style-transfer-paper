@@ -337,10 +337,11 @@ To put it all together, the model training consists of a loop involving the proc
 
 We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
 The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
-Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 1$, $\hyp{mul(c)} = 1$, $\hyp{adv(s)} = 0.3$ and $\hyp{adv(c)} = 0.001$.
+Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
+These hyperparameters were identified by performing a log-scale grid search within 2 orders of magnitude, and choosing the hyperparameters that yielded the best results.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
-For the VAE model, we set $\hyp{kl}{s} = 0.03$ and $\hyp{kl}{c} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
+For the VAE model, we set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
 
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
@@ -622,9 +623,6 @@ Our VAE model also produces the most fluent sentences for the Yelp dataset task,
 
 Table~\ref{tab:ablation-results} presents the results of ablation tests.
 We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
-Also, the combination of all the losses described yields the best language fluency score.
-We observe that the bag-of-words adversary does not provide much of an improvement in terms of our evaluation metrics.
-However, this idea can be improved upon in future work.
 
 \begin{table}[ht]
 	\centering
