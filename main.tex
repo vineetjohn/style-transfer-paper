@@ -360,19 +360,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892               & 0.209          & -23.39          \\
+		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39          \\
 		\hline
-		Style-Embedding \cite{fu2017style}         & 0.182           & 0.959               & 0.666          & -16.17          \\
+		Style-Embedding \cite{fu2017style}         & 0.182           & 0.959             & 0.666          & -16.17          \\
 		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883               & 0.272          & -20.95          \\
+		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95          \\
 		\hline
-		Ours (DAE)                                 & 0.883           & 0.915               & 0.549          & -10.17          \\
+		Ours (DAE)                                 & 0.883           & 0.915             & 0.549          & -10.17          \\
 		\hline
-		Ours (VAE)                                 & 0.934           & 0.904               & 0.473          & -9.84           \\
+		Ours (VAE)                                 & 0.934           & 0.904             & 0.473          & -9.84           \\
 		\hline
 	\end{tabular}
 	\caption{Comparison using the Yelp dataset.}
@@ -383,19 +383,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893               & 0.024          & -26.31          \\
+		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893             & 0.024          & -26.31          \\
 		\hline
-		Style Embedding \cite{fu2017style}         & 0.417           & 0.933               & 0.359          & -28.13          \\
+		Style Embedding \cite{fu2017style}         & 0.417           & 0.933             & 0.359          & -28.13          \\
 		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926               & 0.169          & -34.70          \\
+		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926             & 0.169          & -34.70          \\
 		\hline
-		Ours (DAE)                                 & 0.703           & 0.918               & 0.131          & -32.42          \\
+		Ours (DAE)                                 & 0.703           & 0.918             & 0.131          & -32.42          \\
 		\hline
-		Ours (VAE)                                 & 0.726           & 0.909               & 0.081          & -28.50          \\
+		Ours (VAE)                                 & 0.726           & 0.909             & 0.081          & -28.50          \\
 		\hline
 	\end{tabular}
 	\caption{Comparison using the Amazon dataset.}
@@ -422,7 +422,7 @@ The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Evaluation Metrics}
 
-We evaluate our method using four metrics: style-transfer strength, content preservation, word overlap, and language fluency.
+We evaluate our method using four metrics: style-transfer strength, cosine similarity, word overlap, and language fluency.
 
 \subsubsection{Style-Transfer Strength}
 We train a convolutional neural network (CNN) style classifier \cite{kim2014convolutional} and predict the style of the generated sentences.
@@ -430,14 +430,13 @@ While the style classifier itself may not be perfect, it provides a quantitative
 The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively.
 The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
 
-\subsubsection{Content Preservation}
-We compute a sentence embedding by min, max, and average pooling its constituent word embeddings.
-Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning.
-Here, sentiment words from a stop list \cite{hu2004mining} are removed \cite{fu2017style}.
-The cosine similarity is reported as the content preservation score.
+\subsubsection{Cosine Similarity}
+We compute a sentence embedding by min, max, and average pooling its constituent word embeddings \cite{fu2017style}.
+Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning, which is an indicator of content preservation.
+Here, sentiment words from a stop list \cite{hu2004mining} are removed.
 
 \subsubsection{Word Overlap}
-We also utilize a simpler unigram overlap metric to evaluate the similarity between the source and generated sentences.
+We also utilize a simpler unigram overlap metric to evaluate the similarity between the content of the source and generated sentences.
 Given a source sentence $x$ and an attribute style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
 Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
 
@@ -481,41 +480,41 @@ These are results from the experiments on the Yelp dataset.
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                                             & \tabh{Transfer} & \tabh{Content}      & \tabh{Word}    & \tabh{Language} \\
-		                                                                                 & \tabh{Strength} & \tabh{Preservation} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Objectives}                                                             & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                                                                 & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{rec}$                                                                     & 0.144           & 0.915               & 0.329          & -14.28          \\
+		$\loss{rec}$                                                                     & 0.144           & 0.915             & 0.329          & -14.28          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$                                                    & 0.789           & 0.898               & 0.259          & -14.56          \\
+		$\loss{rec}$, $\loss{mul(s)}$                                                    & 0.789           & 0.898             & 0.259          & -14.56          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(c)}$                                                    & 0.116           & 0.947               & 0.595          & -12.00          \\
+		$\loss{rec}$, $\loss{mul(c)}$                                                    & 0.116           & 0.947             & 0.595          & -12.00          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$                                                    & 0.727           & 0.880               & 0.204          & -14.16          \\
+		$\loss{rec}$, $\loss{adv(s)}$                                                    & 0.727           & 0.880             & 0.204          & -14.16          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(c)}$                                                    & 0.168           & 0.915               & 0.328          & -14.45          \\
+		$\loss{rec}$, $\loss{adv(c)}$                                                    & 0.168           & 0.915             & 0.328          & -14.45          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.890           & 0.882               & 0.211          & -14.41          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.890           & 0.882             & 0.211          & -14.41          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.660           & 0.941               & 0.554          & -12.47          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.660           & 0.941             & 0.554          & -12.47          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.783           & 0.896               & 0.257          & -14.34          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.783           & 0.896             & 0.257          & -14.34          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$                                   & 0.733           & 0.910               & 0.446          & -11.53          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$                                   & 0.733           & 0.910             & 0.446          & -11.53          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.749           & 0.883               & 0.202          & -14.36          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.749           & 0.883             & 0.202          & -14.36          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.114           & 0.949               & 0.595          & -12.29          \\
+		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.114           & 0.949             & 0.595          & -12.29          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$                  & 0.877           & 0.899               & 0.402          & -10.19          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$                  & 0.877           & 0.899             & 0.402          & -10.19          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.885           & 0.878               & 0.197          & -14.05          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.885           & 0.878             & 0.197          & -14.05          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.657           & 0.939               & 0.545          & -12.39          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.657           & 0.939             & 0.545          & -12.39          \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.759           & 0.909               & 0.439          & -10.92          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.759           & 0.909             & 0.439          & -10.92          \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & 0.887           & 0.888               & 0.290          & -12.95          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & 0.887           & 0.888             & 0.290          & -12.95          \\
 		\hline
 	\end{tabular}
 	\caption{Ablation tests.}
@@ -551,10 +550,10 @@ We replicated the experiments with their publicly available code and data.
 	\label{fig:vae-tsne}
 \end{figure}
 
-We observe that the style embedding model \cite{fu2017style} performs poorly on the style-transfer objective, resulting in inflated content preservation and word overlap scores.
+We observe that the style embedding model \cite{fu2017style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
 A qualitative analysis indicates that this model resorts to simply reconstructing most of the source sentences, and is not very effective at transferring style.
 
-Results show that, our approach achieves comparable content preservation and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
+Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
 Our VAE model also produces the most fluent sentences for the Yelp dataset task, which is corroborated by the manual evaluation results.
 
 
