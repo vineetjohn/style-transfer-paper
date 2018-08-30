@@ -393,9 +393,9 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 		\hline
 		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926             & 0.169          & -34.70          \\
 		\hline
-		Ours (DAE)                                 & 0.703           & 0.918             & 0.131          & -32.42          \\
+		Ours (DAE)                                 & 0.720           & 0.921             & 0.354          & -24.74          \\
 		\hline
-		Ours (VAE)                                 & 0.726           & 0.909             & 0.081          & -28.50          \\
+		Ours (VAE)                                 & 0.822           & 0.900             & 0.196          & -21.70          \\
 		\hline
 	\end{tabular}
 	\caption{Comparison using the Amazon dataset.}
@@ -456,8 +456,7 @@ The aggregate score of all the evaluators is reported as a measure of language q
 \subsection{Disentangling Latent Space}
 
 We first analyze how the style (sentiment) and content of the latent space are disentangled.
-We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Table~\ref{tab:classification}.
-These are results from the experiments on the Yelp dataset.
+We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables \ref{tab:classification-yelp} and \ref{tab:classification-amazon}.
 
 \begin{table}[ht]
 	\centering
@@ -467,13 +466,26 @@ These are results from the experiments on the Yelp dataset.
 		\hline \hline
 		Majority guess                   & \multicolumn{2}{c|}{0.602}              \\
 		\hline
-		Content space  ($\bm c$)         & 0.614                      & 0.657      \\ \hline
-		Style space ($\bm s$)            & 0.793                      & 0.791      \\ \hline
-		Complete space ($[\bm s;\bm c]$) & 0.792                      & 0.792      \\
+		Content space  ($\bm c$)         & 0.658                      & 0.697      \\ \hline
+		Style space ($\bm s$)            & 0.974                      & 0.974      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.974                      & 0.974      \\
 		\hline
 	\end{tabular}
-	\caption{Classification accuracy on latent spaces.}
-	\label{tab:classification}
+	\caption{Classification accuracy on latent spaces (Yelp).}
+	\label{tab:classification-yelp}
+	\begin{tabular}{| l || r | r |}
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\hline \hline
+		Majority guess                   & \multicolumn{2}{c|}{0.512}              \\
+		\hline
+		Content space  ($\bm c$)         & 0.675                      & 0.693      \\ \hline
+		Style space ($\bm s$)            & 0.821                      & 0.810      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.819                      & 0.810      \\
+		\hline
+	\end{tabular}
+	\caption{Classification accuracy on latent spaces (Amazon).}
+	\label{tab:classification-amazon}
 \end{table}
 
 \begin{table*}[ht]
@@ -484,37 +496,37 @@ These are results from the experiments on the Yelp dataset.
 		                                                                                 & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{rec}$                                                                     & 0.144           & 0.915             & 0.329          & -14.28          \\
+		$\loss{rec}$                                                                     &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$                                                    & 0.789           & 0.898             & 0.259          & -14.56          \\
+		$\loss{rec}$, $\loss{mul(s)}$                                                    &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(c)}$                                                    & 0.116           & 0.947             & 0.595          & -12.00          \\
+		$\loss{rec}$, $\loss{mul(c)}$                                                    &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$                                                    & 0.727           & 0.880             & 0.204          & -14.16          \\
+		$\loss{rec}$, $\loss{adv(s)}$                                                    &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(c)}$                                                    & 0.168           & 0.915             & 0.328          & -14.45          \\
+		$\loss{rec}$, $\loss{adv(c)}$                                                    &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.890           & 0.882             & 0.211          & -14.41          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.660           & 0.941             & 0.554          & -12.47          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.783           & 0.896             & 0.257          & -14.34          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$                                   & 0.733           & 0.910             & 0.446          & -11.53          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.749           & 0.883             & 0.202          & -14.36          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.114           & 0.949             & 0.595          & -12.29          \\
+		$\loss{rec}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$                  & 0.877           & 0.899             & 0.402          & -10.19          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.885           & 0.878             & 0.197          & -14.05          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.657           & 0.939             & 0.545          & -12.39          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.759           & 0.909             & 0.439          & -10.92          \\
+		$\loss{rec}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  &                 &                   &                &                 \\
 		\hline
-		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & 0.887           & 0.888             & 0.290          & -12.95          \\
+		$\loss{rec}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ &                 &                   &                &                 \\
 		\hline
 	\end{tabular}
 	\caption{Ablation tests.}
