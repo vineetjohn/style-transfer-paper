@@ -447,8 +447,8 @@ We train this language model on the complete corpus that we evaluate our style-t
 The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation of Language Quality}
-We perform manual evaluations by randomly sampling sentences generated from each model trained on the Yelp dataset, and requesting 5 human annotators to rate them on a 1-5 Likert scale \footnote{5=Flawless, 4=Good, 3=Adequate, 2=Poor, 1=Incomprehensible} \cite{stent2005evaluating} based on their syntax, grammar and fluency.
-The aggregate score of all the evaluators is reported as a measure of language quality.
+We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+The aggregate score of all the evaluators is reported.
 
 
 \section{Results and Analysis}
@@ -626,19 +626,21 @@ However, this idea can be improved upon in future work.
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{| l || c |}
+	\begin{tabular}{| l || c | c | c | }
 		\hline
-		\tabc{2}{Model}                      & \tabh{Language} \\
-		                                     & \tabh{Quality}  \\
+		\tabc{2}{Model}                    & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
+		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
 		\hline
 		\hline
-		Cross-Alignment \cite{shen2017style} & 3.188           \\
+		\citeauthor{shen2017style}         &                 &                     &                 \\
 		\hline
-		Style Embedding \cite{fu2017style}   & 3.784           \\
+		\citeauthor{fu2017style}           &                 &                     &                 \\
 		\hline
-		Ours (DAE)                           & 3.460           \\
+		\citeauthor{zhao2018adversarially} &                 &                     &                 \\
 		\hline
-		Ours (VAE)                           & 3.824           \\
+		Ours (DAE)                         &                 &                     &                 \\
+		\hline
+		Ours (VAE)                         &                 &                     &                 \\
 		\hline
 	\end{tabular}
 	\caption{Manual evaluation results.}
@@ -646,8 +648,7 @@ However, this idea can be improved upon in future work.
 \end{table}
 
 The manual evaluation results are presented in Table \ref{tab:manual-evaluation}.
-Our VAE model attains the best score for generated sentence quality amongst all the evaluated models.
-We also observe that the ranking of these models is positively correlated with the automated `Language Fluency' metric presented in Table \ref{tab:yelp-comparison-previous}.
+Our VAE model attains the best score for transfer strength as well as generated sentence quality amongst all the evaluated models.
 
 Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
 We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
