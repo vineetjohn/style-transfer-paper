@@ -218,35 +218,32 @@ Similar multi-task losses are used in previous work for sequence-to-sequence lea
 \subsubsection{Adversarial Loss for Style.}
 \label{ssec:adversarial-style-objective}
 
-The multi-task loss could only ensure the style space does contain style information. However, it does not say
+The above multi-task loss could only ensure the style space does contain style information. However, the content space might also contain style information, which is undesired for disentanglement and style transfer.
 
-We apply an adversarial loss to disentangle the content space from style information.
+We thus apply an adversarial loss to disentangle the content space from style information.
+The idea is to first introduce a classifier, called an \textit{adversary}, that deliberately discriminates the true style label using the content vector $\bm c$.
+Then, the encoder is trained to learn such a content vector space that its adversary cannot predict style information.
 
-The idea of adversarial loss is to introduce an objective that deliberately discriminates the true style label using the content vector $\bm c$.
-Then the autoencoder is trained to learn a content vector space that its adversary cannot predict style information from.
+Concretely, the adversarial discriminator and its training objective have a similar form as Equations~\ref{eqn:class-pred} and~\ref{eqn:style-multi-task-loss}, but with different input and parameters, given by
+\begin{align}
+	y &= \sigma({\weight{dis(s)}}^\top \bm c + \bias{dis(s)})\\
+ \label{eqn:adv-disc-loss}
+	\loss{dis(s)} (\nnweight{dis(s)}) &=
+	- t\log y - (1-t)\log(1-y)
+\end{align}
+where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of the adversary.
 
-Concretely, the adversarial discriminator predicts style by computing a softmax distribution over the possible class labels
+
+It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
+
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in the other part of the model.
 \begin{equation}
-	y = \sigma({\weight{dis(s)}}^\top \bm c + \bias{dis(s)})
+	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
-where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of the adversary, and $y$ is the predicted label distribution.
+where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative).
 
-It is trained by minimizing the following objective, using a cross-entropy loss.
-\begin{equation} \label{eqn:adv-disc-loss}
-	\loss{dis(s)} (\nnweight{dis(s)}) =
-	- \mathbb{E} [\log p(y' | \bm c; \nnweight{dis(s)})]
-\end{equation}
-where $y'$ is the true label distribution.
+In this phase, Equation~\ref{eqn:advs} is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and $\nnweight{dist(s)}$ is fixed. Since the 
 
-The adversarial loss appears similar to the multi-task loss as in Equation \ref{eqn:style-multi-task-loss}.
-However, it should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features.
-
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative in style.
-In other words, we penalize the Shannon entropy of the adversary's prediction, given by
-\begin{equation}
-	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(y|\bm c; \nnweight{dis(s)})
-\end{equation}
-where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels.
 The adversarial objective is maximized, in this phase, with respect to the encoder.
 This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
 
