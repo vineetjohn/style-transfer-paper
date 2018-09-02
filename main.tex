@@ -226,9 +226,9 @@ Then, the encoder is trained to learn such a content vector space that its adver
 
 Concretely, the adversarial discriminator and its training objective have a similar form as Equations~\ref{eqn:class-pred} and~\ref{eqn:style-multi-task-loss}, but with different input and parameters, given by
 \begin{align}
-	y &= \sigma({\weight{dis(s)}}^\top \bm c + \bias{dis(s)})\\
- \label{eqn:adv-disc-loss}
-	\loss{dis(s)} (\nnweight{dis(s)}) &=
+	y                                 & = \sigma({\weight{dis(s)}}^\top \bm c + \bias{dis(s)}) \\
+	\label{eqn:adv-disc-loss}
+	\loss{dis(s)} (\nnweight{dis(s)}) & =
 	- t\log y - (1-t)\log(1-y)
 \end{align}
 where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of the adversary.
@@ -240,16 +240,16 @@ Having trained an adversary, we would like the autoencoder to be tuned in such a
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
-where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dist(s)}$. 
+where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dist(s)}$.
 
-{\color{red} While adversarial loss has been explored in previous style-transfer papers~\cite{,,}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.}
+	{\color{red} While adversarial loss has been explored in previous style-transfer papers~\cite{,,}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.}
 
 \subsection{Content-Oriented Losses}
 
-{\color{red} The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{,,}.} 
+{\color{red} The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{,,}.}
 Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
 
-Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to. 
+Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to.
 
 To this end, we propose to approximate the content information by bag-of-words (BoW) features. However, we exclude stop words and style-specific words (or more concretely, sentiment words for sentiment style transfer).
 
@@ -627,15 +627,15 @@ We see that both the style adversarial loss and multi-task classification loss p
 		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
 		\hline
 		\hline
-		\citeauthor{shen2017style}         & 3.655           & 3.065               & 2.980           \\
+		\citeauthor{shen2017style}         & 3.625           & 3.067               & 3.083           \\
 		\hline
-		\citeauthor{fu2017style}           & 1.695           & 3.790               & 3.575           \\
+		\citeauthor{fu2017style}           & 1.667           & 3.842               & 3.658           \\
 		\hline
-		\citeauthor{zhao2018adversarially} & 3.570           & 3.095               & 3.685           \\
+		\citeauthor{zhao2018adversarially} & 3.554           & 3.088               & 3.771           \\
 		\hline
-		Ours (DAE)                         & 3.690           & 3.630               & 4.125           \\
+		Ours (DAE)                         & 3.667           & 3.642               & 4.192           \\
 		\hline
-		Ours (VAE)                         & 4.375           & 3.755               & 4.435           \\
+		Ours (VAE)                         & 4.317           & 3.733               & 4.479           \\
 		\hline
 	\end{tabular}
 	\caption{Manual evaluation results.}
