@@ -208,7 +208,7 @@ The classifier is trained with a simple cross-entropy loss. For binary classific
 	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) =
 	- t \log y - (1-t)\log (1-y)
 \end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $t$ is the groundtruth target label.
+where $\nnweight{E}$ are the encoder's parameters, and $t$ is the ground-truth target label.
 
 
 We train the style classifier at the same time as the autoencoding loss. Thus, this could be viewed as \textit{multi-task} learning, incentivizing the entire model to not only decode the sentence, but also predict its sentiment from the style vector $\bm  s$. We denote it by ``mul(s).''
@@ -626,15 +626,15 @@ We see that both the style adversarial loss and multi-task classification loss p
 		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
 		\hline
 		\hline
-		\citeauthor{shen2017style}         &                 &                     &                 \\
+		\citeauthor{shen2017style}         & 3.655           & 3.065               & 2.980           \\
 		\hline
-		\citeauthor{fu2017style}           &                 &                     &                 \\
+		\citeauthor{fu2017style}           & 1.695           & 3.790               & 3.575           \\
 		\hline
-		\citeauthor{zhao2018adversarially} &                 &                     &                 \\
+		\citeauthor{zhao2018adversarially} & 3.570           & 3.095               & 3.685           \\
 		\hline
-		Ours (DAE)                         &                 &                     &                 \\
+		Ours (DAE)                         & 3.690           & 3.630               & 4.125           \\
 		\hline
-		Ours (VAE)                         &                 &                     &                 \\
+		Ours (VAE)                         & 4.375           & 3.755               & 4.435           \\
 		\hline
 	\end{tabular}
 	\caption{Manual evaluation results.}
