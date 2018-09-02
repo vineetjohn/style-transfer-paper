@@ -203,7 +203,7 @@ We build a classifier on the style space that predicts the style label. Formally
 \end{equation}
 where $\sigma$ is the sigmoid function, and $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $y$ is the output of the logistic unit.
 
-The classifier is trained with a simple cross-entropy loss. For binary classification as in out scenario, it takes the form
+The classifier is trained with a simple cross-entropy loss. For binary classification as in our scenario, it takes the form
 \begin{equation} \label{eqn:style-multi-task-loss}
 	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) =
 	- t \log y - (1-t)\log (1-y)
@@ -236,20 +236,24 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial loss for the style, denoted as ``adv(s)''
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
-where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative).
+where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dist(s)}$. 
 
-In this phase, Equation~\ref{eqn:advs} is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and $\nnweight{dist(s)}$ is fixed. Since the 
-
-The adversarial objective is maximized, in this phase, with respect to the encoder.
-This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
+{\color{red} While adversarial loss has been explored in previous style-transfer papers~\cite{,,}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.}
 
 \subsection{Content-Oriented Losses}
 
-\subsubsection{Content Classifier} \label{ssec:multitask-content-objective}
+{\color{red} The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{,,}.} 
+Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
+
+Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to. 
+
+To this end, we propose to approximate the content information by bag-of-words (BoW) features. However, we exclude stop words and style-specific words (or more concretely, sentiment words for sentiment style transfer).
+
+\subsubsection{Content Classifier.} \label{ssec:multitask-content-objective}
 
 In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
 Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
