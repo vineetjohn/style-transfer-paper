@@ -76,7 +76,8 @@
 	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives for label prediction and bag-of-words prediction, respectively.
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to attribute (e.g. style) transfer on non-parallel corpora.
-	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores.\footnote{Our code and data are publicly available at \url{https://bit.ly/2wxps69} (The materials are properly anonymized during double-blind review.)}
+	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores.
+	\footnote{Our code and data are publicly available at \url{https://bit.ly/2wxps69} (The materials are properly anonymized during double-blind review.)}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -462,16 +463,6 @@ Then, the word overlap score can be calculated using $$\operatorname{word-overla
 	\label{tab:classification-amazon}
 \end{table}
 
-\subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences.
-It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
-We train this language model on the complete corpus that we evaluate our style-transfer models with.
-The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
-
-\subsubsection{Manual Evaluation of Language Quality}
-We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
-The aggregate score of all the evaluators is reported.
-
 \begin{table*}[ht]
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
@@ -517,6 +508,15 @@ The aggregate score of all the evaluators is reported.
 	\label{tab:ablation-results}
 \end{table*}
 
+\subsubsection{Language Fluency}
+We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences.
+It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
+We train this language model on the complete corpus that we evaluate our style-transfer models with.
+The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+
+\subsubsection{Manual Evaluation of Language Quality}
+We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+The aggregate score of all the evaluators is reported.
 
 \section{Results and Analysis}
 
@@ -534,32 +534,6 @@ These results verify the effectiveness of our disentangling approach, because th
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
 As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS).
 It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
-
-
-\subsection{Style-Transfer Sentence Generation}
-
-We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
-We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}.
-We replicated the experiments with their publicly available code and data.
-
-\begin{figure}[ht]
-	\captionsetup{justification=centering}
-
-	\includegraphics[width=\linewidth]{dae-latent-spaces}
-	\caption{Deterministic autoencoder t-SNE plots.}
-	\label{fig:dae-tsne}
-
-	\includegraphics[width=\linewidth]{vae-latent-spaces}
-	\caption{Variational autoencoder t-SNE plots.}
-	\label{fig:vae-tsne}
-\end{figure}
-
-We observe that the style embedding model \cite{fu2017style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
-A qualitative analysis indicates that this model resorts to simply reconstructing most of the source sentences, and is not very effective at transferring style.
-
-Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
-Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
-
 
 \begin{table*}[ht]
 	\centering
@@ -609,6 +583,29 @@ Our VAE model also produces the most fluent sentences for both tasks, which is c
 	\label{tab:transfer-samples}
 \end{table*}
 
+\subsection{Style-Transfer Sentence Generation}
+
+We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
+We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}.
+We replicated the experiments with their publicly available code and data.
+
+\begin{figure}[ht]
+	\captionsetup{justification=centering}
+
+	\includegraphics[width=\linewidth]{dae-latent-spaces}
+	\caption{Deterministic autoencoder t-SNE plots.}
+	\label{fig:dae-tsne}
+
+	\includegraphics[width=\linewidth]{vae-latent-spaces}
+	\caption{Variational autoencoder t-SNE plots.}
+	\label{fig:vae-tsne}
+\end{figure}
+
+We observe that the style embedding model \cite{fu2017style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
+A qualitative analysis indicates that this model resorts to simply reconstructing most of the source sentences, and is not very effective at transferring style.
+
+Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
+Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
 
 Table~\ref{tab:ablation-results} presents the results of ablation tests.
 We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
