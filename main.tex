@@ -87,7 +87,7 @@
 \section{Introduction}
 
 The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformations of input features.
-Such transformations, however, make intermediate features ``latent,'' in that they do not have explicit meanings and are not explainable.
+Such transformations, however, make intermediate features ``latent'', in that they do not have explicit meanings and are not explainable.
 Therefore, neural networks are usually treated as black-box machinery.
 
 Disentangling the latent space of neural networks has become an increasingly important research topic.
@@ -170,7 +170,7 @@ Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probabi
 \begin{equation}
 	\loss{AE}(\nnweight{E},\nnweight{D})= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
-where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and decoder, respectively.\footnote{For brevity, we only present the loss for a particular data point (i.e., a sentence) throughout out paper. The total loss sums over all data points, but is implemented with mini-batches.} Both the encoder and decoder are deterministic functions in the original autoencoder model~\cite{}, and thus we call it a \textit{deterministic autoencoder} (DAE).
+where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and decoder, respectively.\footnote{For brevity, we only present the loss for a particular data point (i.e., a sentence) throughout out paper. The total loss sums over all data points, but is implemented with mini-batches.} Both the encoder and decoder are deterministic functions in the original autoencoder model~\cite{rumelhart1985learning}, and thus we call it a \textit{deterministic autoencoder} (DAE).
 
 \subsubsection{Variational Autoencoder.}
 
@@ -236,17 +236,17 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2017style}. In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
 where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dist(s)}$.
 
-	{\color{red} While adversarial loss has been explored in previous style-transfer papers~\cite{,,}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.}
+While adversarial loss has been explored in previous style-transfer papers~\cite{shen2017style,fu2017style,zhao2018adversarially}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.
 
 \subsection{Content-Oriented Losses}
 
-{\color{red} The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{,,}.}
+The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{hu2017toward,shen2017style,fu2017style,zhao2018adversarially}.
 Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
 
 Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to.
