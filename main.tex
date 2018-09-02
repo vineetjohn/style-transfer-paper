@@ -152,7 +152,7 @@ Finally, we present our approach to style transfer in the context of natural lan
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=\linewidth]{model-overview}
+	\includegraphics[width=.9\linewidth]{model-overview}
 	\caption{Overview of our approach.}
 	\label{fig:overview}
 \end{figure}
@@ -166,13 +166,13 @@ Besides, we also use the autoencoder for text generation in the style-transfer a
 Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens.
 The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$.
 Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself.
-Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$. Then the autoencoder is trained using a sequence-aggregated cross-entropy loss, given by
+Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$. Then the autoencoder is trained with a sequence-aggregated cross-entropy loss, given by
 \begin{equation}
 	\loss{AE}(\nnweight{E},\nnweight{D})= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
-where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and decoder, respectively. Both the encoder and decoder are deterministic functions in the original autoencoder model~\cite{}, and thus we call it an \textit{deterministic autoencoder} (DAE).
+where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and decoder, respectively.\footnote{For brevity, we only present the loss for a particular data point (i.e., a sentence) throughout out paper. The total loss sums over all data points, but is implemented with mini-batches.} Both the encoder and decoder are deterministic functions in the original autoencoder model~\cite{}, and thus we call it a \textit{deterministic autoencoder} (DAE).
 
-\subsubsection{Variational Autoencoder}
+\subsubsection{Variational Autoencoder.}
 
 In addition to the deterministic auto-encoding objective presented above, we also tried a variational autoencoder (VAE) \cite{kingma2013auto}, which imposes a probabilistic distribution to the latent vector. The Kullback-Leibler (KL) divergence \cite{kullback1951information} penalty is added to the loss function to regularize the latent space. The decoder reconstructs data based on the sampled latent vector from its posterior distribution.
 
@@ -190,58 +190,35 @@ Besides the above autoencoding loss, we design several auxiliary losses to disen
 This is accomplished by the auxiliary losses described in the rest of this section.
 
 
-\subsection{Multi-Task Classifiers}
+\subsection{Style-Oriented Losses}
 
-\subsubsection{Style Classifier} \label{ssec:multitask-style-objective}
+We first design auxiliary losses that ensures the style information is contained in the style space $\bm s$. This involves a multi-task losses that ensures $\bm s$ is discriminative for the style, as well as an adversarial loss that ensures $\bm c$ is not discriminative for the style.
 
-Our first auxiliary loss ensures the style space does contain style information.
-We build a classifier on the style space $\bm s$ with the objective of predicting the true style label $y'$, which is part of the training data.
+\subsubsection{Multi-Task Loss for Style.} \label{ssec:multitask-style-objective}
+Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following most previous work~\cite{hu2017toward,shen2017style,fu2017style}, and each sentence is labeled with a binary sentiment tag (positive or negative).
 
-This loss can be viewed as a \textit{multi-task} loss, which incentivizes the model to not only decode the sentence, but also predict its sentiment from a fixed subset of the latent variables.
-Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
-
-In our application, we follow previous work \cite{hu2017toward,shen2017style,fu2017style} and treat the sentiment as the style of interest.
-We introduce a multi-label classifier
+We build a classifier on the style space that predicts the style label. Formally, a logistic regression layer is applied to the style vector $\bm s$, given by
 \begin{equation} \label{eqn:class-pred}
 	y = \sigma({\weight{mul(s)}}^\top \bm s + \bias{mul(s)})
 \end{equation}
-where $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are the classifier's parameters for multi-task learning, and $y$ is the predicted label distribution.
+where $\sigma$ is the sigmoid function, and $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $y$ is the output of the logistic unit.
 
-This is trained using a simple cross-entropy loss
+The classifier is trained with a simple cross-entropy loss. For binary classification as in out scenario, it takes the form
 \begin{equation} \label{eqn:style-multi-task-loss}
 	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) =
-	- \mathbb{E} [\log p(y' | \bm s; \nnweight{mul(s)})]
+	- t \log y - (1-t)\log (1-y)
 \end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $y'$ is the true label distribution.
-
-\subsubsection{Content Classifier} \label{ssec:multitask-content-objective}
-
-In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
-Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
-
-The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
-For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by $\frac{\sum_{i=1}^{N}{(1 | w_i = w_*)}}{N}$.
-We exclude stopwords and sentiment words \cite{hu2004mining} from the BoW representation.
-
-We introduce a multi-label classifier over the BoW vocabulary
-\begin{equation} \label{eqn:bow-pred}
-	v = \sigma({\weight{mul(c)}}^\top \bm s + \bias{mul(c)})
-\end{equation}
-where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
-
-This is trained using a simple cross-entropy loss
-\begin{equation} \label{eqn:content-multi-task-loss}
-	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
-	- \mathbb{E} [\log p(v' | \bm s; \nnweight{mul(c)})]
-\end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $v'$ is the true BoW distribution.
+where $\nnweight{E}$ are the encoder's parameters, and $t$ is the groundtruth target label.
 
 
-\subsection{Adversarial Discriminators}
+We train the style classifier at the same time as the autoencoding loss. Thus, this could be viewed as \textit{multi-task} learning, incentivizing the entire model to not only decode the sentence, but also predict its sentiment from the style vector $\bm  s$. We denote it by ``mul(s).''
+Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
-The above multi-task losses, although essential for improving the style and content predictability from the separate spaces, does not guarantee that the style is not present in the content space and vice-versa. For this purpose, we use adversarial training objectives, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{shen2017style,fu2017style}.
 
-\subsubsection{Style Discriminator} \label{ssec:adversarial-style-objective}
+\subsubsection{Adversarial Loss for Style.}
+\label{ssec:adversarial-style-objective}
+
+The multi-task loss could only ensure the style space does contain style information. However, it does not say
 
 We apply an adversarial loss to disentangle the content space from style information.
 
@@ -272,6 +249,37 @@ In other words, we penalize the Shannon entropy of the adversary's prediction, g
 where $\mathcal{H}(p)=-\sum_{i\in\text{labels}}p_i\log p_i$ is the entropy and $y$ is the predicted distribution over the style labels.
 The adversarial objective is maximized, in this phase, with respect to the encoder.
 This objective helps the autoencoder maximize the uncertainty of the discriminator's predicted probability distribution, which occurs when the distribution is uniform.
+
+\subsection{Content-Oriented Losses}
+
+\subsubsection{Content Classifier} \label{ssec:multitask-content-objective}
+
+In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
+Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
+
+The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
+For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by $\frac{\sum_{i=1}^{N}{(1 | w_i = w_*)}}{N}$.
+We exclude stopwords and sentiment words \cite{hu2004mining} from the BoW representation.
+
+We introduce a multi-label classifier over the BoW vocabulary
+\begin{equation} \label{eqn:bow-pred}
+	v = \sigma({\weight{mul(c)}}^\top \bm s + \bias{mul(c)})
+\end{equation}
+where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters for multi-task learning, and $v$ is the predicted BoW distribution.
+
+This is trained using a simple cross-entropy loss
+\begin{equation} \label{eqn:content-multi-task-loss}
+	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
+	- \mathbb{E} [\log p(v' | \bm s; \nnweight{mul(c)})]
+\end{equation}
+where $\nnweight{E}$ are the encoder's parameters, and $v'$ is the true BoW distribution.
+
+
+\subsection{Adversarial Discriminators}
+
+The above multi-task losses, although essential for improving the style and content predictability from the separate spaces, does not guarantee that the style is not present in the content space and vice-versa. For this purpose, we use adversarial training objectives, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{shen2017style,fu2017style}.
+
+
 
 \subsubsection{Content Discriminator} \label{ssec:adversarial-content-objective}
 
