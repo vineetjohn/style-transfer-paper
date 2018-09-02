@@ -236,7 +236,7 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial loss for the style, denot
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. {\color{red} In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{} or penalizing the entropy  of the adversary's prediction~\cite{}.} In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial loss for the style, denoted as adv(s)
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
