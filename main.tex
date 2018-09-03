@@ -73,10 +73,10 @@
 
 \begin{abstract}
 	This paper tackles the problem of disentangling the latent variables of style and content in language models.
-	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives for label prediction and bag-of-words prediction, respectively.
+	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
-	This disentangled latent representation learning method is applied to attribute (e.g. style) transfer on non-parallel corpora.
-	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength scores.
+	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
+	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.
 	\footnote{Our code and data are publicly available at \url{https://bit.ly/2wxps69} (The materials are properly anonymized during double-blind review.)}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
@@ -199,7 +199,7 @@ We first design auxiliary losses that ensure the style information is contained 
 This involves a multi-task loss that ensures $\bm s$ is discriminative for the style, as well as an adversarial loss that ensures $\bm c$ is not discriminative for the style.
 
 \subsubsection{Multi-Task Loss for Style.} \label{ssec:multitask-style-objective}
-Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following most previous work~\cite{hu2017toward,shen2017style,fu2018style}, and each sentence is labeled with a binary sentiment tag (positive or negative).
+Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}, and each sentence is labeled with a binary sentiment tag (positive or negative).
 
 We build a classifier on the style space that predicts the style label. Formally, a logistic regression layer is applied to the style vector $\bm s$, given by
 \begin{equation} \label{eqn:class-pred}
@@ -252,7 +252,7 @@ While adversarial loss has been explored in previous style-transfer papers~\cite
 
 \subsection{Content-Oriented Losses}
 
-The above style-oriented losses only regularize style information, but they do not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}.
+The above style-oriented losses only regularize style information, but they do not impose any constraint on where the content information should be encoded. This also happens in previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}.
 Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
 
 Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to.
@@ -485,7 +485,7 @@ Here, sentiment words from a stop list \cite{hu2004mining} are removed.
 
 \subsubsection{Word Overlap}
 We also utilize a simpler unigram overlap metric to evaluate the similarity between the content of the source and generated sentences.
-Given a source sentence $x$ and an attribute style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
+Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
 Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
 
 \begin{table}[ht]
@@ -599,7 +599,6 @@ We compare our approach with previous state-of-the-art work in Table~\ref{tab:ye
 We replicated the experiments with their publicly available code and data.
 
 We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
-A qualitative analysis indicates that this model resorts to simply reconstructing most of the source sentences, and is not very effective at transferring style.
 We also examined the number of times each model generates exact copies of the source sentences in the test set, and noted that the style embedding model reconstructs sentences without any changes about $24\%$ of the time, whereas, the other models evaluated do this $<6\%$ of the time.
 
 Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
