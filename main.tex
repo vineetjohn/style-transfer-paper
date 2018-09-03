@@ -524,15 +524,9 @@ We perform manual evaluations by randomly sampling pairs of original and generat
 The aggregate score of all the evaluators is reported.
 
 \begin{figure}[ht]
-	\captionsetup{justification=centering}
-
-	\includegraphics[width=\linewidth]{dae-latent-spaces}
-	\caption{Deterministic autoencoder t-SNE plots.}
-	\label{fig:dae-tsne}
-
-	\includegraphics[width=\linewidth]{vae-latent-spaces}
-	\caption{Variational autoencoder t-SNE plots.}
-	\label{fig:vae-tsne}
+	\includegraphics[width=\linewidth]{latent-spaces}
+	\caption{t-SNE plots.}
+	\label{fig:tsne-plots}
 \end{figure}
 
 \begin{table*}[ht]
@@ -596,7 +590,7 @@ However, the 8-dimensional style vector $\bm s$, despite its low dimensionality,
 When combining content and style vectors, we achieve no further improvement.
 These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space does not.
 
-We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:dae-tsne} and Figure \ref{fig:vae-tsne}, respectively.
+We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:tsne-plots}.
 As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS).
 It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
 
