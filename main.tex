@@ -258,7 +258,7 @@ However, we exclude stop words and style-specific words (or more concretely, sen
 
 \subsubsection{Multi-Task Loss for Content.} \label{ssec:multitask-content-objective}
 
-In a similar vein to the multi-task style prediction objective, we also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
+Similar to the multi-task style prediction objective, thee also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
 Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
 
 We introduce a multi-label classifier over the BoW vocabulary
@@ -354,16 +354,18 @@ We want to encourage the encoder to learn a representation of style $\bm s$ that
 
 \subsection{Training Process}
 
-The overall loss $\loss{ovr}$, used for the autoencoder, is thus comprised of four distinct objectives: the reconstruction objective, the multi-task objectives, and the adversarial objectives for style and content.
+The overall loss $\loss{ovr}$, used for the autoencoder,  comprises several distinct objectives: the reconstruction objective, the multi-task objectives for style and content, and the adversarial objectives for style and content.
 \begin{align}
 	\loss{ovr} = & \loss{AE}(\nnweight{E}, \nnweight{D})  \nonumber                                                                   \\
 	             & + \hyp{mul(s)} \loss{mul(s)} (\nnweight{E},\nnweight{mul(s)}) - \hyp{adv(s)} \loss{adv(s)}(\nnweight{E}) \nonumber \\
 	             & + \hyp{mul(c)} \loss{mul(c)} (\nnweight{E},\nnweight{mul(c)}) - \hyp{adv(c)} \loss{adv(c)}(\nnweight{E})
 \end{align}
-where $\hyp{mul(s)}$, $\hyp{adv(s)}$ and $\hyp{adv(c)}$ balance the model's auxiliary losses.
+where $\lambda$'s are the hyperparameters that balancing the autoencoding loss and these auxiliary losses.
 
-To put it all together, the model training consists of a loop involving the processes shown in Algorithm \ref{alg:training-process}.
-\begin{algorithm}[ht]
+To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss, shown in Algorithm~\ref{alg:training-process}.
+
+
+\begin{algorithm}[!t]
 	\While{epochs remaining}{
 		minimize $\loss{dis(s)}(\nnweight{dis(s)})$ w.r.t. $\nnweight{dis(s)}$\;
 		minimize $\loss{dis(c)}(\nnweight{dis(c)})$ w.r.t. $\nnweight{dis(c)}$\;
@@ -373,14 +375,7 @@ To put it all together, the model training consists of a loop involving the proc
 	\label{alg:training-process}
 \end{algorithm}
 
-We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
-The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
-Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
-These hyperparameters were identified by performing a log-scale grid search within 2 orders of magnitude, and choosing the hyperparameters that yielded the best results.
-The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
-We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
-For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
-We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
+
 
 
 \subsection{Generating Style-Transferred Sentences} \label{ssec:sentence-generation}
@@ -462,6 +457,15 @@ The maximum sentence length is 20, and the vocabulary size is about 58000.
 	\label{tab:ablation-results}
 \end{table*}
 
+\subsection{Settings}
+We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
+The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
+Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
+These hyperparameters were identified by performing a log-scale grid search within 2 orders of magnitude, and choosing the hyperparameters that yielded the best results.
+The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
+We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
+For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
+We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
 \subsection{Evaluation Metrics}
 
 We evaluate our method using four metrics: style-transfer strength, cosine similarity, word overlap, and language fluency.
