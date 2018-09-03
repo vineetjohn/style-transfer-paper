@@ -204,7 +204,7 @@ We build a classifier on the style space that predicts the style label. Formally
 \begin{equation} \label{eqn:class-pred}
 	y = \sigma({\weight{mul(s)}}^\top \bm s + \bias{mul(s)})
 \end{equation}
-where $\sigma$ is the sigmoid function, and $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $y$ is the output of the logistic unit.
+where $\sigma$ is the $\operatorname{sigmoid}$ function, and $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $y$ is the output of the logistic unit.
 
 The classifier is trained with a simple cross-entropy loss. For binary classification as in our scenario, it takes the form
 \begin{equation} \label{eqn:style-multi-task-loss}
@@ -213,15 +213,17 @@ The classifier is trained with a simple cross-entropy loss. For binary classific
 \end{equation}
 where $\nnweight{E}$ are the encoder's parameters, and $t$ is the ground truth target label.
 
-
-We train the style classifier at the same time as the autoencoding loss. Thus, this could be viewed as \textit{multi-task} learning, incentivizing the entire model to not only decode the sentence, but also predict its sentiment from the style vector $\bm  s$. We denote it by ``mul(s).''
+We train the style classifier at the same time as the autoencoding loss.
+Thus, this could be viewed as \textit{multi-task} learning, incentivizing the entire model to not only decode the sentence, but also predict its sentiment from the style vector $\bm  s$.
+We denote it by ``mul(s)''.
 Similar multi-task losses are used in previous work for sequence-to-sequence learning \cite{luong2015multi}, sentence representation learning \cite{jernite2017discourse} and sentiment analysis \cite{balikas2017multitask}, among others.
 
 
 \subsubsection{Adversarial Loss for Style.}
 \label{ssec:adversarial-style-objective}
 
-The above multi-task loss could only ensure the style space does contain style information. However, the content space might also contain style information, which is undesired for disentanglement and style transfer.
+The above multi-task loss could only ensure the style space does contain style information.
+However, the content space might also contain style information, which is undesired for disentanglement and style transfer.
 
 We thus apply an adversarial loss to disentangle the content space from style information.
 The idea is to first introduce a classifier, called an \textit{adversary}, that deliberately discriminates the true style label using the content vector $\bm c$.
@@ -239,7 +241,7 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative for style.
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative for style.
 In existing literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}.
 In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
 \begin{equation}
@@ -247,7 +249,7 @@ In our work, we adopt the latter, as it can be easily extended to multi-category
 \end{equation}
 where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dis(s)}$.
 
-While adversarial loss has been explored in previous style-transfer papers~\cite{shen2017style,fu2018style,zhao2018adversarially}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.
+While adversarial loss has been explored in previous style-transfer papers~\cite{shen2017style,fu2018style,zhao2018adversarially}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better text style transfer performance than a variety of previous state-of-the-art methods.
 
 \subsection{Content-Oriented Losses}
 
@@ -269,7 +271,7 @@ However, we exclude stop words and style-specific words (or more concretely, sen
 
 \subsubsection{Multi-Task Loss for Content.} \label{ssec:multitask-content-objective}
 
-Similar to style-oriented loss, the multi-task loss for content---denoted as ``mul(c)''---ensures that the content space $\bm $ does contain content information, i.e., BoW features.
+Similar to style-oriented loss, the multi-task loss for content, denoted as ``mul(c)'', ensures that the content space $\bm $ does contain content information, i.e., BoW features.
 
 We introduce a softmax classifier over the BoW vocabulary
 \begin{equation} \label{eqn:bow-pred}
@@ -279,8 +281,7 @@ where $\nnweight{mul(c)}=[W_\text{mul(c)}; \bm b_\text{mul(c)}]$ are the classif
 
 The training objective is a cross-entropy loss against the ground truth distribution $t_c(\cdot)$, given by
 \begin{equation}\label{eqn:content-multi-task-loss}
-	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
-	- \sum_w t_c(w)\log y_c(w)
+	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) = - \sum_w t_c(w)\log y_c(w)
 \end{equation}
 where the optimization is performed with both encoder parameters $\nnweight{E}$ and the multi-task classifier $\nnweight{mul(c)}$.
 
@@ -290,15 +291,13 @@ It is also interesting that, at the first glance, the multi-task loss for conten
 
 \subsubsection{Adversarial Loss for Content.} \label{ssec:adversarial-content-objective}
 
-To ensure that the style space does not contain content information, we design our last auxiliary loss, the adversarial loss for content, denoted as ``adv(c).''
+To ensure that the style space does not contain content information, we design our last auxiliary loss, the adversarial loss for content, denoted as ``adv(c)''.
 
 We build an adversary, a softmax classifier on the style space to predict BoW features, approximating content information, given by
-
 \begin{align}
-	\bm y_c                          & = \operatorname{softmax}({W_\text{dis(c)}}^\top \bm s + \bm b_\text{dis(c)}) \\
 	\label{eqn:adv-bow-disc-loss}
-	\loss{dis(c)}(\nnweight{dis(c)}) & =
-	- \sum_w t_c(w)\log y_c(w)
+	\bm y_c                          & = \operatorname{softmax}({W_\text{dis(c)}}^\top \bm s + \bm b_\text{dis(c)}) \\
+	\loss{dis(c)}(\nnweight{dis(c)}) & = - \sum_w t_c(w)\log y_c(w)
 \end{align}
 where $\nnweight{dis(c)}=[W_\text{dis(c)}; \bm b_\text{dis(c)}]$ are the classifier's parameters for BoW prediction.
 
@@ -368,7 +367,7 @@ where $\lambda$'s are the hyperparameters that balance the autoencoding loss and
 To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss $\loss{ovr}$, shown in Algorithm~\ref{alg:training-process}.
 
 
-\begin{algorithm}[!t]
+\begin{algorithm}[h]
 	\ForEach{mini-batch}{
 		minimize $\loss{dis(s)}(\nnweight{dis(s)})$ w.r.t. $\nnweight{dis(s)}$\;
 		minimize $\loss{dis(c)}(\nnweight{dis(c)})$ w.r.t. $\nnweight{dis(c)}$\;
@@ -393,7 +392,6 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 
 \section{Experiments}
-
 
 \subsection{Datasets}
 
