@@ -240,8 +240,8 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative for style. 
-In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}. 
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative for style.
+In existing literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}.
 In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
@@ -540,43 +540,34 @@ The aggregate score of all the evaluators is reported.
 	\small
 	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
-		\tabc{2}{Original (Positive)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Negative)}                                              & \tabh{(Negative)}                                           \\
+		\tabc{2}{Original (Positive)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                               \\
+		                                                                        & \tabh{(Negative)}                                                         & \tabh{(Negative)}                                    \\
 		\hline
 		\hline
-		i would recommend a visit here                         & i would not recommend this place again                         & i would not recommend this place for my experience          \\
+		the food is excellent and the service is exceptional & the food was a bit bad but the staff was exceptional & the food was bland and i am not thrilled with this \\
 		\hline
-		the restaurant itself is romantic and quiet            & the restaurant itself is soooo quiet                           & the restaurant itself was dirty                             \\
+		the waitresses are friendly and helpful & the guys are rude and helpful & the waitresses are rude and are lazy \\
 		\hline
-		my experience was brief but very good                  & my experience was very loud and very expensive                 & my experience was ok but not very much                      \\
+		the restaurant itself is romantic and quiet & the restaurant itself is awkward and quite crowded & the restaurant itself was dirty \\
 		\hline
-		the food is excellent and the service is exceptional   & the food is by the worst part is the horrible costumer service & the food was bland and i am not thrilled with this          \\
+		great deal & horrible deal & no deal \\
 		\hline
-		the food is very very amazing like beef and fish       & the food is very horrible i have ever had mostly fish          & the food is very bland and just not fresh                   \\
-		\hline
-		we will definitely come back here                      & we will not come back here again                               & we will never come back here                                \\
-		\hline
-		both were very good                                    & everything was very bland                                      & both were very bad                                          \\
+		both times i have eaten the lunch buffet and it was outstanding & their burgers were decent but the eggs were not the consistency & both times i have eaten here the food was mediocre at best \\
 		\hline
 		\hline
+		\tabc{2}{Original (Negative)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                               \\
+		                                                                        & \tabh{(Positive)}                                                         & \tabh{(Positive)}                                    \\
 		\hline
-		\tabc{2}{Original (Negative)}                          & \tabh{DAE Transferred}                                         & \tabh{VAE Transferred}                                      \\
-		                                                       & \tabh{(Positive)}                                              & \tabh{(Positive)}                                           \\
 		\hline
+		the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                          \\
 		\hline
-		so nasty                                               & so helpful                                                     & so fabulous                                                 \\
+		it was a bed of lettuce and spinach with some italian meats and cheeses & it was a beautiful setting and just had a large variety of german flavors & it was a huge assortment of flavors and italian food \\
 		\hline
-		consistently slow                                      & consistently awesome                                           & fast service                                                \\
+		the people behind the counter were not friendly whatsoever              & the best selection behind the register and service presentation           & the people behind the counter is friendly caring     \\
 		\hline
-		crap fries hard hamburger buns burger tasted like crap & cheap and yummy sandwiches really something different          & yummy hamburgers and blue cheese bagels are classic italian \\
+		the interior is old and generally falling apart                         & the decor is old and now perfectly                                        & the interior is old and noble                        \\
 		\hline
-		oh and terrible tea                                    & oh and awesome tea                                             & oh and great tea                                            \\
-		\hline
-		the interior is old and generally falling apart        & the interior is clean and orderly as entertaining              & the interior is old and noble                               \\
-		\hline
-		front office customer service does not exist here      & front office is very professional does you                     & kudos to customer service is very professional              \\
-		\hline
-		the crust was kinda gooey like                         & the crust is kinda traditional                                 & the crust is soooooo worth it                               \\
+		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                     \\
 		\hline
 	\end{tabular}
 	\caption{Examples of style transfer sentence generation.}
