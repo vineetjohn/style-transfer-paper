@@ -135,11 +135,14 @@ However, there is no evidence that the latent space would be disentangled by thi
 \citeay{fu2018style} propose two approaches: using a style embedding matrix, and using style-specific decoders for style-transfer.
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. However, all the above approaches only deal with the style information and simply ignore the content part.
 
-\citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is much indirect than our BoW-based auxiliary losses.
+\citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
 
-Recently, \citeay{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models. This is beyond the scope of our paper, as we focus on non-parallel text style transfer.
+Recently, \citeay{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models.
+This is beyond the scope of our paper, as we focus on non-parallel text style transfer.
 
-Our paper differs from the previous work in that both our style space and content space are encoded from the input. We apply several auxiliary losses to ensure that each space encodes and only encodes the desired information. Such disentanglement of latent space has its own research interest in the deep learning community.
+Our paper differs from the previous work in that both our style space and content space are encoded from the input.
+We apply several auxiliary losses to ensure that each space encodes and only encodes the desired information.
+Such disentanglement of latent space has its own research interest in the deep learning community.
 The disentangled representation can then be directly applied to non-parallel text style-transfer tasks, as in the aforementioned studies.
 
 
@@ -192,7 +195,8 @@ This is accomplished by the auxiliary losses described in the rest of this secti
 
 \subsection{Style-Oriented Losses}
 
-We first design auxiliary losses that ensures the style information is contained in the style space $\bm s$. This involves a multi-task losses that ensures $\bm s$ is discriminative for the style, as well as an adversarial loss that ensures $\bm c$ is not discriminative for the style.
+We first design auxiliary losses that ensure the style information is contained in the style space $\bm s$.
+This involves a multi-task loss that ensures $\bm s$ is discriminative for the style, as well as an adversarial loss that ensures $\bm c$ is not discriminative for the style.
 
 \subsubsection{Multi-Task Loss for Style.} \label{ssec:multitask-style-objective}
 Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following most previous work~\cite{hu2017toward,shen2017style,fu2018style}, and each sentence is labeled with a binary sentiment tag (positive or negative).
@@ -222,7 +226,7 @@ The above multi-task loss could only ensure the style space does contain style i
 
 We thus apply an adversarial loss to disentangle the content space from style information.
 The idea is to first introduce a classifier, called an \textit{adversary}, that deliberately discriminates the true style label using the content vector $\bm c$.
-Then, the encoder is trained to learn such a content vector space that its adversary cannot predict style information.
+Then the encoder is trained to learn a content vector space, from which its adversary cannot predict style information.
 
 Concretely, the adversarial discriminator and its training objective have a similar form as Equations~\ref{eqn:class-pred} and~\ref{eqn:style-multi-task-loss}, but with different input and parameters, given by
 \begin{align}
@@ -236,17 +240,19 @@ where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of
 
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
-Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative in style. In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}. In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
+Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion that $\bm c$ is not discriminative for style. 
+In exiting literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}. 
+In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
 \begin{equation}
 	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
 \end{equation}
-where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dist(s)}$.
+where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dis(s)}$.
 
 While adversarial loss has been explored in previous style-transfer papers~\cite{shen2017style,fu2018style,zhao2018adversarially}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better performance of text style transfer than a variety of previous state-of-the-art methods.
 
 \subsection{Content-Oriented Losses}
 
-The above style-oriented losses only regularize style information, but it does not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}.
+The above style-oriented losses only regularize style information, but they do not impose any constraint on where the content information should be encoded. This also happens in most previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}.
 Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
 
 Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to.
@@ -302,7 +308,7 @@ The adversarial loss for the model is to maximize the entropy of the discriminat
 	\loss{adv(c)}(\nnweight{E}) = \mathcal{H}(\bm y_c | \bm s; \nnweight{dis(c)})
 \end{equation}
 
-Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters $\nnweight{dis(c)}$, whereas $\loss{adv(c)}$ is trained with respect to $\loss{E}$, similar to the adversarial loss for style.
+Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters $\nnweight{dis(c)}$, whereas $\loss{adv(c)}$ is trained with respect to $\nnweight{E}$, similar to the adversarial loss for style.
 
 \begin{table*}[ht]
 	\centering
@@ -358,7 +364,7 @@ The overall loss $\loss{ovr}$ for the autoencoder comprises several terms: the r
 	             & + \hyp{mul(s)} \loss{mul(s)} (\nnweight{E},\nnweight{mul(s)}) - \hyp{adv(s)} \loss{adv(s)}(\nnweight{E}) \nonumber \\
 	             & + \hyp{mul(c)} \loss{mul(c)} (\nnweight{E},\nnweight{mul(c)}) - \hyp{adv(c)} \loss{adv(c)}(\nnweight{E})
 \end{align}
-where $\lambda$'s are the hyperparameters that balancing the autoencoding loss and these auxiliary losses.
+where $\lambda$'s are the hyperparameters that balance the autoencoding loss and these auxiliary losses.
 
 To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss $\loss{ovr}$, shown in Algorithm~\ref{alg:training-process}.
 
@@ -520,7 +526,7 @@ We train this language model on the complete corpus that we evaluate our style-t
 The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation}
-We perform manual evaluations by randomly sampling pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+We perform manual evaluations by randomly sampling 40 pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
 The aggregate score of all the evaluators is reported.
 
 \begin{figure}[ht]
@@ -634,8 +640,7 @@ We see that both the style adversarial loss and multi-task classification loss p
 	\label{tab:manual-evaluation}
 \end{table}
 
-The manual evaluation results are presented in Table \ref{tab:manual-evaluation}.
-Our VAE model attains the best scores for transfer strength and generated sentence quality, as well as the second best score for content preservation amongst all the evaluated models.
+The manual evaluation results (Table \ref{tab:manual-evaluation}) show that our VAE model attains the best scores for transfer strength and generated sentence quality, as well as the second best score for content preservation amongst all the evaluated models.
 
 Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
 We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
