@@ -137,11 +137,10 @@ However, there is no evidence that the latent space would be disentangled by thi
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. However, all the above approaches only deal with the style information and simply ignore the content part.
 
 \citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
-
 Recently, \citeay{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models.
 This is beyond the scope of our paper, as we focus on non-parallel text style transfer.
 
-Our paper differs from the previous work in that both our style space and content space are encoded from the input.
+Our paper differs from previous work in that both our style space and content space are encoded from the input.
 We apply several auxiliary losses to ensure that each space encodes and only encodes the desired information.
 Such disentanglement of latent space has its own research interest in the deep learning community.
 The disentangled representation can then be directly applied to non-parallel text style-transfer tasks, as in the aforementioned studies.
@@ -151,7 +150,7 @@ The disentangled representation can then be directly applied to non-parallel tex
 
 In this section, we describe our approach in detail, shown in Figure~\ref{fig:overview}.
 Our model is built upon an autoencoder with a sequence-to-sequence neural network~\cite{sutskever2014sequence}.
-Then, we introduce the multi-task and adversarial auxiliary losses for both style and content space.
+Then, we introduce the multi-task and adversarial auxiliary losses for both style and content spaces.
 Finally, we present our approach to style transfer in the context of natural language generation.
 
 \begin{figure}[!t]
@@ -163,7 +162,8 @@ Finally, we present our approach to style transfer in the context of natural lan
 
 \subsection{Autoencoder} \label{ssec:seq2seq-autoencoder}
 
-An autoencoder encodes an input to a latent vector space, from which it decodes the input itself. The latent vector space is usually of much smaller dimensionality than input data, and the autoencoder learns salient and compact representations of data during the reconstruction process.
+An autoencoder encodes an input to a latent vector space, from which it decodes the input itself.
+The latent vector space is usually of much smaller dimensionality than input data, and the autoencoder learns salient and compact representations of data during the reconstruction process.
 This serves as our primary learning objective.
 Besides, we also use the autoencoder for text generation in the style-transfer application.
 
@@ -178,17 +178,15 @@ where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and de
 
 \subsubsection{Variational Autoencoder.}
 
-In addition to the deterministic auto-encoding objective presented above, we also tried a variational autoencoder (VAE) \cite{kingma2013auto}, which imposes a probabilistic distribution to the latent vector. The Kullback-Leibler (KL) divergence \cite{kullback1951information} penalty is added to the loss function to regularize the latent space. The decoder reconstructs data based on the sampled latent vector from its posterior distribution.
+In addition to the deterministic auto-encoding objective, we also tried a variational autoencoder (VAE) \cite{kingma2013auto}, which imposes a probabilistic distribution to the latent vector. The Kullback-Leibler (KL) divergence \cite{kullback1951information} penalty is added to the loss function to regularize the latent space. The decoder reconstructs data based on the sampled latent vector from its posterior distribution.
 
-Formally, the autoencoding loss in the variational version is
+Formally, the autoencoding loss in the VAE is
 \begin{equation}
 	\loss{AE}(\nnweight{E}, \nnweight{D}) =
 	- \mathbb{E}_{q_{E}(\bm h|\rmx)} [\log p(\rmx|\bm h)]
 	+ \hyp{kl}\operatorname{KL}(q_{E}(\bm h|\rmx)\|p(\bm h))
 \end{equation}
-where $\hyp{kl}$ is the hyperparameter balancing the reconstruction loss and the KL terms. $p(\bm h)$ is the prior, set to the standard normal distribution $\mathcal{N}(\bm 0,\mathrm I)$.
-
-The motivation for using VAE as opposed to DAE is  that the reconstruction is based on the samples of the posterior, which theoretically populates to the neighborhood and thus smooths the latent space. \citeay{bowman2016generating} show that VAE generates more fluent sentences than DAE.
+where $\hyp{kl}$ is the hyperparameter balancing the reconstruction loss and the KL terms. $p(\bm h)$ is the prior, set to the standard normal distribution $\mathcal{N}(\bm 0,\mathrm I)$. The motivation for using VAE as opposed to DAE is  that the reconstruction is based on the samples of the posterior, which theoretically populates the neighborhood and thus smooths the latent space. \citeay{bowman2016generating} show that VAE generates more fluent sentences than DAE.
 
 Besides the above autoencoding loss, we design several auxiliary losses to disentangle the latent space. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation.
 This is accomplished by the auxiliary losses described in the rest of this section.
