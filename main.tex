@@ -206,7 +206,7 @@ where $\sigma$ is the sigmoid function, and $\nnweight{mul(s)}=[\weight{mul(s)};
 The classifier is trained with a simple cross-entropy loss. For binary classification as in our scenario, it takes the form
 \begin{equation} \label{eqn:style-multi-task-loss}
 	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) =
-	- t \log y - (1-t)\log (1-y)
+	- t \log y- (1-t)\log (1-y)
 \end{equation}
 where $\nnweight{E}$ are the encoder's parameters, and $t$ is the ground-truth target label.
 
@@ -253,58 +253,56 @@ Inspired by the above combination of multi-task and adversarial losses, we would
 
 To this end, we propose to approximate the content information by bag-of-words (BoW) features.
 The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
-For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by $\frac{\sum_{i=1}^{N}{(1 | w_i = w_*)}}{N}$.
+For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by 
+\begin{equation}\label{eqn:bow}
+t_c(w_*)=\frac{\sum_{i=1}^{N}{\mathbb{I}\{w_i = w_*\}}}{N}
+\end{equation}
+where $t_c(\cdot)$ denotes the target distribution of content, and $\mathbb{I}$ is an indicator function.
+
 However, we exclude stop words and style-specific words (or more concretely, sentiment words \cite{hu2004mining} for sentiment style transfer).
+
 
 \subsubsection{Multi-Task Loss for Content.} \label{ssec:multitask-content-objective}
 
-Similar to the multi-task style prediction objective, thee also try to predict the content, represented by a bag-of-words (BoW), from the content vector $\bm c$.
-Here, we define the content of the sentence as the words from the original sentence without any words that are discriminative of style.
+Similar to style-oriented loss, the multi-task loss for content---denoted as ``mul(c)''---ensures that the content space $\bm $ does contain content information, i.e., BoW features.
 
-We introduce a multi-label classifier over the BoW vocabulary
+We introduce a softmax classifier over the BoW vocabulary
 \begin{equation} \label{eqn:bow-pred}
-	\bm v = \sigma({\weight{mul(c)}}^\top \bm s + \bias{mul(c)})
+	\bm y_\text{c} = \operatorname{softmax}({W_\text{mul(c)}} \bm s + \bm b_\text{mul(c)})
 \end{equation}
-where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters for multi-task learning, and $\bm v$ is the predicted BoW distribution.
+where $\nnweight{mul(c)}=[W_\text{mul(c)}; \bm b_\text{mul(c)}]$ are the classifier's parameters, and $\bm y$ is the predicted BoW distribution.
 
-This is trained using a simple cross-entropy loss
-\begin{equation} \label{eqn:content-multi-task-loss}
+The training objective is a cross-entropy loss against the groundtruth distribution $t_c(\cdot)$, given by
+\begin{equation}\label{eqn:content-multi-task-loss}
 	\loss{mul(c)}(\nnweight{E};\nnweight{mul(c)}) =
-	- \mathbb{E} [\log p(\bm v' | \bm s; \nnweight{mul(c)})]
+	- \sum_w t_c(w)\log y_c(w)
 \end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $\bm v'$ is the true BoW distribution.
+where the optimization is performed with both encoder parameters $\nnweight{E}$ and the multi-task classifier $\nnweight{mul(c)}$.
 
-% The above multi-task losses, although essential for improving the style and content predictability from the separate spaces, does not guarantee that the style is not present in the content space and vice-versa. For this purpose, we use adversarial training objectives, inspired by adversarial generation~\cite{goodfellow2014generative}, adversarial domain adaptation~\cite{liu2017adversarial}, and adversarial style-transfer~\cite{shen2017style,fu2017style}.
+Notice that although the target distribution is not one-hot as in most classification problems, the cross-entropy loss (Equation~\label{eqn:content-multi-task-loss}) has the same form.
+
+It is also interesting that, at the first glance, the multi-task loss for content is redundant to autoencoding loss, but in fact, they are different in several ways. The multi-task loss only considers content words, which do not include stop-words and sentiment words, and is only applied to the content space $\bm c$. Together with the style space $\bm s$, the autoencoding loss requires the model to generate the entire sentence. This ensures that the content information is indeed captured in the content space.
 
 \subsubsection{Adversarial Loss for Content.} \label{ssec:adversarial-content-objective}
 
-We also propose a bag-of-words (BoW) discriminator on the style space to make our approach complete.
-The motivation is to emulate the adversarial signal provided by the style discriminator, and do the same for the content.
+To ensure that the style space does not contain content information, we design our last auxiliary loss, the adversarial loss for content, denoted as ``adv(c).''
 
-The BoW discriminator uses the style vector $\bm s$ produced by the autoencoder model, and tries to predict the true BoW distribution using a set of parameters that are distinct from those of the autoencoder.
-The discriminator uses a softmax activation to predict the occurrence frequency of each word in the original sentence, between $0$ and $1$.
+We build an adversary, a softmax classifier on the style space to predict BoW features, approximating content information, given by
+
+\begin{align}
+	\bm y_c &= \operatorname{softmax}({W_\text{dis(c)}}^\top \bm s + \bm b_\text{dis(c)})\\
+ \label{eqn:adv-bow-disc-loss}
+	\loss{dis(c)}(\nnweight{dis(c)}) &=
+	- \sum_w t_c(w)\log y_c(w)
+\end{align}
+where $\nnweight{dis(c)}=[W_\text{dis(c)}; \bm b_\text{dis(c)}]$ are the classifier's parameters for BoW prediction.
+
+The adversarial loss for the model is to maximize the entropy of the discriminator 
 \begin{equation}
-	\bm v = \sigma({\weight{dis(c)}}^\top \bm s + \bias{dis(c)})
+	\loss{adv(c)}(\nnweight{E}) = \mathcal{H}(\bm y_c | \bm s; \nnweight{dis(c)})
 \end{equation}
-where $\nnweight{dis(c)}=[\weight{dis(c)}; \bias{dis(c)}]$ are the classifier's parameters for BoW prediction, and $\bm v$ is the predicted BoW distribution.
 
-This objective is trained in a similar method to the style adversary, using a cross-entropy loss
-\begin{equation} \label{eqn:adv-bow-disc-loss}
-	\loss{dis(c)}(\nnweight{dis(c)}) =
-	- \mathbb{E} [\log p(\bm v' | \bm s; \nnweight{dis(c)})]
-\end{equation}
-where $\bm v'$ is the true BoW distribution.
-
-We also refrain from propagating the effects of this discriminator loss $\loss{dis(c)}$ to the encoder parameters, ensuring that the parameters that each adversary and the autoencoder can update are mutually exclusive.
-
-Similar to the style adversary, the empirical Shannon entropy of the predicted distribution is provided as a training signal for the autoencoder model to maximize.
-\begin{equation}
-	\loss{adv(c)}(\nnweight{E}) = \mathcal{H}(v | \bm s; \nnweight{dis(c)})
-\end{equation}
-where $v$ is the predicted word distribution.
-
-The motivation for this adversarial loss is similar to the one used in the context of the style discriminator.
-We want to encourage the encoder to learn a representation of style $\bm s$ that the BoW discriminator cannot predict most of the original words from.
+Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters $\nnweight{dis(c)}$, whereas $\loss{adv(c)}$ is trained with respect to $\loss{E}$, similar to the adversarial loss for style.
 
 \begin{table*}[ht]
 	\centering
@@ -354,7 +352,7 @@ We want to encourage the encoder to learn a representation of style $\bm s$ that
 
 \subsection{Training Process}
 
-The overall loss $\loss{ovr}$, used for the autoencoder,  comprises several distinct objectives: the reconstruction objective, the multi-task objectives for style and content, and the adversarial objectives for style and content.
+The overall loss $\loss{ovr}$ for the autoencoder comprises several terms: the reconstruction objective, the multi-task objectives for style and content, and the adversarial objectives for style and content:
 \begin{align}
 	\loss{ovr} = & \loss{AE}(\nnweight{E}, \nnweight{D})  \nonumber                                                                   \\
 	             & + \hyp{mul(s)} \loss{mul(s)} (\nnweight{E},\nnweight{mul(s)}) - \hyp{adv(s)} \loss{adv(s)}(\nnweight{E}) \nonumber \\
@@ -362,7 +360,7 @@ The overall loss $\loss{ovr}$, used for the autoencoder,  comprises several dist
 \end{align}
 where $\lambda$'s are the hyperparameters that balancing the autoencoding loss and these auxiliary losses.
 
-To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss, shown in Algorithm~\ref{alg:training-process}.
+To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss $\loss{ovr}$, shown in Algorithm~\ref{alg:training-process}.
 
 
 \begin{algorithm}[!t]
@@ -388,7 +386,7 @@ If we would like to transfer its content to a different style, we compute an emp
 \begin{equation*}
 	\hat{\bm s}=\frac{\sum_{i\in\text{target style}}\bm s_i}{\text{\# target style samples}}
 \end{equation*}
-The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding style-transferred sentences (Figure~\ref{fig:overview}b).
+The inferred target style $\hat{\bm s}$ is concatenated with the encoded content $\bm c^*$ for decoding style-transferred sentences, shown in Figure~\ref{fig:overview}b.
 
 
 \section{Experiments}
@@ -631,13 +629,13 @@ We see that both the style adversarial loss and multi-task classification loss p
 		\hline
 		\citeauthor{shen2017style}         & 3.625           & 3.067               & 3.083           \\
 		\hline
-		\citeauthor{fu2017style}           & 1.667           & 3.842               & 3.658           \\
+		\citeauthor{fu2017style}           & 1.667           & \textbf{3.842}               & 3.658           \\
 		\hline
 		\citeauthor{zhao2018adversarially} & 3.554           & 3.088               & 3.771           \\
 		\hline
 		Ours (DAE)                         & 3.667           & 3.642               & 4.192           \\
 		\hline
-		Ours (VAE)                         & 4.317           & 3.733               & 4.479           \\
+		Ours (VAE)                         &\textbf{ 4.317 }          & 3.733               & \textbf{4.479     }      \\
 		\hline
 	\end{tabular}
 	\caption{Manual evaluation results.}
