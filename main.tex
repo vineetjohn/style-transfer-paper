@@ -366,7 +366,7 @@ To put it all together, the model training involves an alternation of optimizing
 
 
 \begin{algorithm}[!t]
-	\While{epochs remaining}{
+	\ForEach{mini-batch}{
 		minimize $\loss{dis(s)}(\nnweight{dis(s)})$ w.r.t. $\nnweight{dis(s)}$\;
 		minimize $\loss{dis(c)}(\nnweight{dis(c)})$ w.r.t. $\nnweight{dis(c)}$\;
 		minimize $\loss{ovr}$ w.r.t. $\nnweight{E}, \nnweight{D}, \nnweight{mul(s)}, \nnweight{mul(c)}$\;
