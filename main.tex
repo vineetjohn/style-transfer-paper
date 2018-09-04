@@ -366,7 +366,7 @@ where $\lambda$'s are the hyperparameters that balance the autoencoding loss and
 To put it all together, the model training involves an alternation of optimizing adversary's losses $\loss{dis(s)}$ and $\loss{dis(c)}$, and the model's own loss $\loss{ovr}$, shown in Algorithm~\ref{alg:training-process}.
 
 
-\begin{algorithm}[h]
+\begin{algorithm}[!t]
 	\ForEach{mini-batch}{
 		minimize $\loss{dis(s)}(\nnweight{dis(s)})$ w.r.t. $\nnweight{dis(s)}$\;
 		minimize $\loss{dis(c)}(\nnweight{dis(c)})$ w.r.t. $\nnweight{dis(c)}$\;
