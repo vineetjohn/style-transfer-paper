@@ -406,7 +406,7 @@ The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
 
-We also use an Amazon product reviews dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citeay{fu2018style}.
+We also use an Amazon review dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citeay{fu2018style}.
 The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}.
 It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively.
 The maximum sentence length is 20, and the vocabulary size is about 58000.
@@ -460,13 +460,13 @@ The maximum sentence length is 20, and the vocabulary size is about 58000.
 We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
 The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
 Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
-These hyperparameters were identified by performing a log-scale grid search within 2 orders of magnitude, and choosing the hyperparameters that yielded the best results.
+These hyperparameters were identified by performing a log-scale grid search within two orders of magnitude of the default value of $1$, and choosing the hyperparameters that yielded the best results.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
 For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
 We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
-\subsection{Evaluation Metrics}
 
+\subsection{Evaluation Metrics}
 We evaluate our method using four metrics: style-transfer strength, cosine similarity, word overlap, and language fluency.
 
 \subsubsection{Style-Transfer Strength}
