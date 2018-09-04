@@ -40,9 +40,9 @@
 % used for denoting the theta symbol with a subscript
 \newcommand{\nnweight}[1]{\bm{\theta_{\text{#1}}}}
 % used for denoting the weight symbol (w) with a subscript
-\newcommand{\weight}[1]{\bm{w_{\text{#1}}}}
+\newcommand{\weight}[1]{W_{\text{#1}}}
 % used for denoting the bias symbol (b) with a subscript
-\newcommand{\bias}[1]{b_{\text{#1}}}
+\newcommand{\bias}[1]{\bm{b_{\text{#1}}}}
 % custom author-year citation
 \newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
@@ -203,18 +203,17 @@ This involves a multi-task loss that ensures $\bm s$ is discriminative for the s
 \subsubsection{Multi-Task Loss for Style.} \label{ssec:multitask-style-objective}
 Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}, and each sentence is labeled with a binary sentiment tag (positive or negative).
 
-We build a classifier on the style space that predicts the style label. Formally, a logistic regression layer is applied to the style vector $\bm s$, given by
+We build a classifier on the style space that predicts the style label. Formally, a softmax layer is applied to the style vector $\bm s$, given by
 \begin{equation} \label{eqn:class-pred}
-	y = \sigma({\weight{mul(s)}}^\top \bm s + \bias{mul(s)})
+	\bm y_s = \operatorname{softmax}(\weight{mul(s)} \bm s + \bias{mul(s)})
 \end{equation}
-where $\sigma$ is the $\operatorname{sigmoid}$ function, and $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $y$ is the output of the logistic unit.
+where $\nnweight{mul(s)}=[\weight{mul(s)}; \bias{mul(s)}]$ are parameters for multi-task learning of style, and $\bm y_s$ is the output of softmax layer.
 
-The classifier is trained with a simple cross-entropy loss. For binary classification as in our scenario, it takes the form
+The classifier is trained with a simple cross-entropy loss against the ground truth distribution $t_s(\cdot)$, given by
 \begin{equation} \label{eqn:style-multi-task-loss}
-	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) =
-	- t \log y- (1-t)\log (1-y)
+	\loss{mul(s)}(\nnweight{E};\nnweight{mul(s)}) = - \sum_l t_s(l)\log y_s(l)
 \end{equation}
-where $\nnweight{E}$ are the encoder's parameters, and $t$ is the ground truth target label.
+where $\nnweight{E}$ are the encoder's parameters.
 
 We train the style classifier at the same time as the autoencoding loss.
 Thus, this could be viewed as \textit{multi-task} learning, incentivizing the entire model to not only decode the sentence, but also predict its sentiment from the style vector $\bm  s$.
@@ -234,10 +233,9 @@ Then the encoder is trained to learn a content vector space, from which its adve
 
 Concretely, the adversarial discriminator and its training objective have a similar form as Equations~\ref{eqn:class-pred} and~\ref{eqn:style-multi-task-loss}, but with different input and parameters, given by
 \begin{align}
-	y                                 & = \sigma({\weight{dis(s)}}^\top \bm c + \bias{dis(s)}) \\
 	\label{eqn:adv-disc-loss}
-	\loss{dis(s)} (\nnweight{dis(s)}) & =
-	- t\log y - (1-t)\log(1-y)
+	\bm y_s                          & = \operatorname{softmax}(\weight{dis(s)} \bm c + \bias{dis(s)}) \\
+	\loss{dis(s)}(\nnweight{dis(s)}) & = - \sum_l t_c(l)\log y_s(l)
 \end{align}
 where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of the adversary.
 
@@ -247,10 +245,10 @@ It should be emphasized that, for the adversary, the gradients are not propagate
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative for style.
 In existing literature, there could be different approaches, for example, maximizing the adversary's loss~\cite{shen2017style,zhao2018adversarially} or penalizing the entropy  of the adversary's prediction~\cite{fu2018style}.
 In our work, we adopt the latter, as it can be easily extended to multi-category classification, used for content-oriented loss in some other part of our approach. Formally, the adversarial objective for the style is to maximize
-\begin{equation}
-	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y|\bm c; \nnweight{dis(s)})\label{eqn:advs}
+\begin{equation} \label{eqn:advs}
+	\loss{adv(s)}(\nnweight{E})=\mathcal{H}(\bm y_s|\bm c; \nnweight{dis(s)})
 \end{equation}
-where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y=[y, 1-y]$ is the predicted distribution over the style labels (positive and negative). In here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dis(s)}$.
+where $\mathcal{H}(\bm p)=-\sum_{i\in\text{labels}}p_i\log p_i$ and $\bm y_s$ is the predicted distribution over the style labels. Here, $\loss{adv(s)}$ is maximized with respect to the encoder. It is viewed as a function of $\nnweight{E}$, and we fix $\nnweight{dis(s)}$.
 
 While adversarial loss has been explored in previous style-transfer papers~\cite{shen2017style,fu2018style,zhao2018adversarially}, it has not been combined with the multi-task loss. As we shall show in the experiment, combining these two losses is promisingly effective, achieving better text style transfer performance than a variety of previous state-of-the-art methods.
 
@@ -278,9 +276,9 @@ Similar to style-oriented loss, the multi-task loss for content, denoted as ``mu
 
 We introduce a softmax classifier over the BoW vocabulary
 \begin{equation} \label{eqn:bow-pred}
-	\bm y_\text{c} = \operatorname{softmax}({W_\text{mul(c)}} \bm c + \bm b_\text{mul(c)})
+	\bm y_c = \operatorname{softmax}({\weight{mul(c)}} \bm c + \bias{mul(c)})
 \end{equation}
-where $\nnweight{mul(c)}=[W_\text{mul(c)}; \bm b_\text{mul(c)}]$ are the classifier's parameters, and $\bm y$ is the predicted BoW distribution.
+where $\nnweight{mul(c)}=[\weight{mul(c)}; \bias{mul(c)}]$ are the classifier's parameters, and $\bm y_c$ is the predicted BoW distribution.
 
 The training objective is a cross-entropy loss against the ground truth distribution $t_c(\cdot)$, given by
 \begin{equation}\label{eqn:content-multi-task-loss}
@@ -299,10 +297,10 @@ To ensure that the style space does not contain content information, we design o
 We build an adversary, a softmax classifier on the style space to predict BoW features, approximating content information, given by
 \begin{align}
 	\label{eqn:adv-bow-disc-loss}
-	\bm y_c                          & = \operatorname{softmax}({W_\text{dis(c)}}^\top \bm s + \bm b_\text{dis(c)}) \\
+	\bm y_c                          & = \operatorname{softmax}({\weight{dis(c)}}^\top \bm s + \bias{dis(c)}) \\
 	\loss{dis(c)}(\nnweight{dis(c)}) & = - \sum_w t_c(w)\log y_c(w)
 \end{align}
-where $\nnweight{dis(c)}=[W_\text{dis(c)}; \bm b_\text{dis(c)}]$ are the classifier's parameters for BoW prediction.
+where $\nnweight{dis(c)}=[\weight{dis(c)}; \bias{dis(c)}]$ are the classifier's parameters for BoW prediction.
 
 The adversarial loss for the model is to maximize the entropy of the discriminator
 \begin{equation}
