@@ -4,6 +4,8 @@ suppfilename=supp
 
 all:
 	latexmk -xelatex -pdf -outdir=$(build-dir) $(filename)
+
+supp:
 	latexmk -xelatex -pdf -outdir=$(build-dir) $(suppfilename)
 
 bib:
