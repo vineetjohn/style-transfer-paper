@@ -21,7 +21,7 @@
 
 \newcommand{\loss}[1]{J_{\text{#1}}}
 
-\section{BoW Vocabulary Ablation Tests}
+\section{Bag-of-Words (BoW) Vocabulary Ablation Tests}
 
 The tests in Table \ref{tab:bow-vocab-ablation} demonstrate the effect of the choice of vocabulary used for the auxiliary content losses.
 
@@ -46,12 +46,12 @@ The tests in Table \ref{tab:bow-vocab-ablation} demonstrate the effect of the ch
 	\label{tab:bow-vocab-ablation}
 \end{table}
 
+It is evident that using a BoW vocabulary that excludes sentiment words and stopwords performs better on every single quantitative metric.
+
 
 \section{t-SNE plots of Ablation Tests}
 
-These figures represent a few of the ablation tests in the form of t-SNE plots.
-
-Figure \ref{fig:only-rec} shows the t-SNE plot without any auxiliary losses.
+Figure \ref{fig:only-rec} shows the t-SNE plots of the style and content embeddings, without any auxiliary losses.
 Figures \ref{fig:rec-and-muls}, \ref{fig:rec-and-advs}, \ref{fig:rec-and-mulc} and \ref{fig:rec-and-advc} show the effect of adding each of the auxiliary losses independently.
 
 \begin{figure}[ht]
