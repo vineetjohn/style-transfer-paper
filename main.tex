@@ -77,7 +77,7 @@
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
 	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.
-	\footnote{Our code and data are publicly available at \url{https://bit.ly/2wxps69} (The materials are properly anonymized during double-blind review.)}
+	\footnote{\url{https://bit.ly/2wxps69} Our code and data are publicly available at this URL. The materials are properly anonymized during double-blind review.}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -87,7 +87,7 @@
 \section{Introduction}
 
 The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformations of input features.
-Such transformations, however, make intermediate features ``latent'', in that they do not have explicit meanings and are not explainable.
+Such transformations, however, make intermediate features ``latent'', in the sense that, they do not have explicit meaning and are not explainable.
 Therefore, neural networks are usually treated as black-box machinery.
 
 Disentangling the latent space of neural networks has become an increasingly important research topic.
@@ -110,7 +110,7 @@ In our paper, we propose to approximate the content information by bag-of-words 
 Along with traditional style-oriented auxiliary losses, our BoW multi-task loss and BoW adversarial loss make the style and content spaces much more disentangled from each other.
 
 The disentangled latent space can be directly used for text style-transfer~\cite{hu2017toward,shen2017style}, where a model transforms a given sentence to a new sentence with the same content but a different style.
-Since it is difficult to obtain sentence pairs with the same content and differing styles, we follow the setting where we train our model on a non-parallel but style-labeled corpora. We call this \textit{non-parallel text style transfer}.
+Since it is difficult to obtain sentence pairs with the same content and differing styles (i.e. parallel corpora), we follow the setting where we train our model on a non-parallel but style-labeled corpora. We call this \textit{non-parallel text style transfer}.
 To accomplish this, we train an autoencoder with disentangled latent space during training.
 For style-transfer inference, we simply use the autoencoder to encode the content vector of a sentence, but ignore its encoded style vector.
 We then infer from the training data an empirical embedding of the style that we would like to transfer to.
@@ -162,7 +162,7 @@ Finally, we present our approach to style transfer in the context of natural lan
 
 \subsection{Autoencoder} \label{ssec:seq2seq-autoencoder}
 
-An autoencoder encodes an input to a latent vector space, from which it decodes the input itself.
+An autoencoder encodes an input to a latent vector space, from which it reconstructs the input itself.
 The latent vector space is usually of much smaller dimensionality than input data, and the autoencoder learns salient and compact representations of data during the reconstruction process.
 This serves as our primary learning objective.
 Besides, we also use the autoencoder for text generation in the style-transfer application.
@@ -254,7 +254,7 @@ While adversarial loss has been explored in previous style-transfer papers~\cite
 \subsection{Content-Oriented Losses}
 
 The above style-oriented losses only regularize style information, but they do not impose any constraint on where the content information should be encoded. This also happens in previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}.
-Although the style space is usually much smaller than the content space, it is unrealistic that content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
+Although the style space is usually much smaller than the content space, it is unrealistic to expect that the content would not flow into the style space because of its limited capacity. Therefore, we need to design content-oriented auxiliary losses to regularize the content information.
 
 Inspired by the above combination of multi-task and adversarial losses, we would like to apply the same idea to the content space. However, it is hard to define what ``content'' actually refers to.
 
@@ -305,7 +305,6 @@ The adversarial loss for the model is to maximize the entropy of the discriminat
 \begin{equation}
 	\loss{adv(c)}(\nnweight{E}) = \mathcal{H}(\bm y_c | \bm s; \nnweight{dis(c)})
 \end{equation}
-
 Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters $\nnweight{dis(c)}$, whereas $\loss{adv(c)}$ is trained with respect to $\nnweight{E}$, similar to the adversarial loss for style.
 
 \begin{table*}[ht]
@@ -399,13 +398,11 @@ We conduct experiments on two datasets, the details for which are given below.
 Both of these datasets are comprised of sentences accompanied by binary sentiment labels (positive, negative) and are, therefore, used to evaluate the task of sentiment transfer.
 
 \subsubsection{Yelp Service Reviews}
-
 We use a Yelp review dataset \cite{challenge2013yelp}, which has been sourced from the code repository accompanying the implementation of the paper by \citeay{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}.
 It contains 444101, 63483 and 126670 sentences for train, validation, and test, respectively.
 The maximum sentence length is 15, and the vocabulary size is about 9200.
 
 \subsubsection{Amazon Product Reviews}
-
 We also use an Amazon review dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, following \citeay{fu2018style}.
 The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}.
 It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively.
@@ -458,7 +455,7 @@ The maximum sentence length is 20, and the vocabulary size is about 58000.
 
 \subsection{Settings}
 We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
-The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the training set.
+The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the respective training sets.
 Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
 These hyperparameters were identified by performing a log-scale grid search within two orders of magnitude of the default value of $1$, and choosing the hyperparameters that yielded the best results.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
@@ -470,18 +467,18 @@ We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{
 We evaluate our method using four metrics: style-transfer strength, cosine similarity, word overlap, and language fluency.
 
 \subsubsection{Style-Transfer Strength}
-We train a convolutional neural network (CNN) style classifier \cite{kim2014convolutional} and predict the style of the generated sentences.
+A convolutional neural network (CNN) style classifier \cite{kim2014convolutional} is trained to predict the style of the generated sentences.
 While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2018style}.
 The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively.
 The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
 
 \subsubsection{Cosine Similarity}
-We compute a sentence embedding by min, max, and average pooling its constituent word embeddings \cite{fu2018style}.
+We compute a sentence embedding by concatenating the min, max, and average of its constituent word embeddings \cite{fu2018style}.
 Then, the cosine similarity between the source and generated sentence embedding is computed to evaluate how close they are in meaning, which is an indicator of content preservation.
 Here, sentiment words from a stop list \cite{hu2004mining} are removed.
 
 \subsubsection{Word Overlap}
-We also utilize a simpler unigram overlap metric to evaluate the similarity between the content of the source and generated sentences.
+A simpler unigram overlap metric is also utilized to evaluate the similarity between the content of the source and generated sentences.
 Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
 Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
 
@@ -517,13 +514,13 @@ Then, the word overlap score can be calculated using $$\operatorname{word-overla
 
 
 \subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which to assess the quality of generated sentences.
+We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which we assess the quality of generated sentences.
 It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
-We train this language model on the complete corpus that we evaluate our style-transfer models with.
+This language model is trained on the complete corpus that we evaluate our style-transfer models with.
 The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
 
 \subsubsection{Manual Evaluation}
-We perform manual evaluations by randomly sampling 40 pairs of original and generated sentences generated from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
 The aggregate score of all the evaluators is reported.
 
 \begin{figure}[ht]
@@ -575,23 +572,23 @@ The aggregate score of all the evaluators is reported.
 
 \subsection{Disentangling Latent Space}
 
-We first analyze how the style (sentiment) and content of the latent space are disentangled.
+First, we analyze how the style (sentiment) and content of the latent space are disentangled.
 We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables \ref{tab:classification-yelp} and \ref{tab:classification-amazon}.
 
 We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style.
 It achieves accuracies that are only slightly better than random/majority guess.
 However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy.
 When combining content and style vectors, we achieve no further improvement.
-These results verify the effectiveness of our disentangling approach, because the style space does contain style information, whereas the content space does not.
+These results verify the effectiveness of our disentangling approach, because the style space contains style information, whereas the content space does not.
 
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure \ref{fig:tsne-plots}.
-As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a cleaner manner in the style space (LHS), but are indistinguishable in the content space (RHS).
+As can be seen from the t-SNE plots, sentences with different styles are noticeably separated in a clean manner in the style space (LHS), but are indistinguishable in the content space (RHS).
 It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
 
 
 \subsection{Style-Transfer Sentence Generation}
 
-We apply the disentangled latent space to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
+The disentangled latent space is applied to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
 We compare our approach with previous state-of-the-art work in Table~\ref{tab:yelp-comparison-previous} and Table~\ref{tab:amazon-comparison-previous}.
 We replicated the experiments with their publicly available code and data.
 
@@ -601,7 +598,7 @@ We also examined the number of times each model generates exact copies of the so
 Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
 Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
 
-Table~\ref{tab:ablation-results} presents the results of ablation tests.
+Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
 We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
 
 \begin{table}[ht]
@@ -612,15 +609,15 @@ We see that both the style adversarial loss and multi-task classification loss p
 		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
 		\hline
 		\hline
-		\citeauthor{shen2017style}         & 3.625           & 3.067               & 3.083           \\
+		\citeauthor{shen2017style}         & 3.63            & 3.07                & 3.08            \\
 		\hline
-		\citeauthor{fu2018style}           & 1.667           & \textbf{3.842}      & 3.658           \\
+		\citeauthor{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66            \\
 		\hline
-		\citeauthor{zhao2018adversarially} & 3.554           & 3.088               & 3.771           \\
+		\citeauthor{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
 		\hline
-		Ours (DAE)                         & 3.667           & 3.642               & 4.192           \\
+		Ours (DAE)                         & 3.67            & 3.64                & 4.19            \\
 		\hline
-		Ours (VAE)                         & \textbf{4.317}  & 3.733               & \textbf{4.479}  \\
+		Ours (VAE)                         & \textbf{4.32}   & 3.73                & \textbf{4.48}   \\
 		\hline
 	\end{tabular}
 	\caption{Manual evaluation results.}
