@@ -302,12 +302,7 @@ The adversarial loss for the model is to maximize the entropy of the discriminat
 \end{equation}
 Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters $\nnweight{dis(c)}$, whereas $\loss{adv(c)}$ is trained with respect to $\nnweight{E}$, similar to the adversarial loss for style.
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\linewidth]{latent-spaces}
-	\caption{t-SNE plots of our disentangled models.}
-	\label{fig:tsne-plots}
-\end{figure}
+
 
 
 \subsection{Training Process}
@@ -364,6 +359,102 @@ The maximum sentence length is 15, and the vocabulary size is approximately 9,20
 We also used the Amazon review dataset,\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}} following previous work~\citeay{fu2018style}.
 It contains 559,142, 2,000 and 2,000 sentences for train, validation, and test, respectively.
 The maximum sentence length is 20, and the vocabulary size is approximately 58,000.
+
+
+\subsection{Experiment Settings}
+We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$. We trained our model for 20 epochs.
+The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
+Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
+These hyperparameters were tuned by performing a log-scale grid search within two orders of magnitude around the default value $1$, and choosing those that yielded the best validation results.
+The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
+We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
+For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
+We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}. {\color{blue} They were tuned with the original VAE model, and we directly use them for training disentangled models.}
+
+
+
+
+\subsection{Experiment I: Disentangling Latent Space}
+
+First, we analyze how the style (sentiment) and content of the latent space are disentangled.
+We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables~\ref{tab:classification-yelp} and~\ref{tab:classification-amazon} for the Yelp and Amazon datasets, respectively.
+
+We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style.
+It achieves accuracies slightly better than majority guess.
+However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy.
+When combining content and style vectors, we achieve no further improvement.
+These results verify the effectiveness of our disentangling approach, as the style space contains style information, whereas the content space does not.
+
+We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure~\ref{fig:tsne-plots}.
+As seen, sentences with different styles are noticeably separated in a clean manner in the style space (LHS), but are indistinguishable in the content space (RHS).
+It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
+\begin{table}[!t]
+	\centering
+	\begin{tabular}{| l || r | r |}
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\hline \hline
+		Majority guess                   & \multicolumn{2}{c|}{0.602}              \\
+		\hline
+		Content space  ($\bm c$)         & 0.658                      & 0.697      \\ \hline
+		Style space ($\bm s$)            & 0.974                      & 0.974      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.974                      & 0.974      \\
+		\hline
+	\end{tabular}
+	\caption{Classification accuracy on latent spaces (Yelp).}
+	\label{tab:classification-yelp}
+	\begin{tabular}{| l || r | r |}
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\hline \hline
+		Majority guess                   & \multicolumn{2}{c|}{0.512}              \\
+		\hline
+		Content space  ($\bm c$)         & 0.675                      & 0.693      \\ \hline
+		Style space ($\bm s$)            & 0.821                      & 0.810      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.819                      & 0.810      \\
+		\hline
+	\end{tabular}
+	\caption{Classification accuracy on latent spaces (Amazon).}
+	\label{tab:classification-amazon}
+\end{table}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=\linewidth]{latent-spaces}
+	\caption{t-SNE plots of our disentangled models.}
+	\label{fig:tsne-plots}
+\end{figure}
+
+
+\subsection{Experiment II: Non-Parallel Style Transfer}
+We then evaluate the performance of style transfer with our disentangled latent space.
+
+\subsubsection{Metrics.} We shall evaluate competing models by (1) how the sentiment is transferred,  and (2) how the content is preserved. The evaluation of sentence generation is usually hard, and we adopt a few automatic metrics as well as human judgment.
+
+$\bullet$ \textit{Style-Transfer Strength.} We foloow most previous work~\cite{hu2017toward,shen2017style,fu2018style} and train a separate convolutional neural network (CNN)  to predict the sentiment of a sentence~\cite{kim2014convolutional}, which is then used to approximate the style transfer accuracy. In other words, we report the CNN classifier's accuracy on the style-transferred sentences, considering the target style to be the groundtruth.
+
+While the style classifier itself may not be perfect, it achieves a reasonable sentiment accuracy on the validation $97\%$ for Yelp and $82\%$ for the Amazon. Thus, it provides a quantitative way of evaluating the strength of style-transfer.
+
+$\bullet$ \textit{Cosine Similarity.}
+We followed \citeay{fu2018style} and computed a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its constituent word embeddings (sentiment words are removed).
+Then, the cosine similarity between the source and generated sentence embeddings is computed to evaluate how close they are in meaning, which more or less indicates how content is preserved.
+
+$\bullet$ \textit{Word Overlap.}
+A simpler unigram overlap metric is also utilized to evaluate the similarity between the content of the source and generated sentences.
+Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
+Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
+
+
+
+
+\subsubsection{Language Fluency}
+We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which we assess the quality of generated sentences.
+It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
+This language model is trained on the complete corpus that we evaluate our style-transfer models with.
+The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+
+\subsubsection{Manual Evaluation}
+Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each evaluated model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+The aggregate score of all the evaluators is reported.
 
 \begin{table*}[ht]
 	\centering
@@ -432,7 +523,7 @@ The maximum sentence length is 20, and the vocabulary size is approximately 58,0
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
-\begin{table*}[ht]
+\begin{table*}[!t]
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
@@ -454,97 +545,6 @@ The maximum sentence length is 20, and the vocabulary size is approximately 58,0
 	\caption{Comparison using the Amazon dataset.}
 	\label{tab:amazon-comparison-previous}
 \end{table*}
-
-\subsection{Experiment Settings}
-We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$. We trained our model for 20 epochs.
-The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
-Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
-These hyperparameters were tuned by performing a log-scale grid search within two orders of magnitude around the default value $1$, and choosing those that yielded the best validation results.
-The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
-We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
-For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
-We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}. {\color{blue} They were tuned with the original VAE model, and we directly use them for training disentangled models.}
-
-
-\subsection{Experiment I: Disentangling Latent Space}
-
-First, we analyze how the style (sentiment) and content of the latent space are disentangled.
-We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables~\ref{tab:classification-yelp} and~\ref{tab:classification-amazon}.
-
-We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style.
-It achieves accuracies slightly better than majority guess.
-However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy.
-When combining content and style vectors, we achieve no further improvement.
-These results verify the effectiveness of our disentangling approach, as the style space contains style information, whereas the content space does not.
-
-We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure~\ref{fig:tsne-plots}.
-As seen, sentences with different styles are noticeably separated in a clean manner in the style space (LHS), but are indistinguishable in the content space (RHS).
-It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared to the one learned by the deterministic autoencoder.
-
-
-
-\subsection{Evaluation Metrics}
-We shall evaluate all 
-\cite{shen2017style,fu2018style,zhao2018adversarially} empirically.
-
-\subsection{Style-Transfer Strength}
-A convolutional neural network (CNN) style classifier \cite{kim2014convolutional} is trained to predict the style of the generated sentences.
-While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2018style}.
-The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively.
-The classifier accuracy on the style-transferred sentences, considering the target style to be the true label, is reported as the style-transfer strength.
-
-\subsubsection{Cosine Similarity}
-We compute a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its constituent word embeddings \cite{fu2018style}.
-Then, the cosine similarity between the source and generated sentence embeddings is computed to evaluate how close they are in meaning, which is an indicator of content preservation.
-Here, sentiment words from a stop list \cite{hu2004mining} are removed.
-
-\subsubsection{Word Overlap}
-A simpler unigram overlap metric is also utilized to evaluate the similarity between the content of the source and generated sentences.
-Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
-Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
-
-
-\begin{table}[!t]
-	\centering
-	\begin{tabular}{| l || r | r |}
-		\hline
-		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
-		\hline \hline
-		Majority guess                   & \multicolumn{2}{c|}{0.602}              \\
-		\hline
-		Content space  ($\bm c$)         & 0.658                      & 0.697      \\ \hline
-		Style space ($\bm s$)            & 0.974                      & 0.974      \\ \hline
-		Complete space ($[\bm s;\bm c]$) & 0.974                      & 0.974      \\
-		\hline
-	\end{tabular}
-	\caption{Classification accuracy on latent spaces (Yelp).}
-	\label{tab:classification-yelp}
-	\begin{tabular}{| l || r | r |}
-		\hline
-		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
-		\hline \hline
-		Majority guess                   & \multicolumn{2}{c|}{0.512}              \\
-		\hline
-		Content space  ($\bm c$)         & 0.675                      & 0.693      \\ \hline
-		Style space ($\bm s$)            & 0.821                      & 0.810      \\ \hline
-		Complete space ($[\bm s;\bm c]$) & 0.819                      & 0.810      \\
-		\hline
-	\end{tabular}
-	\caption{Classification accuracy on latent spaces (Amazon).}
-	\label{tab:classification-amazon}
-\end{table}
-
-
-\subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which we assess the quality of generated sentences.
-It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
-This language model is trained on the complete corpus that we evaluate our style-transfer models with.
-The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
-
-\subsubsection{Manual Evaluation}
-Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each evaluated model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
-The aggregate score of all the evaluators is reported.
-
 \begin{table*}[ht]
 	\centering
 	\scriptsize
