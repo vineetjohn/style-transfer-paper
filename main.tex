@@ -77,7 +77,10 @@
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
 	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.
-	\footnote{\url{https://bit.ly/2wxps69} Our code and data are publicly available at this URL. The materials are properly anonymized during double-blind review.}
+	\footnote{
+		Our code and data are publicly available at the following URL: \url{bit.ly/2wxps69}.
+		The materials are properly anonymized during double-blind review.
+	}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -87,7 +90,7 @@
 \section{Introduction}
 
 The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformations of input features.
-Such transformations, however, make intermediate features ``latent'', in the sense that, they do not have explicit meaning and are not explainable.
+Such transformations, however, make intermediate features ``latent'', in the sense that, they do not have explicit meaning and are not interpretable.
 Therefore, neural networks are usually treated as black-box machinery.
 
 Disentangling the latent space of neural networks has become an increasingly important research topic.
@@ -113,13 +116,13 @@ The disentangled latent space can be directly used for text style-transfer~\cite
 Since it is difficult to obtain sentence pairs with the same content and differing styles (i.e. parallel corpora), we follow the setting where we train our model on a non-parallel but style-labeled corpora. We call this \textit{non-parallel text style transfer}.
 To accomplish this, we train an autoencoder with disentangled latent space during training.
 For style-transfer inference, we simply use the autoencoder to encode the content vector of a sentence, but ignore its encoded style vector.
-We then infer from the training data an empirical embedding of the style that we would like to transfer to.
+We then infer from the training data an empirical embedding of the style that we would like to transfer.
 The encoded content vector and the empirically-inferred style vector are concatenated and fed to the decoder.
 This grafting technique enables us to obtain a new sentence similar in content to the input sentence, but with a different style.
 
 We conducted experiments on two customer review datasets.
-Both qualitative and quantitative results show that both the style and content vectors are indeed disentangled well.
-In the style-transfer evaluation, we achieve significantly better style-transfer strength and language fluency compared with previous results, while obtaining comparable content preservation scores.
+Both qualitative and quantitative results show that both the style and content spaces are indeed disentangled well.
+In the style-transfer evaluation, we achieve significantly better style-transfer strength and language fluency compared to previous results, while obtaining comparable content preservation scores.
 Ablation tests also show that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
 
 
