@@ -426,7 +426,55 @@ It is also evident that the latent space learned by the variational autoencoder 
 \end{figure}
 
 
-\subsection{Experiment II: Non-Parallel Style Transfer}
+
+
+
+\begin{table*}[!t]
+	\centering
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline
+        Style-Embedding \cite{fu2018style}         & 0.182           & 0.959             & 0.666          & -16.17          \\
+        \hline		\hline
+		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39          \\
+		\hline
+		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95          \\
+		\hline
+		Ours (DAE)                                 & 0.883           & 0.915             & 0.549          & -10.17          \\
+		\hline
+		Ours (VAE)                                 & \textbf{0.934}           & \textbf{0.904}             & \textbf{0.473}          & \textbf{-9.84}           \\
+		\hline
+	\end{tabular}
+	\caption{Comparison using the Yelp dataset. The style-embedding approach is achieves poor transfer accuracy, and should not be considered as an effective4 style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency).}
+	\label{tab:yelp-comparison-previous}
+\end{table*}
+\begin{table*}[!t]
+	\centering
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline	Style Embedding \cite{fu2018style}         & 0.417           & 0.933             & 0.359          & -28.13          \\
+		\hline\hline
+		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893             & 0.024          & -26.31          \\
+		\hline
+		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926             & 0.169          & -34.70          \\
+		\hline
+		Ours (DAE)                                 & 0.720           & 0.921             & 0.354          & -24.74          \\
+		\hline
+		Ours (VAE)                                 & 0.822           & 0.900             & 0.196          & -21.70          \\
+		\hline
+	\end{tabular}
+	\caption{Comparison using the Amazon dataset.}
+	\label{tab:amazon-comparison-previous}
+\end{table*}
+
+
+\subsection{Experiment II: Non-Parallel Text Style Transfer}
 We then evaluate the performance of style transfer with our disentangled latent space.
 
 \subsubsection{Metrics.} We shall evaluate competing models by (1) how the sentiment is transferred,  and (2) how the content is preserved. The evaluation of sentence generation is usually hard, and we adopt a few automatic metrics as well as human judgment.
@@ -444,14 +492,106 @@ $\bullet$ \textit{Word Overlap.} We find that the cosine similarity measure is n
 
 
 
-$\bullet$ \textit{Language Fluency}
+$\bullet$ \textit{Language Fluency.}
 We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improved} as a quantitative and automated metric to evaluate the fluency of a sentence.
 It estimates the empirical distribution of trigrams in a corpus, and computes the log-likelihood of a test sentence.
 We train the language model on both Yelp and Amazon, and report the Kneser-Ney language model's log-likelihood. A smaller (more negative) number indicates a more fluent sentence.
 
-$\bullet$  \textit{Manual Evaluation}
-Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each evaluated model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
-The aggregate score of all the evaluators is reported.
+$\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we also have human evaluation to further confirm the performance of our model. This was conducted on the Yelp dataset only, due to the large amount of human effort involved. We asked 6 human annotators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality. The human evaluation was conducted in a strictly blind fashion: samples obtained by all competing models are randomly shuffled, so that the annotator could not know which model generated a particular sentence.
+\begin{table}[!t]
+	\centering
+	\begin{tabular}{| l || c | c | c | }
+		\hline
+		\tabc{2}{Model}                    & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
+		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
+		\hline
+		\hline		\citeay{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66            \\\hline\hline
+		\citeay{shen2017style}         & 3.63            & 3.07                & 3.08            \\
+		\hline
+		\citeay{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
+		\hline
+		Ours (DAE)                         & 3.67            & 3.64                & 4.19            \\
+		\hline
+		Ours (VAE)                         & \textbf{4.32}   & 3.73                & \textbf{4.48}   \\
+		\hline
+	\end{tabular}
+	\caption{Manual evaluation results.}
+	\label{tab:manual-evaluation}
+\end{table}
+
+\begin{table*}[ht]
+	\centering
+	\scriptsize
+	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
+		\hline
+		\tabc{2}{Original (Positive)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
+		                                                                        & \tabh{(Negative)}                                                         & \tabh{(Negative)}                                          \\
+		\hline
+		\hline
+		the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\
+		\hline
+		the waitresses are friendly and helpful                                 & the guys are rude and helpful                                             & the waitresses are rude and are lazy                       \\
+		\hline
+		the restaurant itself is romantic and quiet                             & the restaurant itself is awkward and quite crowded                        & the restaurant itself was dirty                            \\
+		\hline
+		great deal                                                              & horrible deal                                                             & no deal                                                    \\
+		\hline
+		both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\
+		\hline
+		\hline
+		\tabc{2}{Original (Negative)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
+		                                                                        & \tabh{(Positive)}                                                         & \tabh{(Positive)}                                          \\
+		\hline
+		\hline
+		the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\
+		\hline
+		it was a bed of lettuce and spinach with some italian meats and cheeses & it was a beautiful setting and just had a large variety of german flavors & it was a huge assortment of flavors and italian food       \\
+		\hline
+		the people behind the counter were not friendly whatsoever              & the best selection behind the register and service presentation           & the people behind the counter is friendly caring           \\
+		\hline
+		the interior is old and generally falling apart                         & the decor is old and now perfectly                                        & the interior is old and noble                              \\
+		\hline
+		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
+		\hline
+	\end{tabular}
+	\caption{Examples of style transfer sentence generation.}
+	\label{tab:transfer-samples}
+\end{table*}
+
+
+\subsubsection{Results and Analysis.}
+
+We compare our approach with previous state-of-the-art work in Tables \ref{tab:yelp-comparison-previous} and \ref{tab:amazon-comparison-previous}.
+For baseline methods, we replicated the experiments with publicly available code released in \citeay{fu2018style}, \citeay{shen2017style}, and \citeay{zhao2018adversarially}.
+
+We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
+We also examined the number of times each model generates exact copies of the source sentences in the test set, and noted that the style embedding model reconstructs sentences without any changes about $24\%$ of the time, whereas, the other models evaluated do this $<6\%$ of the time.
+
+Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
+Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
+
+Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
+We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
+
+
+
+The manual evaluation results (Table \ref{tab:manual-evaluation}) show that our VAE model attains the best scores for transfer strength and generated sentence quality, as well as the second best score for content preservation amongst all the evaluated models.
+
+Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
+We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
+
+\section{Conclusion and Future Work}
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks using multi-task and adversarial objectives.
+Our learned disentanglement approach can be applied to text style-transfer tasks.
+It achieves similar content preservation scores, and significantly better style-transfer strength and language fluency scores compared to previous state-of-the-art work.
+
+For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles.
+We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style-transfer, as opposed to using the empirical mean of training-time style embeddings.
+
+%\section{Acknowledgements}
+%We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award.
+%The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
+
 
 \begin{table*}[ht]
 	\centering
@@ -497,149 +637,6 @@ The aggregate score of all the evaluators is reported.
 	\caption{Ablation tests.}
 	\label{tab:ablation-results}
 \end{table*}
-\begin{table*}[!t]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39          \\
-		\hline
-		Style-Embedding \cite{fu2018style}         & 0.182           & 0.959             & 0.666          & -16.17          \\
-		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95          \\
-		\hline
-		Ours (DAE)                                 & 0.883           & 0.915             & 0.549          & -10.17          \\
-		\hline
-		Ours (VAE)                                 & 0.934           & 0.904             & 0.473          & -9.84           \\
-		\hline
-	\end{tabular}
-	\caption{Comparison using the Yelp dataset.}
-	\label{tab:yelp-comparison-previous}
-\end{table*}
-
-\begin{table*}[!t]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893             & 0.024          & -26.31          \\
-		\hline
-		Style Embedding \cite{fu2018style}         & 0.417           & 0.933             & 0.359          & -28.13          \\
-		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926             & 0.169          & -34.70          \\
-		\hline
-		Ours (DAE)                                 & 0.720           & 0.921             & 0.354          & -24.74          \\
-		\hline
-		Ours (VAE)                                 & 0.822           & 0.900             & 0.196          & -21.70          \\
-		\hline
-	\end{tabular}
-	\caption{Comparison using the Amazon dataset.}
-	\label{tab:amazon-comparison-previous}
-\end{table*}
-\begin{table*}[ht]
-	\centering
-	\scriptsize
-	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
-		\hline
-		\tabc{2}{Original (Positive)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
-		                                                                        & \tabh{(Negative)}                                                         & \tabh{(Negative)}                                          \\
-		\hline
-		\hline
-		the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\
-		\hline
-		the waitresses are friendly and helpful                                 & the guys are rude and helpful                                             & the waitresses are rude and are lazy                       \\
-		\hline
-		the restaurant itself is romantic and quiet                             & the restaurant itself is awkward and quite crowded                        & the restaurant itself was dirty                            \\
-		\hline
-		great deal                                                              & horrible deal                                                             & no deal                                                    \\
-		\hline
-		both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\
-		\hline
-		\hline
-		\tabc{2}{Original (Negative)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
-		                                                                        & \tabh{(Positive)}                                                         & \tabh{(Positive)}                                          \\
-		\hline
-		\hline
-		the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\
-		\hline
-		it was a bed of lettuce and spinach with some italian meats and cheeses & it was a beautiful setting and just had a large variety of german flavors & it was a huge assortment of flavors and italian food       \\
-		\hline
-		the people behind the counter were not friendly whatsoever              & the best selection behind the register and service presentation           & the people behind the counter is friendly caring           \\
-		\hline
-		the interior is old and generally falling apart                         & the decor is old and now perfectly                                        & the interior is old and noble                              \\
-		\hline
-		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
-		\hline
-	\end{tabular}
-	\caption{Examples of style transfer sentence generation.}
-	\label{tab:transfer-samples}
-\end{table*}
-
-
-\section{Results and Analysis}
-
-
-
-\subsection{Style-Transfer Sentence Generation}
-
-The disentangled latent space is applied to a style-transfer sentence generation task, where the goal is to generate a sentence with different sentiment.
-We compare our approach with previous state-of-the-art work in Tables \ref{tab:yelp-comparison-previous} and \ref{tab:amazon-comparison-previous}.
-We replicated the experiments with their publicly available code.
-
-We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
-We also examined the number of times each model generates exact copies of the source sentences in the test set, and noted that the style embedding model reconstructs sentences without any changes about $24\%$ of the time, whereas, the other models evaluated do this $<6\%$ of the time.
-
-Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
-Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
-
-Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
-We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
-
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{| l || c | c | c | }
-		\hline
-		\tabc{2}{Model}                    & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
-		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
-		\hline
-		\hline
-		\citeauthor{shen2017style}         & 3.63            & 3.07                & 3.08            \\
-		\hline
-		\citeauthor{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66            \\
-		\hline
-		\citeauthor{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
-		\hline
-		Ours (DAE)                         & 3.67            & 3.64                & 4.19            \\
-		\hline
-		Ours (VAE)                         & \textbf{4.32}   & 3.73                & \textbf{4.48}   \\
-		\hline
-	\end{tabular}
-	\caption{Manual evaluation results.}
-	\label{tab:manual-evaluation}
-\end{table}
-
-The manual evaluation results (Table \ref{tab:manual-evaluation}) show that our VAE model attains the best scores for transfer strength and generated sentence quality, as well as the second best score for content preservation amongst all the evaluated models.
-
-Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
-We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
-
-\section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks using multi-task and adversarial objectives.
-Our learned disentanglement approach can be applied to text style-transfer tasks.
-It achieves similar content preservation scores, and significantly better style-transfer strength and language fluency scores compared to previous state-of-the-art work.
-
-For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles.
-We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style-transfer, as opposed to using the empirical mean of training-time style embeddings.
-
-%\section{Acknowledgements}
-%We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award.
-%The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
 
 \bibliography{main}
 \bibliographystyle{aaai}
