@@ -426,26 +426,26 @@ It is also evident that the latent space learned by the variational autoencoder 
 
 \begin{table*}[!t]
 	\centering
-    \resizebox{\textwidth}{!}{
-	\begin{tabular}{|l||c|c|c|c||c|c|c|c| }
-		\hline
-		\tabc{3}{Model}    & \multicolumn{4}{c||}{\textbf{Yelp Dataset}} & \multicolumn{4}{c|}{\textbf{Amazon Dataset}}\\
-        \cline{2-9}
-      & \textbf{Transfer} & \textbf{Cosine}     & \textbf{Word}    & \textbf{Language} & \textbf{Transfer} & \textbf{Cosine}     & \textbf{Word}    & \textbf{Language}\\
-		                                           &\textbf{Accuracy} &  \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency} &\textbf{Accuracy} & \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency}  \\
-		\hline
-		\hline
-        Style-Embedding \cite{fu2018style}         & 0.182           & \textbf{0.959}             & \textbf{0.666}          & -16.17         & \ 0.400$^\dag$           & \ \textbf{0.930}$^\dag$             & \textbf{0.359}          & -28.13    \\
-        \hline		\hline
-		Cross-Alignment \cite{shen2017style}       &\ 0.784$^\dag$ & 0.892             & 0.209          & -23.39  & 0.606           & 0.893             & 0.024          & -26.31          \\
-		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & \ 0.818$^\dag$           & 0.883             & 0.272          & -20.95    & 0.552           & \textit{0.926}             & 0.169          & -34.70        \\
-		\hline
-		Ours (DAE)                                 & 0.883           & \textit{0.915}             & \textit{0.549}          & -10.17     & 0.720           & 0.921             & \textit{0.354}          & -24.74       \\
-		\hline
-		Ours (VAE)                                 & \textbf{0.934}           & {0.904}             & {0.473}          & \textbf{-9.84}         & \textbf{0.822}           & 0.900             & 0.196          & \textbf{-21.70}         \\
-		\hline
-	\end{tabular}}
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{|l||c|c|c|c||c|c|c|c| }
+			\hline
+			\tabc{3}{Model}                            & \multicolumn{4}{c||}{\textbf{Yelp Dataset}} & \multicolumn{4}{c|}{\textbf{Amazon Dataset}}                                                                                                                             \\
+			\cline{2-9}
+			                                           & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Language} & \textbf{Transfer} & \textbf{Cosine}         & \textbf{Word}    & \textbf{Language} \\
+			                                           & \textbf{Accuracy}                           & \textbf{Similarity}                          & \textbf{Overlap} & \textbf{Fluency}  & \textbf{Accuracy} & \textbf{Similarity}     & \textbf{Overlap} & \textbf{Fluency}  \\
+			\hline
+			\hline
+			Style-Embedding \cite{fu2018style}         & 0.182                                       & \textbf{0.959}                               & \textbf{0.666}   & -16.17            & \ 0.400$^\dag$    & \ \textbf{0.930}$^\dag$ & \textbf{0.359}   & -28.13            \\
+			\hline		\hline
+			Cross-Alignment \cite{shen2017style}       & \ 0.784$^\dag$                              & 0.892                                        & 0.209            & -23.39            & 0.606             & 0.893                   & 0.024            & -26.31            \\
+			\hline
+			Multi-Decoder \cite{zhao2018adversarially} & \ 0.818$^\dag$                              & 0.883                                        & 0.272            & -20.95            & 0.552             & \textit{0.926}          & 0.169            & -34.70            \\
+			\hline
+			Ours (DAE)                                 & 0.883                                       & \textit{0.915}                               & \textit{0.549}   & -10.17            & 0.720             & 0.921                   & \textit{0.354}   & -24.74            \\
+			\hline
+			Ours (VAE)                                 & \textbf{0.934}                              & {0.904}                                      & {0.473}          & \textbf{-9.84}    & \textbf{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
+			\hline
+		\end{tabular}}
 	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve xxx and xxx transfer accuracy on the Yelp datasets, very close to the results in \protect\citeay{} and \citeay{}, respectively, showing that our replication is fair.}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
@@ -477,22 +477,22 @@ We train the language model on both Yelp and Amazon, and report the Kneser-Ney l
 $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we also have human evaluation to further confirm the performance of our model. This was conducted on the Yelp dataset only, due to the large amount of human effort involved. We asked 6 human annotators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality. The human evaluation was conducted in a strictly blind fashion: samples obtained by all competing models are randomly shuffled, so that the annotator could not know which model generated a particular sentence.
 \begin{table}[!t]
 	\centering
-    \resizebox{\linewidth}{!}{
-	\begin{tabular}{| l || c | c | c | }
-		\hline
-		\tabc{2}{Model}                    & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
-		                                   & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
-		\hline
-		\hline		\citeay{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66            \\\hline\hline
-		\citeay{shen2017style}         & 3.63            & 3.07                & 3.08            \\
-		\hline
-		\citeay{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
-		\hline
-		Ours (DAE)                         & 3.67            & 3.64                & 4.19            \\
-		\hline
-		Ours (VAE)                         & \textbf{4.32}   & \textit{3.73}                & \textbf{4.48}   \\
-		\hline
-	\end{tabular}}
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{| l || c | c | c | }
+			\hline
+			\tabc{2}{Model}                & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
+			                               & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
+			\hline
+			\hline		\citeay{fu2018style}     & 1.67            & \textbf{3.84}       & 3.66            \\\hline\hline
+			\citeay{shen2017style}         & 3.63            & 3.07                & 3.08            \\
+			\hline
+			\citeay{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
+			\hline
+			Ours (DAE)                     & 3.67            & 3.64                & 4.19            \\
+			\hline
+			Ours (VAE)                     & \textbf{4.32}   & \textit{3.73}       & \textbf{4.48}   \\
+			\hline
+		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
 	\label{tab:manual-evaluation}
 \end{table}
@@ -507,20 +507,20 @@ For baseline methods, we replicated the experiments with publicly available code
 
 We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective,\footnote{It should be noted that the transfer accuracy is lower bounded by 0\% as opposed to 50\%, because we always transfer a sentence to the opposite sentiment. The lower-bound, zero transfer accuracy, is achieved by a trivial model that copies the input.} resulting in inflated cosine similarity and word overlap scores. We also examined the number of times each model generates exact copies of the source sentences during style transfer. We notice that the style-embedding model reconstructs exactly the same sentence in style transfer $24\%$ of the time, whereas all other models is lower than $6\%$. Therefore, we do not think the style embedding an effective model for text style transfer.
 
-The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. 
+The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces.
 
 Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 \begin{table*}[ht]
 	\centering
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                                                                & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{2}{Objectives}                                                             & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                                                                 & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{AE}$                                                                     & 0.106           & \textbf{0.939}             & 0.472          & -12.58          \\
+		$\loss{AE}$                                                                      & 0.106           & \textbf{0.939}    & 0.472          & -12.58          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.767           & 0.911             & 0.331          & -12.17          \\
+		$\loss{AE}$, $\loss{mul(s)}$                                                     & 0.767           & 0.911             & 0.331          & -12.17          \\
 		\hline
 		%$\loss{AE}$, $\loss{mul(c)}$                                                    & 0.155           & 0.931             & 0.626          & -11.21          \\
 		%\hline
@@ -548,7 +548,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 		%\hline
 		%$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.806           & 0.896             & 0.500          & -9.98           \\
 		%\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & \textbf{0.934}           & 0.904             & \textbf{0.473}          & \textbf{-9.84}           \\
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
 		\hline
 	\end{tabular}
 	\caption{Ablation tests.}
@@ -559,7 +559,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 	\footnotesize
 	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
-		\tabc{1}{Original (Positive)}                                           & \tabh{DAE Transferred (Negative)}                                                    & \tabh{VAE Transferred (Negative)}                                     \\
+		\tabc{1}{Original (Positive)}                                           & \tabh{DAE Transferred (Negative)}                                         & \tabh{VAE Transferred (Negative)}                          \\
 		\hline
 		\hline
 		the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\
@@ -573,7 +573,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 		both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\
 		\hline
 		\hline
-		\tabc{1}{Original (Negative)}                                           & \tabh{DAE Transferred (Positive)}                                                    & \tabh{VAE Transferred (Positive)}                                     \\
+		\tabc{1}{Original (Negative)}                                           & \tabh{DAE Transferred (Positive)}                                         & \tabh{VAE Transferred (Positive)}                          \\
 		\hline
 		\hline
 		the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\
