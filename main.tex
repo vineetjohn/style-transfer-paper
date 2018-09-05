@@ -184,11 +184,10 @@ where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and de
 In addition to the deterministic auto-encoding objective, we also tried a variational autoencoder (VAE) \cite{kingma2013auto}, which imposes a probabilistic distribution to the latent vector. The Kullback-Leibler (KL) divergence \cite{kullback1951information} penalty is added to the loss function to regularize the latent space. The decoder reconstructs data based on the sampled latent vector from its posterior distribution.
 
 Formally, the autoencoding loss in the VAE is
-\begin{equation}
-	\loss{AE}(\nnweight{E}, \nnweight{D}) =
-	- \mathbb{E}_{q_{E}(\bm h|\rmx)} [\log p(\rmx|\bm h)]
-	+ \hyp{kl}\operatorname{KL}(q_{E}(\bm h|\rmx)\|p(\bm h))
-\end{equation}
+\begin{align}
+	\loss{AE}(\nnweight{E}, \nnweight{D}) = & - \mathbb{E}_{q_{E}(\bm h|\rmx)} [\log p(\rmx|\bm h)]  \nonumber \\
+	                                        & + \hyp{kl}\operatorname{KL}(q_{E}(\bm h|\rmx)\|p(\bm h))
+\end{align}
 where $\hyp{kl}$ is the hyperparameter balancing the reconstruction loss and the KL terms. $p(\bm h)$ is the prior, set to the standard normal distribution $\mathcal{N}(\bm 0,\mathrm I)$. The motivation for using VAE as opposed to DAE is  that the reconstruction is based on the samples of the posterior, which theoretically populates the neighborhood and thus smooths the latent space. \citeay{bowman2016generating} show that VAE generates more fluent sentences than DAE.
 
 Besides the above autoencoding loss, we design several auxiliary losses to disentangle the latent space. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation.
