@@ -504,6 +504,46 @@ Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and
 Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
 
 
+\begin{table}[!t]
+	\centering
+	\begin{tabular}{| l || r | r |}
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\hline \hline
+		Majority guess                   & \multicolumn{2}{c|}{0.602}              \\
+		\hline
+		Content space  ($\bm c$)         & 0.658                      & 0.697      \\ \hline
+		Style space ($\bm s$)            & 0.974                      & 0.974      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.974                      & 0.974      \\
+		\hline
+	\end{tabular}
+	\caption{Classification accuracy on latent spaces (Yelp).}
+	\label{tab:classification-yelp}
+	\begin{tabular}{| l || r | r |}
+		\hline
+		\tabc{1}{Latent Space}           & \tabh{DAE}                 & \tabh{VAE} \\
+		\hline \hline
+		Majority guess                   & \multicolumn{2}{c|}{0.512}              \\
+		\hline
+		Content space  ($\bm c$)         & 0.675                      & 0.693      \\ \hline
+		Style space ($\bm s$)            & 0.821                      & 0.810      \\ \hline
+		Complete space ($[\bm s;\bm c]$) & 0.819                      & 0.810      \\
+		\hline
+	\end{tabular}
+	\caption{Classification accuracy on latent spaces (Amazon).}
+	\label{tab:classification-amazon}
+\end{table}
+
+
+\subsubsection{Language Fluency}
+We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which we assess the quality of generated sentences.
+It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
+This language model is trained on the complete corpus that we evaluate our style-transfer models with.
+The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+
+\subsubsection{Manual Evaluation}
+Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each evaluated model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
+The aggregate score of all the evaluators is reported.
 
 \begin{table*}[ht]
 	\centering
