@@ -370,7 +370,7 @@ These hyperparameters were tuned by performing a log-scale grid search within tw
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
 For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
-We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}. {\color{blue} They were tuned with the original VAE model, and we directly use them for training disentangled models.}
+We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}. They were tuned along with the other hyperparameters of the disentangled model.
 
 
 
