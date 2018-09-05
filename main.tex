@@ -550,7 +550,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
 		\hline
 	\end{tabular}
-	\caption{Ablation tests.}
+	\caption{Ablation tests. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
 	\label{tab:ablation-results}
 \end{table*}
 \begin{table*}[ht]
@@ -586,13 +586,13 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
 		\hline
 	\end{tabular}
-	\caption{Examples of style transferred8364 sentence generation.}
+	\caption{Examples of style transferred sentence generation.}
 	\label{tab:transfer-samples}
 \end{table*}
 
 Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
-We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. As seen, we cannot achieve reasonable style transfer accuracy with only the autoencoding loss, as the style and content spaces would not be disentangled spontaneously. The 10.6\% style transfer accuracy is due to the errors of autoencoding as well as the automatic metric (i.e., imperfect sentiment classifier).
+We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. As seen, we cannot achieve reasonable style transfer accuracy by substituting an empirically estimated style vector of  the target style.  This is because the style and content spaces would not be disentangled spontaneously with the autoencoding loss alone.
 
 With either $\loss{mul(s}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together significantly improves the transfer accuracy to 90\%, largely outperforming previous methods by 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
 
