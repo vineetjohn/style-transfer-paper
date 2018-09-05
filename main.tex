@@ -438,21 +438,17 @@ $\bullet$ \textit{Cosine Similarity.}
 We followed \citeay{fu2018style} and computed a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its constituent word embeddings (sentiment words are removed).
 Then, the cosine similarity between the source and generated sentence embeddings is computed to evaluate how close they are in meaning, which more or less indicates how content is preserved.
 
-$\bullet$ \textit{Word Overlap.}
-A simpler unigram overlap metric is also utilized to evaluate the similarity between the content of the source and generated sentences.
-Given a source sentence $x$ and an style-transferred sentence $y$, let $w_x$ and $w_y$ be the set of unique words present in $x$ and $y$ respectively, while excluding sentiment words \cite{hu2004mining} and stopwords \cite{bird2004nltk}.
-Then, the word overlap score can be calculated using $$\operatorname{word-overlap} = \frac{count(w_x \cap w_y)}{count(w_x \cup w_y)}$$ which is simply a normalized measure of overlapping unigrams in the source and target sentences.
+$\bullet$ \textit{Word Overlap.} We find that the cosine similarity measure is not sensitive to content preserving, and we propose a simple yet effective measure that counts the unigram word overlap rate of the original sentence $\mathrm x$ and the style-transferred sentence $\mathrm y$, computed by $\operatorname{word-overlap} = \frac{count(w_{\mathrm x} \cap w_{\mathrm y})}{count(w_{\mathrm x} \cup w_{\mathrm y})}$.
 
 
 
 
-\subsubsection{Language Fluency}
-We use a trigram Kneser-Ney smoothed language model \cite{kneser1995improved} as a quantifiable and automated scoring metric by which we assess the quality of generated sentences.
-It calculates the probability distribution of trigrams in a corpus, based on their occurrence statistics, to build a language model.
-This language model is trained on the complete corpus that we evaluate our style-transfer models with.
-The log-likelihood score for a generated sentence, as predicted by the Kneser-Ney language model, is reported as the indicator of language fluency.
+$\bullet$ \textit{Language Fluency}
+We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improved} as a quantitative and automated metric to evaluate the fluency of a sentence.
+It estimates the empirical distribution of trigrams in a corpus, and computes the log-likelihood of a test sentence.
+We train the language model on both Yelp and Amazon, and report the Kneser-Ney language model's log-likelihood. A smaller (more negative) number indicates a more fluent sentence.
 
-\subsubsection{Manual Evaluation}
+$\bullet$  \textit{Manual Evaluation}
 Manual evaluations are performed by randomly sampling 40 pairs of original and style-transferred sentences from each evaluated model trained on the Yelp dataset, and requesting 6 human annotators to rate them on a 1-5 Likert scale \cite{stent2005evaluating} based on their transfer strength, content preservation and language quality.
 The aggregate score of all the evaluators is reported.
 
