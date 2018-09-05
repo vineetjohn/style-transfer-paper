@@ -202,7 +202,7 @@ This involves a multi-task loss that ensures $\bm s$ is discriminative for the s
 \subsubsection{Multi-Task Loss for Style.} \label{ssec:multitask-style-objective}
 Although the corpus we use is non-parallel, we assume that each sentence is labeled with its style. In particular, we treat the sentiment as the style of interest, following previous work~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}, and each sentence is labeled with a binary sentiment tag (positive or negative).
 
-We build a classifier on the style space that predicts the style label. Formally, a softmax layer is applied to the style vector $\bm s$, given by
+We build a classifier on the style space that predicts the style label. Formally, a two-way softmax layer (equivalent to logistic regression) is applied to the style vector $\bm s$, given by
 \begin{equation} \label{eqn:class-pred}
 	\bm y_s = \operatorname{softmax}(\weight{mul(s)} \bm s + \bias{mul(s)})
 \end{equation}
@@ -389,19 +389,19 @@ The inferred target style $\hat{\bm s}$ is concatenated with the encoded content
 
 \subsection{Datasets}
 
-We conduct experiments on two datasets, the details for which are given below.
-Both of these datasets are comprised of sentences accompanied by binary sentiment labels (positive, negative) and are, therefore, used to evaluate the task of sentiment transfer.
+We conducted experiments on two datasets, Yelp and Amazon reviews.
+Both of these datasets comprise sentences accompanied by binary sentiment labels (positive, negative). They are used to train disentangled latent space as well as to evaluate sentiment transfer.
 
-\subsubsection{Yelp Service Reviews}
-The Yelp review dataset \cite{challenge2013yelp} has been sourced from the code repository accompanying the implementation of \citeay{shen2017style}~\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}.
-It contains 444101, 63483 and 126670 sentences for train, validation, and test, respectively.
-The maximum sentence length is 15, and the vocabulary size is about 9200.
+\subsubsection{Yelp Service Reviews.}
+{\color{red}The Yelp review dataset \cite{challenge2013yelp} has been sourced from the code repository accompanying the implementation of \citeay{shen2017style}.\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}
+}
+It contains 444,101, 63,483 and 126,670 sentences for train, validation, and test, respectively.
+The maximum sentence length is 15, and the vocabulary size is approximately 9,200.
 
-\subsubsection{Amazon Product Reviews}
-An Amazon review dataset~\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}}, is also used, following \citeay{fu2018style}.
-The reviews were sourced from the code repository accompanying the paper~\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}.
-It contains 559142, 2000 and 2000 sentences for train, validation, and test, respectively.
-The maximum sentence length is 20, and the vocabulary size is about 58000.
+\subsubsection{Amazon Product Reviews.}
+We also used the Amazon review dataset,\footnote{\url{http://jmcauley.ucsd.edu/data/amazon/}} following previous work~\citeay{fu2018style}.
+It contains 559,142, 2,000 and 2,000 sentences for train, validation, and test, respectively.
+The maximum sentence length is 20, and the vocabulary size is approximately 58,000.
 
 \begin{table*}[ht]
 	\centering
@@ -449,19 +449,20 @@ The maximum sentence length is 20, and the vocabulary size is about 58000.
 \end{table*}
 
 \subsection{Experiment Settings}
-We use the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$, and train the model for 20 epochs.
-The word embedding layer is initialized using pre-trained Word2Vec embeddings \cite{mikolov2013distributed} from the respective training sets.
+We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$. We trained our model for 20 epochs.
+The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
 Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
-These hyperparameters were identified by performing a log-scale grid search within two orders of magnitude of the default value of $1$, and choosing those that yielded the best results.
+These hyperparameters were tuned by performing a log-scale grid search within two orders of magnitude around the default value $1$, and choosing those that yielded the best validation results.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
-We append the latent vector $\bm h$ to the hidden state at every time step of the decoder \cite{bahuleyan2017variational}.
+We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
 For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
-We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule proposed by \citeay{bahuleyan2018probabilistic}.
+We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}. {\color{blue} They were tuned with the original VAE model, and we directly use them for training disentangled models.}
 
 \subsection{Evaluation Metrics}
-We evaluate our method using four metrics: style-transfer strength, cosine similarity, word overlap, and language fluency. We use these metrics to compare our model to previous state-of-the-art work \cite{shen2017style,fu2018style,zhao2018adversarially} empirically.
+We shall evaluate all 
+\cite{shen2017style,fu2018style,zhao2018adversarially} empirically.
 
-\subsubsection{Style-Transfer Strength}
+\subsection{Style-Transfer Strength}
 A convolutional neural network (CNN) style classifier \cite{kim2014convolutional} is trained to predict the style of the generated sentences.
 While the style classifier itself may not be perfect, it provides a quantitative way of evaluating the strength of style-transfer \cite{hu2017toward,shen2017style,fu2018style}.
 The validation accuracies of the sentiment classifier trained on the Yelp and Amazon datasets are $\approx 0.97$ and $\approx 0.82$, respectively.
@@ -566,7 +567,7 @@ The aggregate score of all the evaluators is reported.
 
 \section{Results and Analysis}
 
-\subsection{Disentangling Latent Space}
+\subsection{ExperimentI: Disentangling Latent Space}
 
 First, we analyze how the style (sentiment) and content of the latent space are disentangled.
 We train classifiers on the different latent spaces, and report their inference-time classification accuracies in Tables \ref{tab:classification-yelp} and \ref{tab:classification-amazon}.
