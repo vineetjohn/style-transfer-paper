@@ -552,7 +552,8 @@ We observe that the style embedding model \cite{fu2018style} performs poorly on 
 
 The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. 
 
-Regarding language fluency, we see the VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly lower , showing that 
+Regarding language fluency, we see the VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
+
 Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
 
 Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
