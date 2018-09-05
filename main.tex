@@ -362,7 +362,8 @@ The maximum sentence length is 20, and the vocabulary size is approximately 58,0
 
 
 \subsection{Experiment Settings}
-We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$. We trained our model for 20 epochs.
+We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$.
+Our model is trained for 20 epochs, by which time it has converged.
 The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
 Both the autoencoder and the discriminators are trained once per epoch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
 These hyperparameters were tuned by performing a log-scale grid search within two orders of magnitude around the default value $1$, and choosing those that yielded the best validation results.
@@ -430,7 +431,7 @@ We then evaluate the performance of style transfer with our disentangled latent 
 
 \subsubsection{Metrics.} We shall evaluate competing models by (1) how the sentiment is transferred,  and (2) how the content is preserved. The evaluation of sentence generation is usually hard, and we adopt a few automatic metrics as well as human judgment.
 
-$\bullet$ \textit{Style-Transfer Strength.} We foloow most previous work~\cite{hu2017toward,shen2017style,fu2018style} and train a separate convolutional neural network (CNN)  to predict the sentiment of a sentence~\cite{kim2014convolutional}, which is then used to approximate the style transfer accuracy. In other words, we report the CNN classifier's accuracy on the style-transferred sentences, considering the target style to be the groundtruth.
+$\bullet$ \textit{Style-Transfer Strength.} We follow most previous work~\cite{hu2017toward,shen2017style,fu2018style} and train a separate convolutional neural network (CNN)  to predict the sentiment of a sentence~\cite{kim2014convolutional}, which is then used to approximate the style transfer accuracy. In other words, we report the CNN classifier's accuracy on the style-transferred sentences, considering the target style to be the ground truth.
 
 While the style classifier itself may not be perfect, it achieves a reasonable sentiment accuracy on the validation $97\%$ for Yelp and $82\%$ for the Amazon. Thus, it provides a quantitative way of evaluating the strength of style-transfer.
 
