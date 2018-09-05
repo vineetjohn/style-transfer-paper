@@ -432,46 +432,28 @@ It is also evident that the latent space learned by the variational autoencoder 
 
 \begin{table*}[!t]
 	\centering
-	\begin{tabular}{| l || c | c | c | c |}
+    \resizebox{\textwidth}{!}{
+	\begin{tabular}{|l||c|c|c|c||c|c|c|c| }
 		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\tabc{3}{Model}    & \multicolumn{4}{c||}{\textbf{Yelp Dataset}} & \multicolumn{4}{c|}{\textbf{Amazon Dataset}}\\
+        \cline{2-9}
+      & \textbf{Transfer} & \textbf{Cosine}     & \textbf{Word}    & \textbf{Language} & \textbf{Transfer} & \textbf{Cosine}     & \textbf{Word}    & \textbf{Language}\\
+		                                           &\textbf{Accuracy} &  \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency} &\textbf{Accuracy} & \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency}  \\
 		\hline
 		\hline
-        Style-Embedding \cite{fu2018style}         & 0.182           & 0.959             & 0.666          & -16.17          \\
+        Style-Embedding \cite{fu2018style}         & 0.182           & \textbf{0.959}             & \textbf{0.666}          & -16.17         & 0.417           & \textbf{0.933}             & \textbf{0.359}          & -28.13    \\
         \hline		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39          \\
+		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39  & 0.606           & 0.893             & 0.024          & -26.31          \\
 		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95          \\
+		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95    & 0.552           & \textit{0.926}             & 0.169          & -34.70        \\
 		\hline
-		Ours (DAE)                                 & 0.883           & 0.915             & 0.549          & -10.17          \\
+		Ours (DAE)                                 & 0.883           & \textit{0.915}             & \textit{0.549}          & -10.17     & 0.720           & 0.921             & \textit{0.354}          & -24.74       \\
 		\hline
-		Ours (VAE)                                 & \textbf{0.934}           & \textbf{0.904}             & \textbf{0.473}          & \textbf{-9.84}           \\
+		Ours (VAE)                                 & \textbf{0.934}           & {0.904}             & {0.473}          & \textbf{-9.84}         & \textbf{0.822}           & 0.900             & 0.196          & \textbf{-21.70}         \\
 		\hline
-	\end{tabular}
-	\caption{Comparison using the Yelp dataset. The style-embedding approach is achieves poor transfer accuracy, and should not be considered as an effective4 style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency).}
+	\end{tabular}}
+	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective4 style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency).}
 	\label{tab:yelp-comparison-previous}
-\end{table*}
-\begin{table*}[!t]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Model}                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                           & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline	Style Embedding \cite{fu2018style}         & 0.417           & 0.933             & 0.359          & -28.13          \\
-		\hline\hline
-		Cross-Alignment \cite{shen2017style}       & 0.606           & 0.893             & 0.024          & -26.31          \\
-		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.552           & 0.926             & 0.169          & -34.70          \\
-		\hline
-		Ours (DAE)                                 & 0.720           & 0.921             & 0.354          & -24.74          \\
-		\hline
-		Ours (VAE)                                 & 0.822           & 0.900             & 0.196          & -21.70          \\
-		\hline
-	\end{tabular}
-	\caption{Comparison using the Amazon dataset.}
-	\label{tab:amazon-comparison-previous}
 \end{table*}
 
 
@@ -501,6 +483,7 @@ We train the language model on both Yelp and Amazon, and report the Kneser-Ney l
 $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we also have human evaluation to further confirm the performance of our model. This was conducted on the Yelp dataset only, due to the large amount of human effort involved. We asked 6 human annotators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality. The human evaluation was conducted in a strictly blind fashion: samples obtained by all competing models are randomly shuffled, so that the annotator could not know which model generated a particular sentence.
 \begin{table}[!t]
 	\centering
+    \resizebox{\linewidth}{!}{
 	\begin{tabular}{| l || c | c | c | }
 		\hline
 		\tabc{2}{Model}                    & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
@@ -515,8 +498,8 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 		\hline
 		Ours (VAE)                         & \textbf{4.32}   & 3.73                & \textbf{4.48}   \\
 		\hline
-	\end{tabular}
-	\caption{Manual evaluation results.}
+	\end{tabular}}
+	\caption{Manual evaluation on the Yelp dataset.}
 	\label{tab:manual-evaluation}
 \end{table}
 
@@ -562,11 +545,13 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 
 \subsubsection{Results and Analysis.}
 
-We compare our approach with previous state-of-the-art work in Tables \ref{tab:yelp-comparison-previous} and \ref{tab:amazon-comparison-previous}.
+We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
 For baseline methods, we replicated the experiments with publicly available code released in \citeay{fu2018style}, \citeay{shen2017style}, and \citeay{zhao2018adversarially}.
 
-We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective, resulting in inflated cosine similarity and word overlap scores.
-We also examined the number of times each model generates exact copies of the source sentences in the test set, and noted that the style embedding model reconstructs sentences without any changes about $24\%$ of the time, whereas, the other models evaluated do this $<6\%$ of the time.
+We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective,\footnote{It should be noted that the transfer accuracy is lower bounded by 0\% as opposed to 50\%, because we always transfer a sentence to the opposite sentiment. The lower-bound, zero transfer accuracy, is achieved by a trivial model that copies the input.} resulting in inflated cosine similarity and word overlap scores. We also examined the number of times each model generates exact copies of the source sentences during style transfer. We notice that the style-embedding model reconstructs exactly the same sentence in style transfer $24\%$ of the time, whereas all other models is lower than $6\%$. Therefore, we do not think the style embedding an effective model for text style transfer.
+
+The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled  
+
 
 Results show that, our approach achieves comparable cosine similarity and word overlap scores to previous work \cite{shen2017style,zhao2018adversarially}, and significantly better style-transfer strength scores than all of the models compared to. This indicates that our disentangled latent space can be used for better text style-transfer.
 Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
