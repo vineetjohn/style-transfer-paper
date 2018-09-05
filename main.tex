@@ -278,7 +278,7 @@ Similar to style-oriented loss, the multi-task loss for content, denoted as ``mu
 
 We introduce a softmax classifier over the BoW vocabulary
 \begin{equation} \label{eqn:bow-pred}
-	\bm y_\text{c} = \operatorname{softmax}({W_\text{mul(c)}} \bm s + \bm b_\text{mul(c)})
+	\bm y_\text{c} = \operatorname{softmax}({W_\text{mul(c)}} \bm c + \bm b_\text{mul(c)})
 \end{equation}
 where $\nnweight{mul(c)}=[W_\text{mul(c)}; \bm b_\text{mul(c)}]$ are the classifier's parameters, and $\bm y$ is the predicted BoW distribution.
 
