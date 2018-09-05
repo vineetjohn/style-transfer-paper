@@ -238,7 +238,6 @@ Concretely, the adversarial discriminator and its training objective have a simi
 \end{align}
 where $\nnweight{dis(s)}=[\weight{dis(s)}; \bias{dis(s)}]$ are the parameters of the adversary.
 
-
 It should be emphasized that, for the adversary, the gradients are not propagated back to the autoencoder, i.e. the variables in $\bm c$ are treated as shallow features. Therefore, we view $\loss{dis(s)}$ as a function of $\nnweight{dis(s)}$ only, whereas $\loss{mul(s)}$ is a function of both $\nnweight{E}$ and $\nnweight{mul(s)}$.
 
 Having trained an adversary, we would like the autoencoder to be tuned in such an \textit{ad hoc} fashion, that $\bm c$ is not discriminative for style.
@@ -261,9 +260,7 @@ Inspired by the above combination of multi-task and adversarial losses, we would
 To this end, we propose to approximate the content information by bag-of-words (BoW) features.
 The input sentences $\rmx$ are represented as vectors of the same size as the corpus vocabulary, with each index of the vector denoting the frequency of a word's presence in the sentence.
 For a sentence $s$ with $N$ tokens, a word $w_*$'s BoW probability is given by
-\begin{equation}\label{eqn:bow}
-	t_c(w_*)=\frac{\sum_{i=1}^{N}{\mathbb{I}\{w_i = w_*\}}}{N}
-\end{equation}
+$t_c(w_*)=\frac{\sum_{i=1}^{N}{\mathbb{I}\{w_i = w_*\}}}{N}$
 where $t_c(\cdot)$ denotes the target distribution of content, and $\mathbb{I}$ is an indicator function.
 
 However, we exclude stop words and style-specific words (or more concretely, sentiment words \cite{hu2004mining} for sentiment style transfer).
@@ -285,9 +282,7 @@ The training objective is a cross-entropy loss against the ground truth distribu
 \end{equation}
 where the optimization is performed with both encoder parameters $\nnweight{E}$ and the multi-task classifier $\nnweight{mul(c)}$.
 
-Notice that although the target distribution is not one-hot as in most classification problems, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form.
-
-It is also interesting that, at the first glance, the multi-task loss for content is redundant to autoencoding loss, but in fact, they are different in several ways. The multi-task loss only considers content words, which do not include stop-words and sentiment words, and is only applied to the content space $\bm c$. Together with the style space $\bm s$, the autoencoding loss requires the model to generate the entire sentence. This ensures that the content information is indeed captured in the content space.
+Notice that although the target distribution is not one-hot as in most classification problems, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form. It is also interesting that, at the first glance, the multi-task loss for content is redundant to autoencoding loss, but in fact, they are different in several ways. The multi-task loss only considers content words, which do not include stop-words and sentiment words, and is only applied to the content space $\bm c$. Together with the style space $\bm s$, the autoencoding loss requires the model to generate the entire sentence. This ensures that the content information is indeed captured in the content space.
 
 \subsubsection{Adversarial Loss for Content.} \label{ssec:adversarial-content-objective}
 
@@ -524,6 +519,7 @@ Manual evaluations are performed by randomly sampling 40 pairs of original and s
 The aggregate score of all the evaluators is reported.
 
 \begin{figure}[ht]
+	\centering
 	\includegraphics[width=\linewidth]{latent-spaces}
 	\caption{t-SNE plots.}
 	\label{fig:tsne-plots}
@@ -531,7 +527,7 @@ The aggregate score of all the evaluators is reported.
 
 \begin{table*}[ht]
 	\centering
-	\small
+	\scriptsize
 	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
 		\tabc{2}{Original (Positive)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
