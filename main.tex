@@ -496,7 +496,7 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 		\hline
 		Ours (DAE)                         & 3.67            & 3.64                & 4.19            \\
 		\hline
-		Ours (VAE)                         & \textbf{4.32}   & 3.73                & \textbf{4.48}   \\
+		Ours (VAE)                         & \textbf{4.32}   & \textit{3.73}                & \textbf{4.48}   \\
 		\hline
 	\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
@@ -554,7 +554,7 @@ The other two competing methods~\cite{shen2017style,zhao2018adversarially} achie
 
 Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 
-Our VAE model also produces the most fluent sentences for both tasks, which is corroborated by the manual evaluation results.
+Table~\ref{tab:manual-evaluation} present the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective with a very low transfer strength, and that our methods outperform other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab})
 
 Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
 We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
