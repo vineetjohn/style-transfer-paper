@@ -76,11 +76,7 @@
 	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
-	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.
-	\footnote{
-		Our code and data are publicly available at the following URL: \url{bit.ly/2wxps69}.
-		The materials are properly anonymized during double-blind review.
-	}
+	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.\footnote{Our code is publicly available at \url{bit.ly/2wxps69}. The materials are properly anonymized during double-blind review.}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -282,7 +278,7 @@ The training objective is a cross-entropy loss against the ground truth distribu
 \end{equation}
 where the optimization is performed with both encoder parameters $\nnweight{E}$ and the multi-task classifier $\nnweight{mul(c)}$.
 
-Notice that although the target distribution is not one-hot as in most classification problems, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form. It is also interesting that, at the first glance, the multi-task loss for content is redundant with the autoencoding loss, when in fact, it is not. The multi-task loss only considers content words, which do not include stopwords and sentiment words, and is only applied to the content space $\bm c$. Together with the style space $\bm s$, the autoencoding loss requires the model to generate the entire sentence. This ensures that the content information is indeed captured in the content space.
+Notice that although the target distribution is not one-hot as in most classification problems, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form. It is also interesting that, at first glance, the multi-task loss for content is redundant, given the autoencoding loss, when in fact, it is not. The multi-task loss only considers content words, which do not include stopwords and sentiment words, and is only applied to the content space $\bm c$. This ensures that the content information is indeed captured in the content space. The autoencoding loss only requires that the model reconstructs the sentence based on the content and style space, and does not ensure their separation.
 
 \subsubsection{Adversarial Loss for Content.} \label{ssec:adversarial-content-objective}
 
@@ -350,14 +346,12 @@ We conducted experiments on two datasets, Yelp and Amazon reviews.
 Both of these datasets comprise sentences accompanied by binary sentiment labels (positive, negative). They are used to train disentangled latent space as well as to evaluate sentiment transfer.
 
 \subsubsection{Yelp Service Reviews.}
-We use a Yelp review dataset, following previous work \cite{shen2017style,zhao2018adversarially}.
-\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}
+We use a Yelp review dataset, following previous work \cite{shen2017style,zhao2018adversarially}.\footnote{\url{https://github.com/shentianxiao/language-style-transfer}}
 It contains 444,101, 63,483 and 126,670 sentences for train, validation, and test, respectively.
 The maximum sentence length is 15, and the vocabulary size is approximately 9,200.
 
 \subsubsection{Amazon Product Reviews.}
-We also used an Amazon review dataset, following previous work \cite{fu2018style}.
-\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}
+We also used an Amazon review dataset, following previous work \cite{fu2018style}.\footnote{\url{https://github.com/fuzhenxin/text_style_transfer}}
 It contains 559,142, 2,000 and 2,000 sentences for train, validation, and test, respectively.
 The maximum sentence length is 20, and the vocabulary size is approximately 58,000.
 
@@ -422,7 +416,7 @@ It is also evident that the latent space learned by the variational autoencoder 
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=\linewidth]{latent-spaces}
-	\caption{t-SNE plots of our disentangled models.}
+	\caption{t-SNE plots of the disentangled style and content spaces (with all auxiliary losses).}
 	\label{fig:tsne-plots}
 \end{figure}
 
@@ -441,18 +435,18 @@ It is also evident that the latent space learned by the variational autoencoder 
 		                                           &\textbf{Accuracy} &  \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency} &\textbf{Accuracy} & \textbf{Similarity} & \textbf{Overlap} & \textbf{Fluency}  \\
 		\hline
 		\hline
-        Style-Embedding \cite{fu2018style}         & 0.182           & \textbf{0.959}             & \textbf{0.666}          & -16.17         & 0.417           & \textbf{0.933}             & \textbf{0.359}          & -28.13    \\
+        Style-Embedding \cite{fu2018style}         & 0.182           & \textbf{0.959}             & \textbf{0.666}          & -16.17         & \ 0.400$^\dag$           & \ \textbf{0.930}$^\dag$             & \textbf{0.359}          & -28.13    \\
         \hline		\hline
-		Cross-Alignment \cite{shen2017style}       & 0.809           & 0.892             & 0.209          & -23.39  & 0.606           & 0.893             & 0.024          & -26.31          \\
+		Cross-Alignment \cite{shen2017style}       &\ 0.784$^\dag$ & 0.892             & 0.209          & -23.39  & 0.606           & 0.893             & 0.024          & -26.31          \\
 		\hline
-		Multi-Decoder \cite{zhao2018adversarially} & 0.835           & 0.883             & 0.272          & -20.95    & 0.552           & \textit{0.926}             & 0.169          & -34.70        \\
+		Multi-Decoder \cite{zhao2018adversarially} & \ 0.818$^\dag$           & 0.883             & 0.272          & -20.95    & 0.552           & \textit{0.926}             & 0.169          & -34.70        \\
 		\hline
 		Ours (DAE)                                 & 0.883           & \textit{0.915}             & \textit{0.549}          & -10.17     & 0.720           & 0.921             & \textit{0.354}          & -24.74       \\
 		\hline
 		Ours (VAE)                                 & \textbf{0.934}           & {0.904}             & {0.473}          & \textbf{-9.84}         & \textbf{0.822}           & 0.900             & 0.196          & \textbf{-21.70}         \\
 		\hline
 	\end{tabular}}
-	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective4 style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency).}
+	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve xxx and xxx transfer accuracy on the Yelp datasets, very close to the results in \protect\citeay{} and \citeay{}, respectively, showing that our replication is fair.}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -503,13 +497,69 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 	\label{tab:manual-evaluation}
 \end{table}
 
+
+
+
+\subsubsection{Results and Analysis.}
+
+We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
+For baseline methods, we replicated the experiments with publicly available code released in \citeay{fu2018style}, \citeay{shen2017style}, and \citeay{zhao2018adversarially}.\footnote{\citeay{fu2018style} propose another model using multiple decoders; the method is further developed in \citeay{zhao2018adversarially}, and we adopt the latter for comparison.}
+
+We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective,\footnote{It should be noted that the transfer accuracy is lower bounded by 0\% as opposed to 50\%, because we always transfer a sentence to the opposite sentiment. The lower-bound, zero transfer accuracy, is achieved by a trivial model that copies the input.} resulting in inflated cosine similarity and word overlap scores. We also examined the number of times each model generates exact copies of the source sentences during style transfer. We notice that the style-embedding model reconstructs exactly the same sentence in style transfer $24\%$ of the time, whereas all other models is lower than $6\%$. Therefore, we do not think the style embedding an effective model for text style transfer.
+
+The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. 
+
+Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 \begin{table*}[ht]
 	\centering
-	\scriptsize
+	\begin{tabular}{| l || c | c | c | c |}
+		\hline
+		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
+		                                                                                & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
+		\hline
+		\hline
+		$\loss{AE}$                                                                     & 0.106           & \textbf{0.939}             & 0.472          & -12.58          \\
+		\hline
+		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.767           & 0.911             & 0.331          & -12.17          \\
+		\hline
+		%$\loss{AE}$, $\loss{mul(c)}$                                                    & 0.155           & 0.931             & 0.626          & -11.21          \\
+		%\hline
+		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.782           & 0.886             & 0.230          & -12.03          \\
+		\hline
+		%$\loss{AE}$, $\loss{adv(c)}$                                                    & 0.103           & 0.940             & 0.470          & -12.92          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.822           & 0.928             & 0.561          & -11.32          \\
+		%\hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.912           & 0.866             & 0.171          & -9.59           \\
+		\hline
+		%$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.781           & 0.906             & 0.318          & -11.99          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.825           & 0.894             & 0.507          & -10.94          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.149           & 0.929             & 0.621          & -11.22          \\
+		%\hline
+		%$\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.780           & 0.884             & 0.214          & -12.03          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                  & 0.922           & 0.903             & 0.476          & -9.65           \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.844           & 0.925             & 0.556          & -11.13          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.934           & 0.864             & 0.157          & -10.11          \\
+		%\hline
+		%$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.806           & 0.896             & 0.500          & -9.98           \\
+		%\hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & \textbf{0.934}           & 0.904             & \textbf{0.473}          & \textbf{-9.84}           \\
+		\hline
+	\end{tabular}
+	\caption{Ablation tests.}
+	\label{tab:ablation-results}
+\end{table*}
+\begin{table*}[ht]
+	\centering
+	\footnotesize
 	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
-		\tabc{2}{Original (Positive)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
-		                                                                        & \tabh{(Negative)}                                                         & \tabh{(Negative)}                                          \\
+		\tabc{1}{Original (Positive)}                                           & \tabh{DAE Transferred (Negative)}                                                    & \tabh{VAE Transferred (Negative)}                                     \\
 		\hline
 		\hline
 		the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\
@@ -523,8 +573,7 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 		both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\
 		\hline
 		\hline
-		\tabc{2}{Original (Negative)}                                           & \tabh{DAE Transferred}                                                    & \tabh{VAE Transferred}                                     \\
-		                                                                        & \tabh{(Positive)}                                                         & \tabh{(Positive)}                                          \\
+		\tabc{1}{Original (Negative)}                                           & \tabh{DAE Transferred (Positive)}                                                    & \tabh{VAE Transferred (Positive)}                                     \\
 		\hline
 		\hline
 		the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\
@@ -538,91 +587,34 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
 		\hline
 	\end{tabular}
-	\caption{Examples of style transfer sentence generation.}
+	\caption{Examples of style transferred sentence generation.}
 	\label{tab:transfer-samples}
 \end{table*}
 
+Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
-\subsubsection{Results and Analysis.}
+We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. As seen, we cannot achieve reasonable style transfer accuracy with only the autoencoding loss, as the style and content spaces would not be disentangled spontaneously. The 10.6\% style transfer accuracy is due to the errors of autoencoding as well as the automatic metric (i.e., imperfect sentiment classifier).
 
-We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
-For baseline methods, we replicated the experiments with publicly available code released in \citeay{fu2018style}, \citeay{shen2017style}, and \citeay{zhao2018adversarially}.
+With either $\loss{mul(s}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together significantly improves the transfer accuracy to 90\%, largely outperforming previous methods by 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
 
-We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective,\footnote{It should be noted that the transfer accuracy is lower bounded by 0\% as opposed to 50\%, because we always transfer a sentence to the opposite sentiment. The lower-bound, zero transfer accuracy, is achieved by a trivial model that copies the input.} resulting in inflated cosine similarity and word overlap scores. We also examined the number of times each model generates exact copies of the source sentences during style transfer. We notice that the style-embedding model reconstructs exactly the same sentence in style transfer $24\%$ of the time, whereas all other models is lower than $6\%$. Therefore, we do not think the style embedding an effective model for text style transfer.
-
-The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. 
-
-Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
-
-Table~\ref{tab:manual-evaluation} present the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective with a very low transfer strength, and that our methods outperform other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab})
-
-Table~\ref{tab:ablation-results} presents the results of ablation tests on the Yelp dataset.
-We see that both the style adversarial loss and multi-task classification loss play a role in the strength of style-transfer, and that they can be combined to further improve performance.
+However, $\loss{mul{s}}$ and $\loss{adv{s}}$ only regularize the style information, leading to gradual drop of content preserving scores. Then, we have another insight of introducing content-oriented auxiliary losses, $\loss{mul(s)}$ and $\loss{adv(c)}$, based on BoW features, which regularize the content information in the same way as the style space. By incorporating all these auxiliary losses, we achieve high transfer accuracy, high content preservation, as well as high language fluency.
 
 
-
-The manual evaluation results (Table \ref{tab:manual-evaluation}) show that our VAE model attains the best scores for transfer strength and generated sentence quality, as well as the second best score for content preservation amongst all the evaluated models.
-
-Some examples of style-transfer sentence generation are presented in Table~\ref{tab:transfer-samples}.
+Table~\ref{tab:transfer-samples} provide several examples of our style-transfer model. Results show that we can successfully transfer the sentiment while preserving the content of a sentence.
 We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
-\section{Conclusion and Future Work}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks using multi-task and adversarial objectives.
-Our learned disentanglement approach can be applied to text style-transfer tasks.
-It achieves similar content preservation scores, and significantly better style-transfer strength and language fluency scores compared to previous state-of-the-art work.
+\section{Conclusion}
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks. We combine the multi-task and adversarial objectives to separate content and style information from each other, where we also propose to approximate content information with bag-of-words features of style-neutral, non-stop vocabulary.
 
-For future work, we intend to evaluate the effects of disentangling the style space for datasets with greater than two distinct styles.
-We would also like to explore the possibility of aligning each encoded style distribution to a unique prior, which could be sampled from at inference time for style-transfer, as opposed to using the empirical mean of training-time style embeddings.
-
-%\section{Acknowledgements}
-%We acknowledge the support of the Natural Sciences and Engineering Research Council of Canada (NSERC) [261439-2013-RGPIN], and Amazon Research Award.
-%The Titan Xp GPU used for this research was donated by the NVIDIA Corporation.
+Both qualitative and quantitative experiments show that the latent space is indeed separated into style and content parts.
+Such  disentangled space can be directly applied to text style-transfer tasks.
+It achieves significantly better style-transfer strength, content-preserving scores, as well as language fluency, compared with previous state-of-the-art work.
 
 
-\begin{table*}[ht]
-	\centering
-	\begin{tabular}{| l || c | c | c | c |}
-		\hline
-		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
-		                                                                                & \tabh{Strength} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		$\loss{AE}$                                                                     & 0.106           & 0.939             & 0.472          & -12.58          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.767           & 0.911             & 0.331          & -12.17          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(c)}$                                                    & 0.155           & 0.931             & 0.626          & -11.21          \\
-		\hline
-		$\loss{AE}$, $\loss{adv(s)}$                                                    & 0.782           & 0.886             & 0.230          & -12.03          \\
-		\hline
-		$\loss{AE}$, $\loss{adv(c)}$                                                    & 0.103           & 0.940             & 0.470          & -12.92          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.822           & 0.928             & 0.561          & -11.32          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.912           & 0.866             & 0.171          & -9.59           \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.781           & 0.906             & 0.318          & -11.99          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.825           & 0.894             & 0.507          & -10.94          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.149           & 0.929             & 0.621          & -11.22          \\
-		\hline
-		$\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.780           & 0.884             & 0.214          & -12.03          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                  & 0.922           & 0.903             & 0.476          & -9.65           \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.844           & 0.925             & 0.556          & -11.13          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.934           & 0.864             & 0.157          & -10.11          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.806           & 0.896             & 0.500          & -9.98           \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & 0.934           & 0.904             & 0.473          & -9.84           \\
-		\hline
-	\end{tabular}
-	\caption{Ablation tests.}
-	\label{tab:ablation-results}
-\end{table*}
+
+
+
+
 
 \bibliography{main}
 \bibliographystyle{aaai}
