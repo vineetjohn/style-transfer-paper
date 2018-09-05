@@ -72,11 +72,10 @@
 \graphicspath{{images/}}
 
 \begin{abstract}
-	This paper tackles the problem of disentangling the latent variables of style and content in language models.
-	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
+	This paper tackles the problem of disentangling the latent variables of style and content in language models. We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
-	We achieve similar content preservation scores compared to previous state-of-the-art approaches, and significantly better style-transfer strength and language fluency scores.\footnote{Our code is publicly available at \url{bit.ly/2wxps69}. The materials are properly anonymized during double-blind review.}
+	We achieve significant better results in terms of transfer accuracy, content preservation and language fluency, in comparison with previous state-of-the-art approaches.\footnote{Our code is publicly available at \url{bit.ly/2wxps69}. The materials are properly anonymized during double-blind review.}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -86,7 +85,7 @@
 \section{Introduction}
 
 The neural network has been a successful learning machine during the past decade due to its highly expressive modeling capability, which is a consequence of multiple layers of non-linear transformations of input features.
-Such transformations, however, make intermediate features ``latent'', in the sense that, they do not have explicit meaning and are not interpretable.
+Such transformations, however, make intermediate features ``latent,'' in the sense that they do not have explicit meaning and are not interpretable.
 Therefore, neural networks are usually treated as black-box machinery.
 
 Disentangling the latent space of neural networks has become an increasingly important research topic.
@@ -103,13 +102,13 @@ We artificially divide the latent representation into two parts: the style space
 We design auxiliary losses, enforcing our model to separate style and content latent spaces.
 In particular, the multi-task loss operates on a latent space to ensure that the space does contain the information we wish to encode.
 The adversarial loss, on the contrary, minimizes the predictability of information that should not be contained in that space.
-In previous work, researchers typically work with the style, or specifically, sentiment space~\cite{hu2017toward,shen2017style,fu2018style,zhao2018adversarially}, but simply ignore the content space, as it is hard to formalize what ``content'' actually refers to.
+In previous work, researchers typically work with the style, or specifically, sentiment space~\cite{hu2017toward,shen2017style,fu2018style}, but simply ignore the content space, as it is hard to formalize what ``content'' actually refers to.
 
 In our paper, we propose to approximate the content information by bag-of-words (BoW) features, where we focus on style-neutral, non-stop words.
 Along with traditional style-oriented auxiliary losses, our BoW multi-task loss and BoW adversarial loss make the style and content spaces much more disentangled from each other.
 
-The disentangled latent space can be directly used for text style-transfer~\cite{hu2017toward,shen2017style}, where a model transforms a given sentence to a new sentence with the same content but a different style.
-Since it is difficult to obtain sentence pairs with the same content and differing styles (i.e. parallel corpora), we follow the setting where we train our model on a non-parallel but style-labeled corpora. We call this \textit{non-parallel text style transfer}.
+The learned disentangled latent space can be directly used for text style-transfer~\cite{hu2017toward,shen2017style}, which aims to transform a given sentence to a new sentence with the same content but a different style.
+Since it is difficult to obtain training sentence pairs with the same content and differing styles (i.e. parallel corpora), we follow the setting where we train our model on a non-parallel but style-labeled corpora. We call this \textit{non-parallel text style transfer}.
 To accomplish this, we train an autoencoder with disentangled latent space during training.
 For style-transfer inference, we simply use the autoencoder to encode the content vector of a sentence, but ignore its encoded style vector.
 We then infer from the training data an empirical embedding of the style that we would like to transfer.
@@ -117,14 +116,14 @@ The encoded content vector and the empirically-inferred style vector are concate
 This grafting technique enables us to obtain a new sentence similar in content to the input sentence, but with a different style.
 
 We conducted experiments on two customer review datasets.
-Both qualitative and quantitative results show that both the style and content spaces are indeed disentangled well.
-In the style-transfer evaluation, we achieve significantly better style-transfer strength and language fluency compared to previous results, while obtaining comparable content preservation scores.
+Qualitative and quantitative results show that both the style and content spaces are indeed disentangled well.
+In the style-transfer evaluation, we achieve significantly better style-transfer strength, content preservation scores, and language fluency, compared with previous results.
 Ablation tests also show that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
-
+ 
 
 \section{Related Work}
 
-Disentangling neural networks' latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~\cite{chen2016infogan,luan2017deep}.
+Disentangling neural networks' latent space has been explored in the image processing domain in the recent years, and researchers have successfully disentangled rotation features, color features, etc.~of images~\cite{chen2016infogan,luan2017deep}.
 Some image characteristics (e.g., artistic style) can be captured well by certain statistics \cite{gatys2016image}.
 In other work, researchers adopt data augmentation techniques to learn a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
@@ -446,7 +445,7 @@ It is also evident that the latent space learned by the variational autoencoder 
 			Ours (VAE)                                 & \textbf{0.934}                              & {0.904}                                      & {0.473}          & \textbf{-9.84}    & \textbf{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
 			\hline
 		\end{tabular}}
-	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve 0.809 and 0.835 transfer strength on the Yelp dataset, very close to the results in \protect\citeay{shen2017style} and \citeay{zhao2018adversarially}, respectively, showing that our replication is fair.}
+	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve 0.809 and 0.835 transfer strength on the Yelp dataset, close to the results in \protect\citeay{shen2017style} and \citeay{zhao2018adversarially}, respectively, showing that our replication is fair.}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -587,7 +586,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
 		\hline
 	\end{tabular}
-	\caption{Examples of style transferred sentence generation.}
+	\caption{Examples of style transferred8364 sentence generation.}
 	\label{tab:transfer-samples}
 \end{table*}
 
