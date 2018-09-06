@@ -131,24 +131,23 @@ In natural language processing, the definition of ``style'' itself is vague, and
 \citeay{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences.
 However, there is no evidence that the latent space would be disentangled by this reconstruction.
 \citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
-\citeay{fu2018style} propose two approaches: using a style embedding matrix, and using style-specific decoders for style-transfer.
-They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. However, all the above approaches only deal with the style information and simply ignore the content part.
+\citeay{fu2018style} propose two approaches: training style-specific embeddings, and training separate style-specific decoders for style-transfer.
+They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. All the above approaches only deal with the style information and simply ignore the content part.
 
 \citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
+
 Recently, \citeay{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models.
 This is beyond the scope of our paper, as we focus on non-parallel text style transfer.
 
-Our paper differs from previous work in that both our style space and content space are encoded from the input.
-We apply several auxiliary losses to ensure that each space encodes and only encodes the desired information.
+Our paper differs from previous work in that both our style space and content space are encoded from the input, where we design several auxiliary losses to ensure that each space encodes and only encodes the desired information.
 Such disentanglement of latent space has its own research interest in the deep learning community.
-The disentangled representation can then be directly applied to non-parallel text style-transfer tasks, as in the aforementioned studies.
+The disentangled representation can be directly applied to non-parallel text style-transfer tasks, as in the aforementioned studies.
 
 
 \section{Approach}
 
 In this section, we describe our approach in detail, shown in Figure~\ref{fig:overview}.
-Our model is built upon an autoencoder with a sequence-to-sequence neural network~\cite{sutskever2014sequence}.
-Then, we introduce the multi-task and adversarial auxiliary losses for both style and content spaces.
+Our model is built upon an autoencoder with a sequence-to-sequence neural network~\cite{sutskever2014sequence}, but we design multi-task and adversarial losses for both style and content spaces.
 Finally, we present our approach to transfer style in the context of natural language generation.
 
 \begin{figure}[!t]
@@ -162,17 +161,22 @@ Finally, we present our approach to transfer style in the context of natural lan
 
 An autoencoder encodes an input to a latent vector space, from which it reconstructs the input itself.
 The latent vector space is usually of much smaller dimensionality than input data, and the autoencoder learns salient and compact representations of data during the reconstruction process.
-This serves as our primary learning objective.
-Besides, we also use the autoencoder for text generation in the style-transfer application.
+%This serves as our primary learning objective.
+%Besides, we also use the autoencoder for text generation in the style-transfer application.
 
 Let $\rmx=(x_1, x_2, \cdots x_n)$ be an input sequence with $n$ tokens.
-The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden state $\bm h$.
+The encoder recurrent neural network (RNN) with gated recurrent units (GRU) \cite{cho2014learning} encodes $\rm x$ and obtains a hidden vector representation $\bm h$, which is linearly transformed from the encoder RNN's last hidden state.
+
 Then a decoder RNN generates a sentence, which ideally should be $\rmx$ itself.
 Suppose at a time step $t$, the decoder RNN predicts the word $x_t$ with probability $p(x_t|\bm h, x_1\cdots x_{t-1})$. Then the autoencoder is trained with a sequence-aggregated cross-entropy loss, given by
-\begin{equation}
+\begin{equation}\label{eqn:ae}
 	\loss{AE}(\nnweight{E},\nnweight{D})= -\sum_{t=1}^n \log p(x_t|\bm h, x_1\cdots x_{t-1})
 \end{equation}
 where $\nnweight{E}$ and $\nnweight{D}$ are the parameters of the encoder and decoder, respectively.\footnote{For brevity, we only present the loss for a particular data point (i.e., a sentence) throughout the paper. The total loss sums over all data points, but is implemented with mini-batches.} Both the encoder and decoder are deterministic functions in the original autoencoder model~\cite{rumelhart1985learning}, and thus we call it a \textit{deterministic autoencoder} (DAE).
+
+The autoencoding loss (\ref{eqn:ae}) serves as our primary training objective.
+Besides, an autoencoder is also used for text generation in the style-transfer application.
+
 
 \subsubsection{Variational Autoencoder.}
 
