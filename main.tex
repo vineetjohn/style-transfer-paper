@@ -539,7 +539,7 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		%\hline
 		%$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.806           & 0.896             & 0.500          & -9.98           \\
 		%\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
 		\hline
 	\end{tabular}\vspace{-.2cm}
 	\caption{Ablation tests on the Yelp dataset. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
@@ -587,7 +587,7 @@ We observe that the style embedding model \cite{fu2018style} performs poorly on 
 The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves considerably more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 
 
-Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
+Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
 We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. With $\loss{VAE}$ only, we cannot achieve reasonable style transfer accuracy by substituting an empirically estimated style vector of the target style.  This is because the style and content spaces would not be disentangled spontaneously with the autoencoding loss alone.
 
@@ -600,7 +600,7 @@ Table~\ref{tab:transfer-samples} provides several examples of our style-transfer
 We see that, with the empirically estimated style vector, we can reliably control the sentiment of generated sentences.
 
 \section{Conclusion}
-In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks. We combine the multi-task and adversarial objectives to separate content and style information from each other, where we also propose to approximate content information with bag-of-words features of style-neutral, non-stop vocabulary.
+In this paper, we propose a simple yet effective approach for disentangling the latent space of neural networks. We combine the multi-task and adversarial objectives to separate content and style information from each other, where we also propose to approximate content information with bag-of-words features of style-neutral, non-stopword vocabulary.
 
 Both qualitative and quantitative experiments show that the latent space is indeed separated into style and content parts.
 Such  disentangled space can be directly applied to text style-transfer tasks.
