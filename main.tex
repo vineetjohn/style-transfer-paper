@@ -399,15 +399,15 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{|l||r|r||r|r|}
 			\hline
-			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                      \\
+			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                             \\
 			\cline{2-5}
-			                                       & \tabh{DAE}                          & \tabh{VAE}                           & \tabh{DAE} & {VAE} \\
+			                                       & \textbf{DAE}                        & \textbf{VAE}                         & \textbf{DAE} & \tabh{VAE} \\
 			\hline \hline
-			None (majority guess)                  & \multicolumn{2}{c||}{0.602}         & \multicolumn{2}{c|}{0.512}                                \\
+			None (majority guess)                  & \multicolumn{2}{c||}{0.602}         & \multicolumn{2}{c|}{0.512}                                       \\
 			\hline
-			Content space  ($\bm c$)               & 0.658                               & 0.697                                & 0.675      & 0.693 \\ \hline
-			Style space ($\bm s$)                  & 0.974                               & 0.974                                & 0.821      & 0.810 \\ \hline
-			Complete space ($[\bm s;\bm c]$)       & 0.974                               & 0.974                                & 0.819      & 0.810 \\
+			Content space  ($\bm c$)               & 0.658                               & 0.697                                & 0.675        & 0.693      \\ \hline
+			Style space ($\bm s$)                  & 0.974                               & 0.974                                & 0.821        & 0.810      \\ \hline
+			Complete space ($[\bm s;\bm c]$)       & 0.974                               & 0.974                                & 0.819        & 0.810      \\
 			\hline
 		\end{tabular}}
 	\caption{Classification accuracy on latent spaces.}
