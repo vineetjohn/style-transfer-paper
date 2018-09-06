@@ -119,7 +119,7 @@ We conducted experiments on two customer review datasets.
 Qualitative and quantitative results show that both the style and content spaces are indeed disentangled well.
 In the style-transfer evaluation, we achieve significantly better style-transfer strength, content preservation scores, and language fluency, compared with previous results.
 Ablation tests also show that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
- 
+
 
 \section{Related Work}
 
@@ -594,7 +594,7 @@ Regarding language fluency, we see that VAE is better than DAE in both experimen
 	\label{tab:transfer-samples}
 \end{table*}
 
-Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
+Table~\ref{tab:manual-evaluation} presents the results of human evaluation. The inter-annotator agreement, as measured by Krippendorff's alpha \cite{krippendorff2011computing} is 0.74, 0.68 and 0.72 for transfer strength, content preservation and language quality, respectively. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
 We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. As seen, we cannot achieve reasonable style transfer accuracy by substituting an empirically estimated style vector of  the target style.  This is because the style and content spaces would not be disentangled spontaneously with the autoencoding loss alone.
 
