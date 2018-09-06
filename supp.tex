@@ -18,8 +18,11 @@
 \newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}
 % used for the top left cell in a table
 \newcommand{\tabc}[2]{\multicolumn{1}{|c||}{\multirow{#1}{*}{\textbf{#2}}}}
-
+% used for denoting the loss symbol with a subscript
 \newcommand{\loss}[1]{J_{\text{#1}}}
+
+\renewcommand\thesection{\Alph{section}}
+
 
 \section{Bag-of-Words (BoW) Vocabulary Ablation Tests}
 
