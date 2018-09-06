@@ -72,10 +72,11 @@
 \graphicspath{{images/}}
 
 \begin{abstract}
-	This paper tackles the problem of disentangling the latent variables of style and content in language models. We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
+	This paper tackles the problem of disentangling the latent variables of style and content in language models.
+	We propose a simple yet effective approach, which incorporates auxiliary multi-task and adversarial objectives, for label prediction and bag-of-words prediction, respectively.
 	We show, both qualitatively and quantitatively, that the style and content are indeed disentangled in the latent space.
 	This disentangled latent representation learning method is applied to style transfer on non-parallel corpora.
-	We achieve significantly better results in terms of transfer accuracy, content preservation and language fluency, in comparison to previous state-of-the-art approaches.\footnote{Our code is publicly available at \url{bit.ly/2wxps69}. The materials are properly anonymized during double-blind review.}
+	We achieve substantially better results in terms of transfer accuracy, content preservation and language fluency, in comparison to previous state-of-the-art approaches.\footnote{Our code is publicly available at \url{bit.ly/2wxps69}. The materials are properly anonymized during double-blind review.}
 	% \footnote{\url{https://github.com/vineetjohn/linguistic-style-transfer}}.
 \end{abstract}
 
@@ -117,7 +118,7 @@ This grafting technique enables us to obtain a new sentence similar in content t
 
 We conducted experiments on two customer review datasets.
 Qualitative and quantitative results show that both the style and content spaces are indeed disentangled well.
-In the style-transfer evaluation, we achieve significantly better style-transfer strength, content preservation scores, and language fluency, compared with previous results.
+In the style-transfer evaluation, we achieve substantially better style-transfer strength, content preservation scores, and language fluency, compared with previous results.
 Ablation tests also show that the auxiliary losses can be combined well, each playing its own role in disentangling the latent space.
 
 
@@ -385,7 +386,7 @@ We train classifiers on the different latent spaces, and report their inference-
 
 We see that the 128-dimensional content vector $\bm c$ is not particularly discriminative for style.
 It achieves accuracies slightly better than majority guess.
-However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves significantly higher style classification accuracy.
+However, the 8-dimensional style vector $\bm s$, despite its low dimensionality, achieves substantially higher style classification accuracy.
 When combining content and style vectors, we observe no further improvement.
 These results verify the effectiveness of our disentangling approach, as the style space contains style information, whereas the content space does not.
 
@@ -589,16 +590,14 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 
 We observe that the style embedding model \cite{fu2018style} performs poorly on the style-transfer objective,\footnote{It should be noted that the transfer accuracy is lower bounded by 0\% as opposed to 50\%, because we always transfer a sentence to the opposite sentiment. The lower-bound, zero transfer accuracy, is achieved by a trivial model that copies the input.} resulting in inflated cosine similarity and word overlap scores. We also examined the number of times each model generates exact copies of the source sentences during style transfer. We notice that the style-embedding model reconstructs exactly the same sentence for style transfer $24\%$ of the time, whereas all other models is lower than $6\%$. Therefore, we do not think the style embedding an effective model for text style transfer.
 
-The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model significantly outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces.
-
-Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves significantly more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
+The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing some probabilistic distribution. We also see that our method achieves considerably more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 
 
 Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in terms of all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
 We conducted extensive ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. With $\loss{VAE}$ only, we cannot achieve reasonable style transfer accuracy by substituting an empirically estimated style vector of the target style.  This is because the style and content spaces would not be disentangled spontaneously with the autoencoding loss alone.
 
-With either $\loss{mul(s}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together significantly improves the transfer accuracy to 90\%, largely outperforming previous methods by 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
+With either $\loss{mul(s}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together improves the transfer accuracy to 90\%, outperforming previous methods by a margin of 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
 
 However, $\loss{mul{s}}$ and $\loss{adv{s}}$ only regularize the style information, leading to gradual drop of content preserving scores. Then, we have another insight of introducing content-oriented auxiliary losses, $\loss{mul(s)}$ and $\loss{adv(c)}$, based on BoW features, which regularize the content information in the same way as the style information. By incorporating all these auxiliary losses, we achieve high transfer accuracy, high content preservation, as well as high language fluency.
 
@@ -611,13 +610,7 @@ In this paper, we propose a simple yet effective approach for disentangling the 
 
 Both qualitative and quantitative experiments show that the latent space is indeed separated into style and content parts.
 Such  disentangled space can be directly applied to text style-transfer tasks.
-It achieves significantly better style-transfer strength, content-preserving scores, as well as language fluency, compared with previous state-of-the-art work.
-
-
-
-
-
-
+It achieves substantially better style-transfer strength, content-preserving scores, as well as language fluency, compared with previous state-of-the-art work.
 
 \bibliography{main}
 \bibliographystyle{aaai}
