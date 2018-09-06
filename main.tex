@@ -188,7 +188,7 @@ Formally, the autoencoding loss in the VAE is
 	                                        & + \hyp{kl}\operatorname{KL}(q_{E}(\bm h|\rmx)\|p(\bm h))
 \end{align}
 where $\hyp{kl}$ is the hyperparameter balancing the reconstruction loss and the KL term. $p(\bm h)$ is the prior, set to the standard normal distribution $\mathcal{N}(\bm 0,\mathrm I)$. $q_E(\bm h|\mathrm x)$ is the posterior taking the form $\mathcal{N}(\bm \mu,\operatorname{diag} \bm\sigma)$, where $\bm\mu$ and $\bm\sigma$ are predicted by the encoder network.
-The motivation for using VAE as opposed to DAE is  that the reconstruction is based on the samples of the posterior, which populates the encoded vector to the neighborhood and thus smooths the latent space. \citeay{bowman2016generating} show that VAE generates more fluent sentences than DAE. 
+The motivation for using VAE as opposed to DAE is  that the reconstruction is based on the samples of the posterior, which populates the encoded vector to the neighborhood and thus smooths the latent space. \citeay{bowman2016generating} show that VAE generates more fluent sentences than DAE.
 
 Besides the above autoencoding loss, we design several auxiliary losses to disentangle the latent space. In particular, we hope that $\bm h$ can be separated into two spaces $\bm s$ and $\bm c$, representing style and content, respectively, i.e., $\bm h = [\bm s ; \bm c]$, where $[\cdot;\cdot]$ denotes concatenation.
 This is accomplished by the auxiliary losses described in the rest of this section.
@@ -282,7 +282,7 @@ The training objective is a cross-entropy loss against the ground truth distribu
 \end{equation}
 where the optimization is performed with both encoder parameters $\nnweight{E}$ and the multi-task classifier $\nnweight{mul(c)}$.
 
-Notice that although the target distribution is not one-hot as for BoW prediction, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form. 
+Notice that although the target distribution is not one-hot as for BoW prediction, the cross-entropy loss (Equation~\ref{eqn:content-multi-task-loss}) has the same form.
 
 It is also interesting that, at first glance, the multi-task loss for content is redundant, given the autoencoding loss, when in fact, it is not. The multi-task loss only considers content words, which do not include stopwords and sentiment words, and is only applied to the content space $\bm c$. This ensures that the content information is indeed captured in the content space. The autoencoding loss only requires that the model reconstructs the sentence based on the content and style space, and does not ensure their separation.
 
@@ -311,9 +311,9 @@ Again, $\loss{dis(c)}$ is trained with respect to the discriminator's parameters
 
 The overall loss $\loss{ovr}$ for the autoencoder comprises several terms: the reconstruction objective, the multi-task objectives for style and content, and the adversarial objectives for style and content:
 \begin{align}
-	\loss{ovr} = & \loss{AE}(\nnweight{E}, \nnweight{D})                                                                \\
+	\loss{ovr} = & \loss{AE}(\nnweight{E}, \nnweight{D})                                                                              \\
 	             & + \hyp{mul(s)} \loss{mul(s)} (\nnweight{E},\nnweight{mul(s)}) - \hyp{adv(s)} \loss{adv(s)}(\nnweight{E}) \nonumber \\
-	             & + \hyp{mul(c)} \loss{mul(c)} (\nnweight{E},\nnweight{mul(c)}) - \hyp{adv(c)} \loss{adv(c)}(\nnweight{E}) \nonumber    
+	             & + \hyp{mul(c)} \loss{mul(c)} (\nnweight{E},\nnweight{mul(c)}) - \hyp{adv(c)} \loss{adv(c)}(\nnweight{E}) \nonumber
 \end{align}
 where $\lambda$'s are the hyperparameters that balance the autoencoding loss and these auxiliary losses.
 
@@ -363,7 +363,8 @@ The maximum sentence length is 20, and the vocabulary size is approximately 58,0
 
 
 \subsection{Experiment Settings}
-We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, each with an initial learning rate of $10^{-3}$.
+We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMSProp optimizer \cite{tieleman2012lecture} for the discriminators, following adversarial training stability tricks \cite{arjovsky2017wasserstein}.
+Each optimizer has an initial learning rate of $10^{-3}$.
 Our model is trained for 20 epochs, by which time it has mostly converged.
 The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
 Both the autoencoder and the discriminators are trained once per mini-batch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
@@ -393,20 +394,20 @@ As seen, sentences with different styles are noticeably separated in a clean man
 It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared with the one learned by the deterministic autoencoder.
 \begin{table}[!t]
 	\centering
-    \resizebox{\linewidth}{!}{
-	\begin{tabular}{|l||r|r||r|r|}
-		\hline
-       \multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}\\
-        \cline{2-5}
-		           & \tabh{DAE}                 & \tabh{VAE}  & \tabh{DAE}                 & {VAE}\\
-		\hline \hline
-		None (majority guess)                  & \multicolumn{2}{c||}{0.602}       & \multicolumn{2}{c|}{0.512}         \\
-		\hline
-		Content space  ($\bm c$)         & 0.658                      & 0.697    & 0.675             & 0.693     \\ \hline
-		Style space ($\bm s$)            & 0.974                      & 0.974   & 0.821                      & 0.810    \\ \hline
-		Complete space ($[\bm s;\bm c]$) & 0.974                      & 0.974   & 0.819                      & 0.810     \\
-		\hline
-	\end{tabular}}
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{|l||r|r||r|r|}
+			\hline
+			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                      \\
+			\cline{2-5}
+			                                       & \tabh{DAE}                          & \tabh{VAE}                           & \tabh{DAE} & {VAE} \\
+			\hline \hline
+			None (majority guess)                  & \multicolumn{2}{c||}{0.602}         & \multicolumn{2}{c|}{0.512}                                \\
+			\hline
+			Content space  ($\bm c$)               & 0.658                               & 0.697                                & 0.675      & 0.693 \\ \hline
+			Style space ($\bm s$)                  & 0.974                               & 0.974                                & 0.821      & 0.810 \\ \hline
+			Complete space ($[\bm s;\bm c]$)       & 0.974                               & 0.974                                & 0.819      & 0.810 \\
+			\hline
+		\end{tabular}}
 	\caption{Classification accuracy on latent spaces.}
 	\label{tab:classification-yelp}
 \end{table}
@@ -500,7 +501,7 @@ $\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we a
 \subsubsection{Results and Analysis.}
 
 We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
-For baseline methods, we quoted results oinur exiting papers whenever possible, and replicated the experiments to report other metrics with publicly available code released in \citeay{fu2018style}, \citeay{shen2017style}, and \citeay{zhao2018adversarially}.\footnote{\citeay{fu2018style} propose another model using multiple decoders; the method is further developed in \citeay{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
+For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code released \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citeay{fu2018style} propose another model using multiple decoders; the method is further developed in \citeay{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
 
 \begin{table*}[ht]
 	\centering
