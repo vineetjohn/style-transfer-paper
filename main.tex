@@ -470,7 +470,13 @@ We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improve
 It estimates the empirical distribution of trigrams in a corpus, and computes the log-likelihood of a test sentence.
 We train the language model on both Yelp and Amazon, and report the Kneser-Ney language model's log-likelihood. A larger (closer to zero) number indicates a more fluent sentence.
 
-$\bullet$  \textit{Manual Evaluation.} Despite the above automatic metrics, we also have human evaluation to further confirm the performance of our model. This was conducted on the Yelp dataset only, due to the large amount of human effort involved. We asked 6 human annotators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality. The human evaluation was conducted in a strictly blind fashion: samples obtained by all competing models are randomly shuffled, so that the annotator could not know which model generated a particular sentence. The inter-annotator agreement---as measured by Krippendorff's alpha \cite{krippendorff2011computing} for Likert scale---is 0.74, 0.68, and 0.72 for transfer strength, content preservation, and language quality, respectively. According to \citeay{krippendorff2011computing}, this is an acceptable inter-rater agreement.
+$\bullet$  \textit{Manual Evaluation.}
+Despite the above automatic metrics, we also have human evaluation to further confirm the performance of our model.
+This was conducted on the Yelp dataset only, due to the large amount of human effort involved.
+We asked 6 human evaluators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality.
+This evaluation was conducted in a strictly blind fashion: samples obtained by all competing models are randomly shuffled, so that the evaluator could not know which model generated a particular sentence.
+The inter-rater agreement---as measured by Krippendorff's alpha \cite{krippendorf2004content} for our Likert scale ratings---is 0.74, 0.68, and 0.72 for transfer strength, content preservation, and language quality, respectively.
+According to \citeay{krippendorf2004content}, this is an acceptable inter-rater agreement.
 \begin{table}[!t]
 	\centering\vspace{-.2cm}
 	\resizebox{\linewidth}{!}{
