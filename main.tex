@@ -264,7 +264,7 @@ $t_c(w_*)=\frac{\sum_{i=1}^{N}{\mathbb{I}\{w_i = w_*\}}}{N}$,
 where $t_c(\cdot)$ denotes the target distribution of content, and $\mathbb{I\{\cdot\}}$ is an indicator function.
 
 Here, we only consider BoW of content words, excluding stopwords and style-specific words, since we focus on ``content'' information. In particular, we exclude sentiment words from a curated lexicon \cite{hu2004mining} for sentiment style transfer.
-
+The effect of using different vocabularies for BoW is analyzed in Supplementary Material A.
 
 \subsubsection{Multi-Task Loss for Content.} \label{ssec:multitask-content-objective}
 
@@ -326,7 +326,7 @@ To put it all together, the model training involves an alternation of optimizing
 		minimize $\loss{dis(c)}(\nnweight{dis(c)})$ w.r.t. $\nnweight{dis(c)}$\;
 		minimize $\loss{ovr}$ w.r.t. $\nnweight{E}, \nnweight{D}, \nnweight{mul(s)}, \nnweight{mul(c)}$\;
 	}
-	\caption{Training process.}
+	\caption{Training process.}\vspace{-.2cm}
 	\label{alg:training-process}
 \end{algorithm}
 
@@ -367,7 +367,7 @@ We used the Adam optimizer \cite{kingma2014adam} for the autoencoder and the RMS
 Each optimizer has an initial learning rate of $10^{-3}$.
 Our model is trained for 20 epochs, by which time it has mostly converged.
 The word embedding layer was initialized by word2vec \cite{mikolov2013distributed} trained on respective training sets.
-Both the autoencoder and the discriminators are trained once per mini-batch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$ and $\hyp{adv(c)} = 0.03$.
+Both the autoencoder and the discriminators are trained once per mini-batch with $\hyp{mul(s)} = 10$, $\hyp{mul(c)} = 3$, $\hyp{adv(s)} = 1$, and $\hyp{adv(c)} = 0.03$.
 These hyperparameters were tuned by performing a log-scale grid search within two orders of magnitude around the default value $1$, and choosing those that yielded the best validation results.
 The recurrent unit size is $256$, the style vector size is $8$, and the content vector size is $128$.
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
@@ -392,6 +392,9 @@ These results verify the effectiveness of our disentangling approach, as the sty
 We show t-SNE plots of both the deterministic autoencoder (DAE) and the variational autoencoder (VAE) models in Figure~\ref{fig:tsne-plots}.
 As seen, sentences with different styles are noticeably separated in a clean manner in the style space (LHS), but are indistinguishable in the content space (RHS).
 It is also evident that the latent space learned by the variational autoencoder is considerably smoother and continuous compared with the one learned by the deterministic autoencoder.
+
+We performed an ablation test of t-SNE plots with different combinations of auxiliary losses, shown in Supplementary Material B.
+
 \begin{table}[!t]
 	\centering
 	\resizebox{\linewidth}{!}{
@@ -443,8 +446,8 @@ It is also evident that the latent space learned by the variational autoencoder 
 			\hline
 			Ours (VAE)                                 & \textbf{0.934}                              & {0.904}                                      & {0.473}          & \textbf{-9.84}    & \textbf{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
 			\hline
-		\end{tabular}}\vspace{-.1cm}
-	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve 0.809 and 0.835 transfer strength on the Yelp dataset, close to the results in \protect\citeay{shen2017style} and \citeay{zhao2018adversarially}, respectively, showing that our replication is fair.}
+		\end{tabular}}\vspace{-.2cm}
+	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer length, content preserving, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. We achieve 0.809 and 0.835 transfer strength on the Yelp dataset, close to the results in \protect\citeay{shen2017style} and \citeay{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -504,7 +507,7 @@ We compare our approach with previous state-of-the-art work in Table \ref{tab:ye
 For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code released \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citeay{fu2018style} propose another model using multiple decoders; the method is further developed in \citeay{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
 
 \begin{table*}[ht]
-	\centering
+	\centering\vspace{-.2cm}
 	\begin{tabular}{| l || c | c | c | c |}
 		\hline
 		\tabc{2}{Objectives}                                                             & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
@@ -547,9 +550,9 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 	\caption{Ablation tests. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
 	\label{tab:ablation-results}
 \end{table*}
-\begin{table*}[ht]
+\begin{table*}[!t]
 	\centering
-	\footnotesize
+	\resizebox{.95\textwidth}{!}{\footnotesize
 	\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 		\hline
 		\tabc{1}{Original (Positive)}                                           & \tabh{DAE Transferred (Negative)}                                         & \tabh{VAE Transferred (Negative)}                          \\
@@ -579,7 +582,7 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		\hline
 		they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
 		\hline
-	\end{tabular}\vspace{-.2cm}
+	\end{tabular}}\vspace{-.2cm}
 	\caption{Examples of style transferred sentence generation.}\vspace{-.2cm}
 	\label{tab:transfer-samples}
 \end{table*}
