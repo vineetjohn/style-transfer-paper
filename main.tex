@@ -593,7 +593,7 @@ We conducted ablation tests on the Yelp dataset, and show results in Table~\ref{
 
 With either $\loss{mul(s)}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together improves the transfer accuracy to 90\%, outperforming previous methods by a margin of 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
 
-However, $\loss{mul(s)}$ and $\loss{adv(s)}$ only regularize the style information, leading to gradual drop of content preserving scores. Then, we have another insight of introducing content-oriented auxiliary losses, $\loss{mul(s)}$ and $\loss{adv(c)}$, based on BoW features, which regularize the content information in the same way as the style information. By incorporating all these auxiliary losses, we achieve high transfer accuracy, high content preservation, as well as high language fluency.
+However, $\loss{mul(s)}$ and $\loss{adv(s)}$ only regularize the style information, leading to gradual drop of content preserving scores. Then, we have another insight of introducing content-oriented auxiliary losses, $\loss{mul(c)}$ and $\loss{adv(c)}$, based on BoW features, which regularize the content information in the same way as the style information. By incorporating all these auxiliary losses, we achieve high transfer accuracy, high content preservation, as well as high language fluency.
 
 
 Table~\ref{tab:transfer-samples} provides several examples of our style-transfer model. Results show that we can successfully transfer the sentiment while preserving the content of a sentence.
