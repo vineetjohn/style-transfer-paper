@@ -1,5 +1,5 @@
 \documentclass[letterpaper]{article} %DO NOT CHANGE THIS
-\usepackage{aaai19}  %Required
+\usepackage[hyperref]{naaclhlt2019}
 \usepackage{times}  %Required
 \usepackage{helvet}  %Required
 \usepackage{courier}  %Required
@@ -44,9 +44,9 @@
 % used for denoting the bias symbol (b) with a subscript
 \newcommand{\bias}[1]{\bm{b_{\text{#1}}}}
 % custom author-year citation
-\newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
+% \newcommand{\citeay}[1]{\citeauthor{#1} \shortcite{#1}}
 
-\title{Disentangled Representation Learning for Non-Parallel Text Style Transfer}
+\title{Disentangled Representation Learning for\\Non-Parallel Text Style Transfer}
 
 %\author{
 %	Vineet John \\
@@ -90,8 +90,8 @@ Such transformations, however, make intermediate features ``latent,'' in the sen
 Therefore, neural networks are usually treated as black-box machinery.
 
 Disentangling the latent space of neural networks has become an increasingly important research topic.
-In the image domain, for example, \citeay{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models.
-\citeay{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective.
+In the image domain, for example, \citet{chen2016infogan} use adversarial and information maximization objectives to produce interpretable latent representations that can be tweaked to adjust writing style for handwritten digits, as well as lighting and orientation for face models.
+\citet{mathieu2016disentangling} utilize a convolutional autoencoder to achieve the same objective.
 However, this problem is not well explored in natural language processing.
 
 In this paper, we address the problem of disentangling the latent space of neural networks for text generation.
@@ -129,14 +129,14 @@ Some image characteristics (e.g., artistic style) can be captured well by certai
 In other work, researchers adopt data augmentation techniques to learn a disentangled latent space~\cite{kulkarni2015deep,champandard2016semantic}.
 
 In natural language processing, the definition of ``style'' itself is vague, and as a convenient starting point, NLP researchers often treat sentiment as a salient style of text.
-\citeay{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences.
+\citet{hu2017toward} manage to control the sentiment by using discriminators to reconstruct sentiment and content from generated sentences.
 However, there is no evidence that the latent space would be disentangled by this reconstruction.
-\citeay{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
-\citeay{fu2018style} propose two approaches: training style-specific embeddings, and training separate style-specific decoders for style-transfer.
+\citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
+\citet{fu2018style} propose two approaches: training style-specific embeddings, and training separate style-specific decoders for style-transfer.
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. All the above approaches only deal with the style information and simply ignore the content part.
 
-\citeay{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
-Recently, \citeay{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models.
+\citet{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
+Recently, \citet{rao2018dear} treat the formality of writing as a style, and create a parallel corpus for style transfer with sequence-to-sequence models.
 This is beyond the scope of our paper, as we focus on non-parallel text style transfer.
 
 Our paper differs from previous work in that both our style space and content space are encoded from the input, and we design several auxiliary losses to ensure that each space encodes and only encodes the desired information.
@@ -186,7 +186,7 @@ Formally, the autoencoding loss in the VAE is
 \end{align}
 where $\hyp{kl}$ is the hyperparameter balancing the reconstruction loss and the KL term. $p(\bm h)$ is the prior, set to the standard normal distribution $\mathcal{N}(\bm 0,\mathrm I)$. $q_E(\bm h|\mathrm x)$ is the posterior taking the form $\mathcal{N}(\bm \mu,\operatorname{diag} \bm\sigma)$, where $\bm\mu$ and $\bm\sigma$ are predicted by the encoder network.
 The motivation for using VAE as opposed to DAE is that the reconstruction is based on the samples of the posterior, which populates encoded vectors to the neighborhood and thus smooths the latent space.
-\citeay{bowman2016generating} show that VAE enables more fluent sentence generation from a latent space than DAE.
+\citet{bowman2016generating} show that VAE enables more fluent sentence generation from a latent space than DAE.
 
 The autoencoding losses in Equations~(\ref{eqn:ae},\ref{eqn:vae}) serve as our primary training objective.
 Besides, the autoencoder is also used for text generation in the style-transfer application.
@@ -370,7 +370,7 @@ The recurrent unit size is $256$, the style vector size is $8$, and the content 
 We append the latent vector $\bm h$ to the hidden state at every time step of the decoder.
 
 For the VAE model, we enforce the KL-divergence penalty on both the style and content posterior distributions, using $\hyp{kl(s)}$ and $\hyp{kl(c)}$, respectively.
-We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citeay{bahuleyan2018probabilistic}.
+We set $\hyp{kl(s)} = 0.03$ and $\hyp{kl(c)} = 0.03$ and use the $\operatorname{sigmoid}$ KL-weight annealing schedule following \citet{bahuleyan2018probabilistic}.
 They were tuned in the same manner as the other hyperparameters of the model.
 
 
@@ -439,7 +439,7 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			Ours (VAE)                                 & \textbf{0.934}                              & {0.904}                                      & {0.473}          & \textbf{-9.84}    & \textbf{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
 			\hline
 		\end{tabular}}\vspace{-.2cm}
-	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer strength, content preservation, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. Our replicated experiments achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \protect\citeay{shen2017style} and \citeay{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
+	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer strength, content preservation, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. Our replicated experiments achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
 	\label{tab:yelp-comparison-previous}
 \end{table*}
 
@@ -454,7 +454,7 @@ $\bullet$ \textit{Style-Transfer Accuracy.} We follow most previous work~\cite{h
 While the style classifier itself may not be perfect, it achieves a reasonable sentiment accuracy on the validation sets ($97\%$ for Yelp; $82\%$ for Amazon). Thus, it provides a quantitative way of evaluating the strength of style-transfer.
 
 $\bullet$ \textit{Cosine Similarity.}
-We followed \citeay{fu2018style} and computed a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its word embeddings (sentiment words removed).
+We followed \citet{fu2018style} and computed a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its word embeddings (sentiment words removed).
 Then, we computed the cosine similarity between the source and generated sentence embeddings, which is intended to be an indicator of content preservation.
 
 $\bullet$ \textit{Word Overlap.} We find that the cosine similarity measure, although correlated to human judgment, is not a sensitive measure, and we propose a simple yet effective measure that counts the unigram word overlap rate of the original sentence $\mathrm x$ and the style-transferred sentence $\mathrm y$, computed by $\frac{count(w_{\mathrm x} \cap w_{\mathrm y})}{count(w_{\mathrm x} \cup w_{\mathrm y})}$.
@@ -470,23 +470,23 @@ This was done on the Yelp dataset only, due to the amount of manual effort invol
 We asked 6 human evaluators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality.
 This evaluation was conducted in a strictly blind fashion: samples obtained from all evaluated models are randomly shuffled, so that the evaluator would be unaware of which model generated a particular sentence.
 The inter-rater agreement---as measured by Krippendorff's alpha \cite{krippendorf2004content} for our Likert scale ratings---is 0.74, 0.68, and 0.72 for transfer strength, content preservation, and language quality, respectively.
-According to \citeay{krippendorf2004content}, this is an acceptable inter-rater agreement.
+According to \citet{krippendorf2004content}, this is an acceptable inter-rater agreement.
 \begin{table}[!t]
 	\centering\vspace{-.2cm}
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{| l || c | c | c | }
 			\hline
-			\tabc{2}{Model}                & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
-			                               & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
+			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} \\
+			                              & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  \\
 			\hline
-			\hline		\citeay{fu2018style}     & 1.67            & \textbf{3.84}       & 3.66            \\\hline\hline
-			\citeay{shen2017style}         & 3.63            & 3.07                & 3.08            \\
+			\hline		\citet{fu2018style}     & 1.67            & \textbf{3.84}       & 3.66            \\\hline\hline
+			\citet{shen2017style}         & 3.63            & 3.07                & 3.08            \\
 			\hline
-			\citeay{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
+			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
 			\hline
-			Ours (DAE)                     & 3.67            & 3.64                & 4.19            \\
+			Ours (DAE)                    & 3.67            & 3.64                & 4.19            \\
 			\hline
-			Ours (VAE)                     & \textbf{4.32}   & \textit{3.73}       & \textbf{4.48}   \\
+			Ours (VAE)                    & \textbf{4.32}   & \textit{3.73}       & \textbf{4.48}   \\
 			\hline
 		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
@@ -499,7 +499,7 @@ According to \citeay{krippendorf2004content}, this is an acceptable inter-rater 
 \subsubsection{Results and Analysis.}
 
 We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
-For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citeay{fu2018style} propose another model using multiple decoders; the method is further developed in \citeay{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
+For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citet{fu2018style} propose another model using multiple decoders; the method is further developed in \citet{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
 
 \begin{table*}[ht]
 	\centering\vspace{-.2cm}
@@ -513,31 +513,31 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		\hline
 		$\loss{AE}$, $\loss{mul(s)}$                                                     & 0.767           & 0.911             & 0.331          & -12.17          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(c)}$                                                    & 0.155           & 0.931             & 0.626          & -11.21          \\
+		$\loss{AE}$, $\loss{mul(c)}$                                                     & 0.155           & 0.931             & 0.626          & -11.21          \\
 		\hline
 		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.782           & 0.886             & 0.230          & -12.03          \\
 		\hline
-		$\loss{AE}$, $\loss{adv(c)}$                                                    & 0.103           & 0.940             & 0.470          & -12.92          \\
+		$\loss{AE}$, $\loss{adv(c)}$                                                     & 0.103           & 0.940             & 0.470          & -12.92          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.822           & 0.928             & 0.561          & -11.32          \\
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                    & 0.822           & 0.928             & 0.561          & -11.32          \\
 		\hline
 		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.912           & 0.866             & 0.171          & -9.59           \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.781           & 0.906             & 0.318          & -11.99          \\
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                    & 0.781           & 0.906             & 0.318          & -11.99          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.825           & 0.894             & 0.507          & -10.94          \\
+		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                    & 0.825           & 0.894             & 0.507          & -10.94          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.149           & 0.929             & 0.621          & -11.22          \\
+		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                    & 0.149           & 0.929             & 0.621          & -11.22          \\
 		\hline
-		$\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.780           & 0.884             & 0.214          & -12.03          \\
+		$\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                    & 0.780           & 0.884             & 0.214          & -12.03          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                  & 0.922           & 0.903             & 0.476          & -9.65           \\
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                   & 0.922           & 0.903             & 0.476          & -9.65           \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.844           & 0.925             & 0.556          & -11.13          \\
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                   & 0.844           & 0.925             & 0.556          & -11.13          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.934           & 0.864             & 0.157          & -10.11          \\
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.934           & 0.864             & 0.157          & -10.11          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.806           & 0.896             & 0.500          & -9.98           \\
+		$\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.806           & 0.896             & 0.500          & -9.98           \\
 		\hline
 		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
 		\hline
@@ -608,6 +608,6 @@ This disentangled space can be directly applied to text style-transfer tasks.
 It achieves substantially better style-transfer strength, content-preservation scores, as well as language fluency, compared with previous state-of-the-art work.
 
 \bibliography{main}
-\bibliographystyle{aaai}
+\bibliographystyle{acl_natbib}
 
 \end{document}
