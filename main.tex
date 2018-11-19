@@ -133,6 +133,9 @@ In natural language processing, the definition of ``style'' itself is vague, and
 However, there is no evidence that the latent space would be disentangled by this reconstruction.
 \citet{shen2017style} use a pair of adversarial discriminators to align the recurrent hidden decoder states of original and style-transferred sentences, for a given style.
 \citet{fu2018style} propose two approaches: training style-specific embeddings, and training separate style-specific decoders for style-transfer.
+\citet{li2018delete} use a phrase replacement and generation method by which the markers that are indicative of particular attributes are removed or inserted to the source sentences, following which a new sentence is generated in the target style.
+\citet{prabhumoye2018style} use a machine-translation preprocessing step to strip author style from documents, and then use a multi-decoder model to convert the result into a sentence with a specific style.
+\citet{xu2018unpaired} use `neutralization' and `emotionalization' modules in a reinforcement learning model to achieve the same objective.
 They apply an adversarial loss on the encoded space to discourage encoding style in the latent space of an autoencoding model. All the above approaches only deal with the style information and simply ignore the content part.
 
 \citet{zhao2018adversarially} extend the multi-decoder approach and use a Wasserstein-distance penalty to align content representations of sentences with different styles. However, the Wasserstein penalty is applied to  empirical samples from the data distribution, and is more indirect than our BoW-based auxiliary losses.
