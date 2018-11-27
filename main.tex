@@ -428,21 +428,21 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			                                                     & \textbf{Accuracy}                           & \textbf{Similarity}                          & \textbf{Overlap} & \textbf{Fluency}  & \textbf{Accuracy} & \textbf{Similarity}     & \textbf{Overlap} & \textbf{Fluency}  \\
 			\hline
 			\hline
-			Style-Embedding \cite{fu2018style}                   & 0.182                                       & \textbf{0.959}                               & \textbf{0.666}   & -16.17            & \ 0.400$^\dag$    & \ \textbf{0.930}$^\dag$ & \textbf{0.359}   & -28.13            \\
+			Style-Embedding \cite{fu2018style}                   & 0.182                                       & \textbf{0.959}                               & \textbf{0.666}   & -16.17            & \ 0.400$^\dag$    & \ \textit{0.930}$^\dag$ & \textit{0.359}   & -28.13            \\
 			\hline		\hline
 			Cross-Alignment \cite{shen2017style}                 & \ 0.784$^\dag$                              & 0.892                                        & 0.209            & -23.39            & 0.606             & 0.893                   & 0.024            & -26.31            \\
 			\hline
-			Multi-Decoder \cite{zhao2018adversarially}           & \ 0.818$^\dag$                              & 0.883                                        & 0.272            & -20.95            & 0.552             & \textit{0.926}          & 0.169            & -34.70            \\
+			Multi-Decoder \cite{zhao2018adversarially}           & \ 0.818$^\dag$                              & 0.883                                        & 0.272            & -20.95            & 0.552             & 0.926                   & 0.169            & -34.70            \\
 			\hline
-			Delete Retrieve Generate \cite{li2018delete}         & 0.508                                       & 0.921                                        & 0.469            & -18.56            & 0.426             & 0.980                   & 0.799            & -23.31            \\
+			Delete Retrieve Generate \cite{li2018delete}         & 0.508                                       & 0.921                                        & 0.469            & -18.56            & 0.426             & \textbf{0.980}          & \textbf{0.799}   & \textit{-23.31}   \\
 			\hline
-			Back Translation \cite{prabhumoye2018style}          & 0.854                                       & 0.831                                        & 0.075            & -20.85            & 0.832             & 0.821                   & 0.020            & -25.96            \\
+			Back Translation \cite{prabhumoye2018style}          & 0.854                                       & 0.831                                        & 0.075            & -20.85            & \textbf{0.832}    & 0.821                   & 0.020            & -25.96            \\
 			\hline
-			Unpaired Sentiment Translation \cite{xu2018unpaired} & 0.977                                       & 0.868                                        & 0.140            & -14.84            & 0.890             & 0.864                   & 0.129            & -14.00            \\
+			Unpaired Sentiment Translation \cite{xu2018unpaired} & 0.805                                       & \textit{0.922}                               & 0.427            & -30.15            & 0.719             & 0.912                   & 0.221            & -32.89            \\
 			\hline
-			Ours (DAE)                                           & 0.883                                       & \textit{0.915}                               & \textit{0.549}   & -10.17            & 0.720             & 0.921                   & \textit{0.354}   & -24.74            \\
+			Ours (DAE)                                           & \textit{0.883}                              & 0.915                                        & \textit{0.549}   & \textit{-10.17}   & 0.720             & 0.921                   & 0.354            & -24.74            \\
 			\hline
-			Ours (VAE)                                           & \textbf{0.934}                              & 0.904                                        & {0.473}          & \textbf{-9.84}    & \textbf{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
+			Ours (VAE)                                           & \textbf{0.934}                              & 0.904                                        & 0.473            & \textbf{-9.84}    & \textit{0.822}    & 0.900                   & 0.196            & \textbf{-21.70}   \\
 			\hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer. The style-embedding approach achieves poor transfer accuracy, and should not be considered as an effective style-transfer model. Despite this, our model outperforms other previous methods in terms of all aspects (transfer strength, content preservation, and language fluency). Numbers with the $^\dag$ symbol are quoted from respective papers. Others are based on our replication using the published code in previous work. Our replicated experiments achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
