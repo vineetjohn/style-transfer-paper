@@ -397,16 +397,13 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{|l||r|r||r|r|}
 			\hline
-			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                             \\
+			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                               \\
 			\cline{2-5}
-			                                       & \textbf{DAE}                        & \textbf{VAE}                         & \textbf{DAE} & \tabh{VAE} \\
-			\hline
-			None (majority guess)                  & \multicolumn{2}{c||}{0.60}          & \multicolumn{2}{c|}{0.51}                                        \\
-			\hline
-			Content space  ($\bm c$)               & 0.66                                & 0.70                                 & 0.67         & 0.69       \\ \hline
-			Style space ($\bm s$)                  & 0.97                                & 0.97                                 & 0.82         & 0.81       \\ \hline
-			Complete space ($[\bm s;\bm c]$)       & 0.97                                & 0.97                                 & 0.82         & 0.81       \\
-			\hline
+			                                       & \textbf{DAE}                        & \textbf{VAE}                         & \textbf{DAE} & \textbf{VAE} \\ \hline
+			None (majority guess)                  & \multicolumn{2}{c||}{0.60}          & \multicolumn{2}{c|}{0.51}                                          \\ \hline
+			Content space  ($\bm c$)               & 0.66                                & 0.70                                 & 0.67         & 0.69         \\ \hline
+			Style space ($\bm s$)                  & 0.97                                & 0.97                                 & 0.82         & 0.81         \\ \hline
+			Complete space ($[\bm s;\bm c]$)       & 0.97                                & 0.97                                 & 0.82         & 0.81         \\ \hline
 		\end{tabular}}
 	\caption{Classification accuracy on latent spaces.}
 	\label{tab:classification-yelp}
@@ -428,22 +425,14 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			                                                    & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} & \textbf{Transfer} & \textbf{Cosine} & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} \\
 			                                                    & \textbf{Acc.}                               & \textbf{Sim.}                                & \textbf{Overlap} & \textbf{Mean} &                               & \textbf{Acc.}     & \textbf{Sim.}   & \textbf{Overlap} & \textbf{Mean} &                               \\
 			\hline\hline
-			Style-Embedding \cite{fu2018style}                  & 0.18                                        & \textbf{0.96}                                & \textbf{0.67}    & 0.35          & 124                           & \ 0.40$^\dag$     & \ 0.93$^\dag$   & 0.36             & 0.39          & \textbf{32}                   \\
-			\hline
-			Cross-Alignment \cite{shen2017style}                & \ 0.78$^\dag$                               & 0.89                                         & 0.21             & 0.41          & 93                            & 0.61              & 0.89            & 0.02             & 0.12          & 202                           \\
-			\hline
-			Multi-Decoder \cite{zhao2018adversarially}          & \ 0.82$^\dag$                               & 0.88                                         & 0.27             & 0.48          & 85                            & 0.55              & 0.93            & 0.17             & 0.31          & 75                            \\
-			\hline
-			DeleteRetrieveGenerate \cite{li2018delete} $^\ddag$ & 0.86                                        & 0.94                                         & 0.52             & 0.67          & 70                            & 0.43              & \textbf{0.98}   & \textbf{0.80}    & \textbf{0.58} & 65                            \\
-			\hline
-			BackTranslate \cite{prabhumoye2018style}            & 0.85                                        & 0.83                                         & 0.08             & 0.25          & 206                           & \textbf{0.83}     & 0.82            & 0.02             & 0.13          & 115                           \\
-			\hline
-			Cycle RL \cite{xu2018unpaired} $^\ddag$             & 0.80                                        & 0.92                                         & 0.43             & 0.59          & 470                           & 0.72              & 0.91            & 0.22             & 0.40          & 332                           \\
-			\hline\hline
-			Ours (DAE)                                          & 0.88                                        & 0.92                                         & 0.55             & \textbf{0.70} & 137                           & 0.72              & 0.92            & 0.35             & 0.50          & 73                            \\
-			\hline
-			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47             & 0.66          & \textbf{69}                   & 0.82              & 0.90            & 0.20             & 0.40          & 63                            \\
-			\hline
+			Style-Embedding \cite{fu2018style}                  & 0.18                                        & \textbf{0.96}                                & \textbf{0.67}    & 0.35          & 124                           & \ 0.40$^\dag$     & \ 0.93$^\dag$   & 0.36             & 0.39          & \textbf{32}                   \\ \hline
+			Cross-Alignment \cite{shen2017style}                & \ 0.78$^\dag$                               & 0.89                                         & 0.21             & 0.41          & 93                            & 0.61              & 0.89            & 0.02             & 0.12          & 202                           \\ \hline
+			Multi-Decoder \cite{zhao2018adversarially}          & \ 0.82$^\dag$                               & 0.88                                         & 0.27             & 0.48          & 85                            & 0.55              & 0.93            & 0.17             & 0.31          & 75                            \\ \hline
+			DeleteRetrieveGenerate \cite{li2018delete} $^\ddag$ & 0.86                                        & 0.94                                         & 0.52             & 0.67          & 70                            & 0.43              & \textbf{0.98}   & \textbf{0.80}    & \textbf{0.58} & 65                            \\ \hline
+			BackTranslate \cite{prabhumoye2018style}            & 0.85                                        & 0.83                                         & 0.08             & 0.25          & 206                           & \textbf{0.83}     & 0.82            & 0.02             & 0.13          & 115                           \\ \hline
+			Cycle RL \cite{xu2018unpaired} $^\ddag$             & 0.80                                        & 0.92                                         & 0.43             & 0.59          & 470                           & 0.72              & 0.91            & 0.22             & 0.40          & 332                           \\ \hline\hline
+			Ours (DAE)                                          & 0.88                                        & 0.92                                         & 0.55             & \textbf{0.70} & 137                           & 0.72              & 0.92            & 0.35             & 0.50          & 73                            \\ \hline
+			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47             & 0.66          & \textbf{69}                   & 0.82              & 0.90            & 0.20             & 0.40          & 63                            \\ \hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer.  $^\dag$Quoted from previous papers (the same data split). $^\ddag$Involving custom data splits, providing a rough (but unbiased) comparison. Others are based on our replication, and we use published code whenever possible. We achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
 	\label{tab:yelp-comparison-previous}
@@ -484,18 +473,12 @@ According to \citet{krippendorf2004content}, this is an acceptable inter-rater a
 			\hline
 			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabhr{Language} & \tabh{Geo-}   \\
 			                              & \tabh{Strength} & \tabh{Preservation} & \tabhr{Quality}  & \tabh{Mean}   \\
-			\hline
-			\hline
-			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66             & 2.86          \\
-			\hline
-			\citet{shen2017style}         & 3.63            & 3.07                & 3.08             & 3.25          \\
-			\hline
-			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77             & 3.46          \\
-			\hline\hline
-			Ours (DAE)                    & 3.67            & 3.64                & 4.19             & 3.83          \\
-			\hline
-			Ours (VAE)                    & \textbf{4.32}   & 3.73                & \textbf{4.48}    & \textbf{4.16} \\
-			\hline
+			\hline \hline
+			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66             & 2.86          \\ \hline
+			\citet{shen2017style}         & 3.63            & 3.07                & 3.08             & 3.25          \\ \hline
+			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77             & 3.46          \\ \hline \hline
+			Ours (DAE)                    & 3.67            & 3.64                & 4.19             & 3.83          \\ \hline
+			Ours (VAE)                    & \textbf{4.32}   & 3.73                & \textbf{4.48}    & \textbf{4.16} \\ \hline
 		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
 	\label{tab:manual-evaluation}
@@ -515,76 +498,48 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		\hline
 		\tabc{2}{Objectives}                                                             & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Language} \\
 		                                                                                 & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
-		\hline
-		\hline
-		$\loss{AE}$                                                                      & 0.11            & \textbf{0.94}     & 0.47           & -12.58          \\
-		\hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                     & 0.77            & 0.91              & 0.33           & -12.17          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$                                                     & 0.16            & 0.93              & 0.63           & -11.21          \\
-		\hline
-		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & -12.03          \\
-		% \hline
-		% $\loss{AE}$, $\loss{adv(c)}$                                                     & 0.10            & 0.94              & 0.47           & -12.92          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                    & 0.82            & 0.93              & 0.56           & -11.32          \\
-		\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & \textbf{-9.59}  \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                    & 0.78            & 0.91              & 0.32           & -11.99          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                    & 0.82            & 0.89              & 0.51           & -10.94          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                    & 0.15            & 0.93              & 0.62           & -11.22          \\
-		% \hline
-		% $\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                    & 0.78            & 0.88              & 0.21           & -12.03          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                   & 0.92            & 0.90              & 0.48           & -9.65           \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                   & 0.84            & 0.92              & 0.56           & -11.13          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.93            & 0.86              & 0.16           & -10.11          \\
-		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.81            & 0.90              & 0.50           & -9.98           \\
-		\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & -9.84           \\
-		\hline
+		\hline\hline
+		$\loss{VAE}$                                                                     & 0.11            & \textbf{0.94}     & 0.47           & -12.58          \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$                                                    & 0.77            & 0.91              & 0.33           & -12.17          \\ \hline
+		$\loss{VAE}$, $\loss{mul(c)}$                                                    & 0.16            & 0.93              & 0.63           & -11.21          \\ \hline
+		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & -12.03          \\ \hline
+		$\loss{VAE}$, $\loss{adv(c)}$                                                    & 0.10            & 0.94              & 0.47           & -12.92          \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.82            & 0.93              & 0.56           & -11.32          \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & \textbf{-9.59}  \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.78            & 0.91              & 0.32           & -11.99          \\ \hline
+		$\loss{VAE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.82            & 0.89              & 0.51           & -10.94          \\ \hline
+		$\loss{VAE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.15            & 0.93              & 0.62           & -11.22          \\ \hline
+		$\loss{VAE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                   & 0.78            & 0.88              & 0.21           & -12.03          \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                  & 0.92            & 0.90              & 0.48           & -9.65           \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.84            & 0.92              & 0.56           & -11.13          \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.93            & 0.86              & 0.16           & -10.11          \\ \hline
+		$\loss{VAE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.81            & 0.90              & 0.50           & -9.98           \\ \hline
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & -9.84           \\ \hline
 	\end{tabular}\vspace{-.2cm}
 	\caption{Ablation tests on the Yelp dataset. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
 	\label{tab:ablation-results}
 \end{table*}
+
 \begin{table*}[!t]
 	\centering
 	\resizebox{.95\textwidth}{!}{\footnotesize
 		\begin{tabular}{| p{0.3\linewidth} || p{0.3\linewidth} | p{0.3\linewidth} |}
 			\hline
 			\tabc{1}{Original (Positive)}                                           & \tabh{DAE Transferred (Negative)}                                         & \tabh{VAE Transferred (Negative)}                          \\
-			\hline
-			\hline
-			the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\
-			\hline
-			the waitresses are friendly and helpful                                 & the guys are rude and helpful                                             & the waitresses are rude and are lazy                       \\
-			\hline
-			the restaurant itself is romantic and quiet                             & the restaurant itself is awkward and quite crowded                        & the restaurant itself was dirty                            \\
-			\hline
-			great deal                                                              & horrible deal                                                             & no deal                                                    \\
-			\hline
-			both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\
-			\hline
+			\hline \hline
+			the food is excellent and the service is exceptional                    & the food was a bit bad but the staff was exceptional                      & the food was bland and i am not thrilled with this         \\ \hline
+			the waitresses are friendly and helpful                                 & the guys are rude and helpful                                             & the waitresses are rude and are lazy                       \\ \hline
+			the restaurant itself is romantic and quiet                             & the restaurant itself is awkward and quite crowded                        & the restaurant itself was dirty                            \\ \hline
+			great deal                                                              & horrible deal                                                             & no deal                                                    \\ \hline
+			both times i have eaten the lunch buffet and it was outstanding         & their burgers were decent but the eggs were not the consistency           & both times i have eaten here the food was mediocre at best \\ \hline
 			\hline
 			\tabc{1}{Original (Negative)}                                           & \tabh{DAE Transferred (Positive)}                                         & \tabh{VAE Transferred (Positive)}                          \\
-			\hline
-			\hline
-			the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\
-			\hline
-			it was a bed of lettuce and spinach with some italian meats and cheeses & it was a beautiful setting and just had a large variety of german flavors & it was a huge assortment of flavors and italian food       \\
-			\hline
-			the people behind the counter were not friendly whatsoever              & the best selection behind the register and service presentation           & the people behind the counter is friendly caring           \\
-			\hline
-			the interior is old and generally falling apart                         & the decor is old and now perfectly                                        & the interior is old and noble                              \\
-			\hline
-			they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\
-			\hline
+			\hline \hline
+			the desserts were very bland                                            & the desserts were very good                                               & the desserts were very good                                \\ \hline
+			it was a bed of lettuce and spinach with some italian meats and cheeses & it was a beautiful setting and just had a large variety of german flavors & it was a huge assortment of flavors and italian food       \\ \hline
+			the people behind the counter were not friendly whatsoever              & the best selection behind the register and service presentation           & the people behind the counter is friendly caring           \\ \hline
+			the interior is old and generally falling apart                         & the decor is old and now perfectly                                        & the interior is old and noble                              \\ \hline
+			they are clueless                                                       & they are stoked                                                           & they are genuinely professionals                           \\ \hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Examples of style transferred sentence generation.}\vspace{-.2cm}
 	\label{tab:transfer-samples}
