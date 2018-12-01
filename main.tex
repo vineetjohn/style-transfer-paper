@@ -423,26 +423,26 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 	\resizebox{\textwidth}{!}{
 		\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c| }
 			\hline
-			\tabc{3}{Model}                                  & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                                                                                             \\
+			\tabc{3}{Model}                                     & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                                                                             \\
 			\cline{2-11}
-			                                                 & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{Fluency}} & \textbf{Transfer} & \textbf{Cosine}         & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{Fluency}} \\
-			                                                 & \textbf{Acc.}                               & \textbf{Sim.}                                & \textbf{Overlap} & \textbf{Mean} &                                   & \textbf{Acc.}     & \textbf{Sim.}           & \textbf{Overlap} & \textbf{Mean} &                                   \\
+			                                                    & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} & \textbf{Transfer} & \textbf{Cosine} & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} \\
+			                                                    & \textbf{Acc.}                               & \textbf{Sim.}                                & \textbf{Overlap} & \textbf{Mean} &                               & \textbf{Acc.}     & \textbf{Sim.}   & \textbf{Overlap} & \textbf{Mean} &                               \\
 			\hline\hline
-			Style-Embedding \cite{fu2018style}               & 0.182                                       & \textbf{0.959}                               & \textbf{0.666}   & 0.348         & -16.17                            & \ 0.400$^\dag$    & \ \textit{0.930}$^\dag$ & \textit{0.359}   & 0.387         & -28.13                            \\
+			Style-Embedding \cite{fu2018style}                  & 0.18                                        & \textbf{0.96}                                & \textbf{0.67}    & 0.35          & 124                           & \ 0.40$^\dag$     & \ 0.93$^\dag$   & 0.36             & 0.39          & \textbf{32}                   \\
 			\hline
-			Cross-Alignment \cite{shen2017style}             & \ 0.784$^\dag$                              & 0.892                                        & 0.209            & 0.411         & -23.39                            & 0.606             & 0.893                   & 0.024            & 0.121         & -26.31                            \\
+			Cross-Alignment \cite{shen2017style}                & \ 0.78$^\dag$                               & 0.89                                         & 0.21             & 0.41          & 93                            & 0.61              & 0.89            & 0.02             & 0.12          & 202                           \\
 			\hline
-			Multi-Decoder \cite{zhao2018adversarially}       & \ 0.818$^\dag$                              & 0.883                                        & 0.272            & 0.476         & -20.95                            & 0.552             & 0.926                   & 0.169            & 0.306         & -34.70                            \\
+			Multi-Decoder \cite{zhao2018adversarially}          & \ 0.82$^\dag$                               & 0.88                                         & 0.27             & 0.48          & 85                            & 0.55              & 0.93            & 0.17             & 0.31          & 75                            \\
 			\hline
-			DeleteRetrieveGenerate \cite{li2018delete}       & \ 0.508$^\ddag$                             & \ 0.921$^\ddag$                              & \ 0.469$^\ddag$  & 0.482         & \ -18.56$^\ddag$                  & 0.426             & \textbf{0.980}          & \textbf{0.799}   & 0.583         & \textit{-23.31}                   \\
+			DeleteRetrieveGenerate \cite{li2018delete} $^\ddag$ & 0.86                                        & 0.94                                         & 0.52             & 0.67          & 70                            & 0.43              & \textbf{0.98}   & \textbf{0.80}    & \textbf{0.58} & 65                            \\
 			\hline
-			BackTranslate \cite{prabhumoye2018style}\!\!\!\! & 0.854                                       & 0.831                                        & 0.075            & 0.254         & -20.85                            & \textbf{0.832}    & 0.821                   & 0.020            & 0.130         & -25.96                            \\
+			BackTranslate \cite{prabhumoye2018style}            & 0.85                                        & 0.83                                         & 0.08             & 0.25          & 206                           & \textbf{0.83}     & 0.82            & 0.02             & 0.13          & 115                           \\
 			\hline
-			Cycle RL \cite{xu2018unpaired}                   & \ 0.805$^\ddag$                             & \ \textit{0.922}$^\ddag$                     & \ 0.427$^\ddag$  & 0.586         & \ -30.15$^\ddag$                  & \ 0.719$^\ddag$   & \ 0.912$^\ddag$         & \ 0.221$^\ddag$  & 0.398         & \ -22.97$^\ddag$                  \\
+			Cycle RL \cite{xu2018unpaired} $^\ddag$             & 0.80                                        & 0.92                                         & 0.43             & 0.59          & 470                           & 0.72              & 0.91            & 0.22             & 0.40          & 332                           \\
 			\hline\hline
-			Ours (DAE)                                       & {0.883}                                     & 0.915                                        & \textit{0.549}   & 0.696         & \textit{-10.17}                   & 0.720             & 0.921                   & 0.354            & 0.505         & -24.74                            \\
+			Ours (DAE)                                          & 0.88                                        & 0.92                                         & 0.55             & \textbf{0.70} & 137                           & 0.72              & 0.92            & 0.35             & 0.50          & 73                            \\
 			\hline
-			Ours (VAE)                                       & \textbf{0.934}                              & 0.904                                        & 0.473            & 0.665         & \textbf{-9.84}                    & {0.822}           & 0.900                   & 0.196            & 0.402         & \textbf{-21.70}                   \\
+			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47             & 0.66          & \textbf{69}                   & 0.82              & 0.90            & 0.20             & 0.40          & 63                            \\
 			\hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer.  $^\dag$Quoted from previous papers (the same data split). $^\ddag$Involving custom data splits, providing a rough (but unbiased) comparison. Others are based on our replication, and we use published code whenever possible. We achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
@@ -491,7 +491,7 @@ According to \citet{krippendorf2004content}, this is an acceptable inter-rater a
 			\citet{shen2017style}         & 3.63            & 3.07                & 3.08             & 3.25          \\
 			\hline
 			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77             & 3.46          \\
-			\hline
+			\hline\hline
 			Ours (DAE)                    & 3.67            & 3.64                & 4.19             & 3.83          \\
 			\hline
 			Ours (VAE)                    & \textbf{4.32}   & 3.73                & \textbf{4.48}    & \textbf{4.16} \\
