@@ -496,16 +496,16 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 	\centering\vspace{-.2cm}
 	\begin{tabular}{| l || c | c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Geo}  & \tabh{PPL} \\
-		                                                                                & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Mean} & \tabh{}    \\
+		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Geo-}    & \tabh{PPL}  \\
+		                                                                                & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Mean}   & \tabh{}     \\
 		\hline\hline
-		$\loss{AE}$                                                                     & 0.11            & \textbf{0.94}     & 0.47           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.77            & 0.91              & 0.33           & -           & -          \\ \hline
+		$\loss{AE}$                                                                     & 0.11            & \textbf{0.94}     & 0.47           & 0.22          & 40          \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.77            & 0.91              & 0.33           & 0.50          & 41          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$                                                    & 0.16            & 0.93              & 0.63           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & -           & -          \\ \hline
+		$\loss{AE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & 0.42          & 35          \\ \hline
 		% $\loss{AE}$, $\loss{adv(c)}$                                                    & 0.10            & 0.94              & 0.47           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.82            & 0.93              & 0.56           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & -           & -          \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & 0.40          & \textbf{23} \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.78            & 0.91              & 0.32           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.82            & 0.89              & 0.51           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.15            & 0.93              & 0.62           & -           & -          \\ \hline
@@ -514,7 +514,7 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.84            & 0.92              & 0.56           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.93            & 0.86              & 0.16           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.81            & 0.90              & 0.50           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & -           & -          \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & \textbf{0.66} & 32          \\ \hline
 	\end{tabular}\vspace{-.2cm}
 	\caption{Ablation tests on the Yelp dataset. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
 	\label{tab:ablation-results}
