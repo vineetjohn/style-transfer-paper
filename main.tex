@@ -399,7 +399,7 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			\multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{2}{c||}{\textbf{Yelp}} & \multicolumn{2}{c|}{\textbf{Amazon}}                             \\
 			\cline{2-5}
 			                                       & \textbf{DAE}                        & \textbf{VAE}                         & \textbf{DAE} & \tabh{VAE} \\
-			\hline 
+			\hline
 			None (majority guess)                  & \multicolumn{2}{c||}{0.602}         & \multicolumn{2}{c|}{0.512}                                       \\
 			\hline
 			Content space  ($\bm c$)               & 0.658                               & 0.697                                & 0.675        & 0.693      \\ \hline
@@ -422,26 +422,26 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 	\resizebox{\textwidth}{!}{
 		\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c| }
 			\hline
-			\tabc{3}{Model}                                      & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                             \\
+			\tabc{3}{Model}                                  & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                                                                                             \\
 			\cline{2-11}
-			                                                     & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word} &\textbf{Geo-}    & \multirow{2}{*}{\textbf{Fluency}} & \textbf{Transfer} & \textbf{Cosine}         & \textbf{Word}  &\textbf{Geo-}  & \multirow{2}{*}{\textbf{Fluency}} \\
-			                                                     & \textbf{Acc.}  & \textbf{Sim.}   & \textbf{Overlap} & \textbf{Mean} &  & \textbf{Acc.} & \textbf{Sim.}     & \textbf{Overlap} & \textbf{Mean} & \\
+			                                                 & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{Fluency}} & \textbf{Transfer} & \textbf{Cosine}         & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{Fluency}} \\
+			                                                 & \textbf{Acc.}                               & \textbf{Sim.}                                & \textbf{Overlap} & \textbf{Mean} &                                   & \textbf{Acc.}     & \textbf{Sim.}           & \textbf{Overlap} & \textbf{Mean} &                                   \\
 			\hline\hline
-			Style-Embedding \cite{fu2018style}                   & 0.182                                       & \textbf{0.959}                               & \textbf{0.666} & xxx & -16.17            & \ 0.400$^\dag$    & \ \textit{0.930}$^\dag$ & \textit{0.359}  & xxx & -28.13            \\
+			Style-Embedding \cite{fu2018style}               & 0.182                                       & \textbf{0.959}                               & \textbf{0.666}   & xxx           & -16.17                            & \ 0.400$^\dag$    & \ \textit{0.930}$^\dag$ & \textit{0.359}   & xxx           & -28.13                            \\
 			\hline
-			Cross-Alignment \cite{shen2017style}                 & \ 0.784$^\dag$                              & 0.892                                        & 0.209   & xxx         & -23.39            & 0.606             & 0.893                   & 0.024    & xxx        & -26.31            \\
+			Cross-Alignment \cite{shen2017style}             & \ 0.784$^\dag$                              & 0.892                                        & 0.209            & xxx           & -23.39                            & 0.606             & 0.893                   & 0.024            & xxx           & -26.31                            \\
 			\hline
-			Multi-Decoder \cite{zhao2018adversarially}           & \ 0.818$^\dag$                              & 0.883                                        & 0.272  & xxx          & -20.95            & 0.552             & 0.926                   & 0.169   & xxx         & -34.70     \\
+			Multi-Decoder \cite{zhao2018adversarially}       & \ 0.818$^\dag$                              & 0.883                                        & 0.272            & xxx           & -20.95                            & 0.552             & 0.926                   & 0.169            & xxx           & -34.70                            \\
 			\hline
-			DeleteRetrieveGenerate \cite{li2018delete}         & \ 0.508$^\ddag$                                       & \ 0.921$^\ddag$                                        & \ 0.469$^\ddag$      & xxx       & \ -18.56$^\ddag$             & 0.426             & \textbf{0.980}          & \textbf{0.799} & xxx  & \textit{-23.31}   \\
+			DeleteRetrieveGenerate \cite{li2018delete}       & \ 0.508$^\ddag$                             & \ 0.921$^\ddag$                              & \ 0.469$^\ddag$  & xxx           & \ -18.56$^\ddag$                  & 0.426             & \textbf{0.980}          & \textbf{0.799}   & xxx           & \textit{-23.31}                   \\
 			\hline
-			BackTranslate \cite{prabhumoye2018style}\!\!\!\!& 0.854                                       & 0.831                                        & 0.075    & xxx        & -20.85            & \textbf{0.832}    & 0.821                   & 0.020   & xxx      & -25.96            \\
+			BackTranslate \cite{prabhumoye2018style}\!\!\!\! & 0.854                                       & 0.831                                        & 0.075            & xxx           & -20.85                            & \textbf{0.832}    & 0.821                   & 0.020            & xxx           & -25.96                            \\
 			\hline
-			Cycle RL \cite{xu2018unpaired} & \ 0.805$^\ddag$     & \ \textit{0.922}$^\ddag$                               & \ 0.427$^\ddag$  & xxx          & \ -30.15$^\ddag$            & \ 0.719$^\ddag$             & \ 0.912$^\ddag$                   & \ 0.221$^\ddag$     & xxx       & \ -22.97$^\ddag$            \\
+			Cycle RL \cite{xu2018unpaired}                   & \ 0.805$^\ddag$                             & \ \textit{0.922}$^\ddag$                     & \ 0.427$^\ddag$  & xxx           & \ -30.15$^\ddag$                  & \ 0.719$^\ddag$   & \ 0.912$^\ddag$         & \ 0.221$^\ddag$  & xxx           & \ -22.97$^\ddag$                  \\
 			\hline\hline
-			Ours (DAE)                                           & {0.883}                              & 0.915                                        & \textit{0.549} & xxx  & \textit{-10.17}   & 0.720             & 0.921                   & 0.354     & xxx       & -24.74            \\
+			Ours (DAE)                                       & {0.883}                                     & 0.915                                        & \textit{0.549}   & xxx           & \textit{-10.17}                   & 0.720             & 0.921                   & 0.354            & xxx           & -24.74                            \\
 			\hline
-			Ours (VAE)                                           & \textbf{0.934}                              & 0.904                                        & 0.473   & xxx         & \textbf{-9.84}    & {0.822}    & 0.900                   & 0.196    & xxx        & \textbf{-21.70}   \\
+			Ours (VAE)                                       & \textbf{0.934}                              & 0.904                                        & 0.473            & xxx           & \textbf{-9.84}                    & {0.822}           & 0.900                   & 0.196            & xxx           & \textbf{-21.70}                   \\
 			\hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer.  $^\dag$Quoted from previous papers (the same data split). $^\ddag$Involving custom data splits, providing a rough (but unbiased) comparison. Others are based on our replication, and we use published code whenever possible. We achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
@@ -481,17 +481,19 @@ According to \citet{krippendorf2004content}, this is an acceptable inter-rater a
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{|l||c|c|c||c|}
 			\hline
-			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} &\tabh{Geo-}\\
-			                              & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality} &\tabh{Mean} \\
+			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} & \tabh{Geo-} \\
+			                              & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  & \tabh{Mean} \\
 			\hline
-			\hline		\citet{fu2018style}     & 1.67            & \textbf{3.84}       & 3.66       \\    \hline
-			\citet{shen2017style}         & 3.63            & 3.07                & 3.08            \\
 			\hline
-			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77            \\
+			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66                          \\    \hline
 			\hline
-			Ours (DAE)                    & 3.67            & 3.64                & 4.19            \\
+			\citet{shen2017style}         & 3.63            & 3.07                & 3.08                          \\
 			\hline
-			Ours (VAE)                    & \textbf{4.32}   & {3.73}       & \textbf{4.48}   \\
+			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77                          \\
+			\hline
+			Ours (DAE)                    & 3.67            & 3.64                & 4.19                          \\
+			\hline
+			Ours (VAE)                    & \textbf{4.32}   & {3.73}              & \textbf{4.48}                 \\
 			\hline
 		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
