@@ -31,6 +31,7 @@
 \newcommand{\rmx}{\mathrm x} 
 % used for table headers
 \newcommand{\tabh}[1]{\multicolumn{1}{c|}{\textbf{#1}}}  
+\newcommand{\tabhr}[1]{\multicolumn{1}{|c||}{\textbf{#1}}}  
 % used for the top left cell in a table
 \newcommand{\tabc}[2]{\multicolumn{1}{|c||}{\multirow{#1}{*}{\textbf{#2}}}} 
 % used for denoting the loss symbol with a subscript
@@ -481,19 +482,19 @@ According to \citet{krippendorf2004content}, this is an acceptable inter-rater a
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{|l||c|c|c||c|}
 			\hline
-			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabh{Language} & \tabh{Geo-} \\
-			                              & \tabh{Strength} & \tabh{Preservation} & \tabh{Quality}  & \tabh{Mean} \\
+			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabhr{Language} & \tabh{Geo-}   \\
+			                              & \tabh{Strength} & \tabh{Preservation} & \tabhr{Quality}  & \tabh{Mean}   \\
 			\hline
 			\hline
-			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66                          \\    \hline
+			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66             & 2.86          \\
 			\hline
-			\citet{shen2017style}         & 3.63            & 3.07                & 3.08                          \\
+			\citet{shen2017style}         & 3.63            & 3.07                & 3.08             & 3.25          \\
 			\hline
-			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77                          \\
+			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77             & 3.46          \\
 			\hline
-			Ours (DAE)                    & 3.67            & 3.64                & 4.19                          \\
+			Ours (DAE)                    & 3.67            & 3.64                & 4.19             & 3.83          \\
 			\hline
-			Ours (VAE)                    & \textbf{4.32}   & {3.73}              & \textbf{4.48}                 \\
+			Ours (VAE)                    & \textbf{4.32}   & 3.73                & \textbf{4.48}    & \textbf{4.16} \\
 			\hline
 		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
