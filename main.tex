@@ -401,11 +401,11 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			\cline{2-5}
 			                                       & \textbf{DAE}                        & \textbf{VAE}                         & \textbf{DAE} & \tabh{VAE} \\
 			\hline
-			None (majority guess)                  & \multicolumn{2}{c||}{0.602}         & \multicolumn{2}{c|}{0.512}                                       \\
+			None (majority guess)                  & \multicolumn{2}{c||}{0.60}          & \multicolumn{2}{c|}{0.51}                                        \\
 			\hline
-			Content space  ($\bm c$)               & 0.658                               & 0.697                                & 0.675        & 0.693      \\ \hline
-			Style space ($\bm s$)                  & 0.974                               & 0.974                                & 0.821        & 0.810      \\ \hline
-			Complete space ($[\bm s;\bm c]$)       & 0.974                               & 0.974                                & 0.819        & 0.810      \\
+			Content space  ($\bm c$)               & 0.66                                & 0.70                                 & 0.67         & 0.69       \\ \hline
+			Style space ($\bm s$)                  & 0.97                                & 0.97                                 & 0.82         & 0.81       \\ \hline
+			Complete space ($[\bm s;\bm c]$)       & 0.97                                & 0.97                                 & 0.82         & 0.81       \\
 			\hline
 		\end{tabular}}
 	\caption{Classification accuracy on latent spaces.}
@@ -517,37 +517,37 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		                                                                                 & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Fluency}  \\
 		\hline
 		\hline
-		$\loss{AE}$                                                                      & 0.106           & \textbf{0.939}    & 0.472          & -12.58          \\
+		$\loss{AE}$                                                                      & 0.11            & \textbf{0.94}     & 0.47           & -12.58          \\
 		\hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                     & 0.767           & 0.911             & 0.331          & -12.17          \\
+		$\loss{AE}$, $\loss{mul(s)}$                                                     & 0.77            & 0.91              & 0.33           & -12.17          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$                                                     & 0.155           & 0.931             & 0.626          & -11.21          \\
+		% $\loss{AE}$, $\loss{mul(c)}$                                                     & 0.16            & 0.93              & 0.63           & -11.21          \\
 		\hline
-		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.782           & 0.886             & 0.230          & -12.03          \\
+		$\loss{VAE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & -12.03          \\
 		% \hline
-		% $\loss{AE}$, $\loss{adv(c)}$                                                     & 0.103           & 0.940             & 0.470          & -12.92          \\
+		% $\loss{AE}$, $\loss{adv(c)}$                                                     & 0.10            & 0.94              & 0.47           & -12.92          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                    & 0.822           & 0.928             & 0.561          & -11.32          \\
+		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                    & 0.82            & 0.93              & 0.56           & -11.32          \\
 		\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.912           & 0.866             & 0.171          & -9.59           \\
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & \textbf{-9.59}  \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                    & 0.781           & 0.906             & 0.318          & -11.99          \\
+		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                    & 0.78            & 0.91              & 0.32           & -11.99          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                    & 0.825           & 0.894             & 0.507          & -10.94          \\
+		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                    & 0.82            & 0.89              & 0.51           & -10.94          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                    & 0.149           & 0.929             & 0.621          & -11.22          \\
+		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                    & 0.15            & 0.93              & 0.62           & -11.22          \\
 		% \hline
-		% $\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                    & 0.780           & 0.884             & 0.214          & -12.03          \\
+		% $\loss{AE}$, $\loss{adv(s)}$, $\loss{adv(c)}$                                    & 0.78            & 0.88              & 0.21           & -12.03          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                   & 0.922           & 0.903             & 0.476          & -9.65           \\
+		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(s)}$                   & 0.92            & 0.90              & 0.48           & -9.65           \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                   & 0.844           & 0.925             & 0.556          & -11.13          \\
+		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                   & 0.84            & 0.92              & 0.56           & -11.13          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.934           & 0.864             & 0.157          & -10.11          \\
+		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.93            & 0.86              & 0.16           & -10.11          \\
 		% \hline
-		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.806           & 0.896             & 0.500          & -9.98           \\
+		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                   & 0.81            & 0.90              & 0.50           & -9.98           \\
 		\hline
-		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.934}  & 0.904             & \textbf{0.473} & \textbf{-9.84}  \\
+		$\loss{VAE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & -9.84           \\
 		\hline
 	\end{tabular}\vspace{-.2cm}
 	\caption{Ablation tests on the Yelp dataset. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
