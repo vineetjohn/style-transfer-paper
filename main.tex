@@ -420,19 +420,18 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 	\resizebox{\textwidth}{!}{
 		\begin{tabular}{|l||c|c|c|c|c||c|c|c|c|c| }
 			\hline
-			\tabc{3}{Model}                                     & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                                                                             \\
-			\cline{2-11}
-			                                                    & \textbf{Transfer}                           & \textbf{Cosine}                              & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} & \textbf{Transfer} & \textbf{Cosine} & \textbf{Word}    & \textbf{Geo-} & \multirow{2}{*}{\textbf{PPL}} \\
-			                                                    & \textbf{Acc.}                               & \textbf{Sim.}                                & \textbf{Overlap} & \textbf{Mean} &                               & \textbf{Acc.}     & \textbf{Sim.}   & \textbf{Overlap} & \textbf{Mean} &                               \\
+			\tabc{3}{Model}                                     & \multicolumn{5}{c||}{\textbf{Yelp Dataset}} & \multicolumn{5}{c|}{\textbf{Amazon Dataset}}                                                                                                                                                                                                                                      \\ \cline{2-11}
+			                                                    & \multirow{2}{*}{\textbf{STA}}               & \multirow{2}{*}{\textbf{CS}}                 & \multirow{2}{*}{\textbf{WO}} & \textbf{GM}       & \multirow{2}{*}{\textbf{PPL}} & \multirow{2}{*}{\textbf{STA}} & \multirow{2}{*}{\textbf{CS}} & \multirow{2}{*}{\textbf{WO}} & \textbf{GM}       & \multirow{2}{*}{\textbf{PPL}} \\
+			                                                    &                                             &                                              &                              & \textbf{(STA,WO)} &                               &                               &                              &                              & \textbf{(STA,WO)} &                               \\
 			\hline\hline
-			Style-Embedding \cite{fu2018style}                  & 0.18                                        & \textbf{0.96}                                & \textbf{0.67}    & 0.35          & 124                           & \ 0.40$^\dag$     & \ 0.93$^\dag$   & 0.36             & 0.39          & \textbf{32}                   \\ \hline
-			Cross-Alignment \cite{shen2017style}                & \ 0.78$^\dag$                               & 0.89                                         & 0.21             & 0.41          & 93                            & 0.61              & 0.89            & 0.02             & 0.12          & 202                           \\ \hline
-			Multi-Decoder \cite{zhao2018adversarially}          & \ 0.82$^\dag$                               & 0.88                                         & 0.27             & 0.48          & 85                            & 0.55              & 0.93            & 0.17             & 0.31          & 75                            \\ \hline
-			DeleteRetrieveGenerate \cite{li2018delete} $^\ddag$ & 0.86                                        & 0.94                                         & 0.52             & 0.67          & 70                            & 0.43              & \textbf{0.98}   & \textbf{0.80}    & \textbf{0.58} & 65                            \\ \hline
-			BackTranslate \cite{prabhumoye2018style}            & 0.85                                        & 0.83                                         & 0.08             & 0.25          & 206                           & \textbf{0.83}     & 0.82            & 0.02             & 0.13          & 115                           \\ \hline
-			Cycle RL \cite{xu2018unpaired} $^\ddag$             & 0.80                                        & 0.92                                         & 0.43             & 0.59          & 470                           & 0.72              & 0.91            & 0.22             & 0.40          & 332                           \\ \hline\hline
-			Ours (DAE)                                          & 0.88                                        & 0.92                                         & 0.55             & \textbf{0.70} & 137                           & 0.72              & 0.92            & 0.35             & 0.50          & 73                            \\ \hline
-			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47             & 0.66          & \textbf{69}                   & 0.82              & 0.90            & 0.20             & 0.40          & 63                            \\ \hline
+			Style-Embedding \cite{fu2018style}                  & 0.18                                        & \textbf{0.96}                                & \textbf{0.67}                & 0.35              & 124                           & \ 0.40$^\dag$                 & \ 0.93$^\dag$                & 0.36                         & 0.39              & \textbf{32}                   \\ \hline
+			Cross-Alignment \cite{shen2017style}                & \ 0.78$^\dag$                               & 0.89                                         & 0.21                         & 0.41              & 93                            & 0.61                          & 0.89                         & 0.02                         & 0.12              & 202                           \\ \hline
+			Multi-Decoder \cite{zhao2018adversarially}          & \ 0.82$^\dag$                               & 0.88                                         & 0.27                         & 0.48              & 85                            & 0.55                          & 0.93                         & 0.17                         & 0.31              & 75                            \\ \hline
+			DeleteRetrieveGenerate \cite{li2018delete} $^\ddag$ & 0.86                                        & 0.94                                         & 0.52                         & 0.67              & 70                            & 0.43                          & \textbf{0.98}                & \textbf{0.80}                & \textbf{0.58}     & 65                            \\ \hline
+			BackTranslate \cite{prabhumoye2018style}            & 0.85                                        & 0.83                                         & 0.08                         & 0.25              & 206                           & \textbf{0.83}                 & 0.82                         & 0.02                         & 0.13              & 115                           \\ \hline
+			Cycle RL \cite{xu2018unpaired} $^\ddag$             & 0.80                                        & 0.92                                         & 0.43                         & 0.59              & 470                           & 0.72                          & 0.91                         & 0.22                         & 0.40              & 332                           \\ \hline\hline
+			Ours (DAE)                                          & 0.88                                        & 0.92                                         & 0.55                         & \textbf{0.70}     & 137                           & 0.72                          & 0.92                         & 0.35                         & 0.50              & 73                            \\ \hline
+			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47                         & 0.66              & \textbf{69}                   & 0.82                          & 0.90                         & 0.20                         & 0.40              & 63                            \\ \hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer.  $^\dag$Quoted from previous papers (the same data split). $^\ddag$Involving custom data splits, providing a rough (but unbiased) comparison. Others are based on our replication, and we use published code whenever possible. We achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
 	\label{tab:yelp-comparison-previous}
@@ -444,15 +443,18 @@ We also conducted sentiment transfer experiments with our disentangled latent sp
 
 \subsubsection{Metrics.} We evaluate competing models based on (1) style transfer strength, (2) content preservation and (3) quality of generated language. The evaluation of generated sentences is a difficult task in contemporary literature, so we adopt a few automatic metrics and use human judgment as well.
 
-$\bullet$ \textit{Style-Transfer Accuracy.} We follow most previous work~\cite{hu2017toward,shen2017style,fu2018style} and train a separate convolutional neural network (CNN)  to predict the sentiment of a sentence~\cite{kim2014convolutional}, which is then used to approximate the style transfer accuracy. In other words, we report the CNN classifier's accuracy on the style-transferred sentences, considering the target style to be the ground truth.
+$\bullet$ \textit{Style-Transfer Accuracy (STA):}
+We follow most previous work~\cite{hu2017toward,shen2017style,fu2018style} and train a separate convolutional neural network (CNN) to predict the sentiment of a sentence~\cite{kim2014convolutional}, which is then used to approximate the style transfer accuracy.
+In other words, we report the CNN classifier's accuracy on the style-transferred sentences, considering the target style to be the ground truth.
+While the style classifier itself may not be perfect, it achieves a reasonable sentiment accuracy on the validation sets ($97\%$ for Yelp; $82\%$ for Amazon).
+Thus, it provides a quantitative way of evaluating the strength of style-transfer.
 
-While the style classifier itself may not be perfect, it achieves a reasonable sentiment accuracy on the validation sets ($97\%$ for Yelp; $82\%$ for Amazon). Thus, it provides a quantitative way of evaluating the strength of style-transfer.
-
-$\bullet$ \textit{Cosine Similarity.}
+$\bullet$ \textit{Cosine Similarity (CS):}
 We followed \citet{fu2018style} and computed a sentence embedding by concatenating the $\operatorname{min}$, $\operatorname{max}$, and $\operatorname{mean}$ of its word embeddings (sentiment words removed).
 Then, we computed the cosine similarity between the source and generated sentence embeddings, which is intended to be an indicator of content preservation.
 
-$\bullet$ \textit{Word Overlap.} We find that the cosine similarity measure, although correlated to human judgment, is not a sensitive measure, and we propose a simple yet effective measure that counts the unigram word overlap rate of the original sentence $\mathrm x$ and the style-transferred sentence $\mathrm y$, computed by $\frac{count(w_{\mathrm x} \cap w_{\mathrm y})}{count(w_{\mathrm x} \cup w_{\mathrm y})}$.
+$\bullet$ \textit{Word Overlap (WO)}
+We find that the cosine similarity measure, although correlated to human judgment, is not a sensitive measure, and we propose a simple yet effective measure that counts the unigram word overlap rate of the original sentence $\mathrm x$ and the style-transferred sentence $\mathrm y$, computed by $\frac{count(w_{\mathrm x} \cap w_{\mathrm y})}{count(w_{\mathrm x} \cup w_{\mathrm y})}$.
 
 % $\bullet$ \textit{Language Fluency.}
 % We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improved} as a quantitative and automated metric to evaluate the fluency of a sentence.
@@ -464,33 +466,31 @@ We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improve
 It estimates the empirical distribution of trigrams in a corpus, and computes the perplexity of a test sentence.
 We train the language model on the respective dataset, and report the Kneser-Ney language model's perplexity. A smaller number indicates more fluent sentences.
 
-$\bullet$  \textit{Manual Evaluation.}
+$\bullet$ \textit{Manual Evaluation.}
 Despite the above automatic metrics, we also conduct human evaluations to further confirm the performance of our model.
 This was done on the Yelp dataset only, due to the amount of manual effort involved.
-We asked 6 human evaluators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength, content similarity, and language quality.
+We asked 6 human evaluators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength (TS), content preservation (CP), and language quality (LQ).
 This evaluation was conducted in a strictly blind fashion: samples obtained from all evaluated models are randomly shuffled, so that the evaluator would be unaware of which model generated a particular sentence.
 The inter-rater agreement---as measured by Krippendorff's alpha \cite{krippendorf2004content} for our Likert scale ratings---is 0.74, 0.68, and 0.72 for transfer strength, content preservation, and language quality, respectively.
 According to \citet{krippendorf2004content}, this is an acceptable inter-rater agreement.
+
 \begin{table}[!t]
 	\centering\vspace{-.2cm}
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{|l||c|c|c||c|}
 			\hline
-			\tabc{2}{Model}               & \tabh{Transfer} & \tabh{Content}      & \tabhr{Language} & \tabh{Geo-}   \\
-			                              & \tabh{Strength} & \tabh{Preservation} & \tabhr{Quality}  & \tabh{Mean}   \\
+			\tabc{2}{Model}               & \multirow{2}{*}{\textbf{TS}} & \multirow{2}{*}{\textbf{CP}} & \multirow{2}{*}{\textbf{LQ}} & \textbf{GM}         \\
+			                              &                              &                              &                              & \textbf{(TS,CP,LQ)} \\
 			\hline \hline
-			\citet{fu2018style}           & 1.67            & \textbf{3.84}       & 3.66             & 2.86          \\ \hline
-			\citet{shen2017style}         & 3.63            & 3.07                & 3.08             & 3.25          \\ \hline
-			\citet{zhao2018adversarially} & 3.55            & 3.09                & 3.77             & 3.46          \\ \hline \hline
-			Ours (DAE)                    & 3.67            & 3.64                & 4.19             & 3.83          \\ \hline
-			Ours (VAE)                    & \textbf{4.32}   & 3.73                & \textbf{4.48}    & \textbf{4.16} \\ \hline
+			\citet{fu2018style}           & 1.67                         & \textbf{3.84}                & 3.66                         & 2.86                \\ \hline
+			\citet{shen2017style}         & 3.63                         & 3.07                         & 3.08                         & 3.25                \\ \hline
+			\citet{zhao2018adversarially} & 3.55                         & 3.09                         & 3.77                         & 3.46                \\ \hline \hline
+			Ours (DAE)                    & 3.67                         & 3.64                         & 4.19                         & 3.83                \\ \hline
+			Ours (VAE)                    & \textbf{4.32}                & 3.73                         & \textbf{4.48}                & \textbf{4.16}       \\ \hline
 		\end{tabular}}
 	\caption{Manual evaluation on the Yelp dataset.}
 	\label{tab:manual-evaluation}
 \end{table}
-
-
-
 
 \subsubsection{Results and Analysis.}
 
@@ -501,16 +501,16 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 	\centering\vspace{-.2cm}
 	\begin{tabular}{| l || c | c | c | c | c |}
 		\hline
-		\tabc{2}{Objectives}                                                            & \tabh{Transfer} & \tabh{Cosine}     & \tabh{Word}    & \tabh{Geo-}    & \tabh{PPL}  \\
-		                                                                                & \tabh{Accuracy} & \tabh{Similarity} & \tabh{Overlap} & \tabh{Mean}   & \tabh{}     \\
+		\tabc{2}{Objectives}                                                            & \multirow{2}{*}{\textbf{STA}} & \multirow{2}{*}{\textbf{CS}} & \multirow{2}{*}{\textbf{WO}} & \textbf{GM}       & \multirow{2}{*}{\textbf{PPL}} \\
+		                                                                                &                               &                              &                              & \textbf{(STA,WO)} &                               \\
 		\hline\hline
-		$\loss{AE}$                                                                     & 0.11            & \textbf{0.94}     & 0.47           & 0.22          & 40          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.77            & 0.91              & 0.33           & 0.50          & 41          \\ \hline
+		$\loss{AE}$                                                                     & 0.11                          & \textbf{0.94}                & 0.47                         & 0.22              & 40                            \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$                                                    & 0.77                          & 0.91                         & 0.33                         & 0.50              & 41                            \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$                                                    & 0.16            & 0.93              & 0.63           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{adv(s)}$                                                    & 0.78            & 0.89              & 0.23           & 0.42          & 35          \\ \hline
+		$\loss{AE}$, $\loss{adv(s)}$                                                    & 0.78                          & 0.89                         & 0.23                         & 0.42              & 35                            \\ \hline
 		% $\loss{AE}$, $\loss{adv(c)}$                                                    & 0.10            & 0.94              & 0.47           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$                                   & 0.82            & 0.93              & 0.56           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91            & 0.87              & 0.17           & 0.40          & \textbf{23} \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$                                   & 0.91                          & 0.87                         & 0.17                         & 0.40              & \textbf{23}                   \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(c)}$                                   & 0.78            & 0.91              & 0.32           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$                                   & 0.82            & 0.89              & 0.51           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(c)}$                                   & 0.15            & 0.93              & 0.62           & -           & -          \\ \hline
@@ -519,7 +519,7 @@ For baseline methods, we quoted results from existing papers whenever possible, 
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$                  & 0.84            & 0.92              & 0.56           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.93            & 0.86              & 0.16           & -           & -          \\ \hline
 		% $\loss{AE}$, $\loss{mul(c)}$, $\loss{adv(s)}$, $\loss{adv(c)}$                  & 0.81            & 0.90              & 0.50           & -           & -          \\ \hline
-		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}   & 0.90              & \textbf{0.47}  & \textbf{0.66} & 32          \\ \hline
+		$\loss{AE}$, $\loss{mul(s)}$, $\loss{adv(s)}$, $\loss{mul(c)}$, $\loss{adv(c)}$ & \textbf{0.93}                 & 0.90                         & \textbf{0.47}                & \textbf{0.66}     & 32                            \\ \hline
 	\end{tabular}\vspace{-.2cm}
 	\caption{Ablation tests on the Yelp dataset. In all variants, we follow the same protocol of style transfer by substituting an empirical estimate of the target style vector.}
 	\label{tab:ablation-results}
