@@ -454,10 +454,15 @@ Then, we computed the cosine similarity between the source and generated sentenc
 
 $\bullet$ \textit{Word Overlap.} We find that the cosine similarity measure, although correlated to human judgment, is not a sensitive measure, and we propose a simple yet effective measure that counts the unigram word overlap rate of the original sentence $\mathrm x$ and the style-transferred sentence $\mathrm y$, computed by $\frac{count(w_{\mathrm x} \cap w_{\mathrm y})}{count(w_{\mathrm x} \cup w_{\mathrm y})}$.
 
-$\bullet$ \textit{Language Fluency.}
+% $\bullet$ \textit{Language Fluency.}
+% We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improved} as a quantitative and automated metric to evaluate the fluency of a sentence.
+% It estimates the empirical distribution of trigrams in a corpus, and computes the log-likelihood of a test sentence.
+% We train the language model on the respective dataset, and report the Kneser-Ney language model's log-likelihood. A larger (closer to zero) number indicates a more fluent sentence.
+
+$\bullet$ \textit{Perplexity (PPL):}
 We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improved} as a quantitative and automated metric to evaluate the fluency of a sentence.
-It estimates the empirical distribution of trigrams in a corpus, and computes the log-likelihood of a test sentence.
-We train the language model on the respective dataset, and report the Kneser-Ney language model's log-likelihood. A larger (closer to zero) number indicates a more fluent sentence.
+It estimates the empirical distribution of trigrams in a corpus, and computes the perplexity of a test sentence.
+We train the language model on the respective dataset, and report the Kneser-Ney language model's perplexity. A smaller number indicates more fluent sentences.
 
 $\bullet$  \textit{Manual Evaluation.}
 Despite the above automatic metrics, we also conduct human evaluations to further confirm the performance of our model.
