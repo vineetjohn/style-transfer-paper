@@ -434,7 +434,7 @@ We show t-SNE plots for ablation tests with different combinations of auxiliary 
 			Ours (VAE)                                          & \textbf{0.93}                               & 0.90                                         & 0.47                         & 0.66              & \textbf{69}                   & 0.82                          & 0.90                         & 0.20                         & 0.40              & 63                            \\ \hline
 		\end{tabular}}\vspace{-.2cm}
 	\caption{Performance of non-parallel text style transfer.  $^\dag$Quoted from previous papers (the same data split). $^\ddag$Involving custom data splits, providing a rough (but unbiased) comparison. Others are based on our replication, and we use published code whenever possible. We achieve 0.809 and 0.835 transfer accuracy on the Yelp dataset, close to the results in \citet{shen2017style} and \citet{zhao2018adversarially}, respectively, showing that our replication is fair.}\vspace{-.2cm}
-	\label{tab:yelp-comparison-previous}
+	\label{tab:comparison-previous}
 \end{table*}
 
 
@@ -466,13 +466,16 @@ We use a trigram Kneser-Ney (KL) smoothed language model \cite{kneser1995improve
 It estimates the empirical distribution of trigrams in a corpus, and computes the perplexity of a test sentence.
 We train the language model on the respective dataset, and report the Kneser-Ney language model's perplexity. A smaller number indicates more fluent sentences.
 
-$\bullet$ \textit{Manual Evaluation.}
+$\bullet$ \textit{Manual Evaluation:}
 Despite the above automatic metrics, we also conduct human evaluations to further confirm the performance of our model.
 This was done on the Yelp dataset only, due to the amount of manual effort involved.
 We asked 6 human evaluators to rate each sentence on a 1--5 Likert scale~\cite{stent2005evaluating} in terms of transfer strength (TS), content preservation (CP), and language quality (LQ).
 This evaluation was conducted in a strictly blind fashion: samples obtained from all evaluated models are randomly shuffled, so that the evaluator would be unaware of which model generated a particular sentence.
 The inter-rater agreement---as measured by Krippendorff's alpha \cite{krippendorf2004content} for our Likert scale ratings---is 0.74, 0.68, and 0.72 for transfer strength, content preservation, and language quality, respectively.
 According to \citet{krippendorf2004content}, this is an acceptable inter-rater agreement.
+
+$\bullet$ \textit{Geometric Mean (GM):}
+We use the geometric mean to compute an aggregate score over multiple evaluation metrics as shown in Tables \ref{tab:comparison-previous}, \ref{tab:manual-evaluation} and \ref{tab:ablation-results}.
 
 \begin{table}[!t]
 	\centering\vspace{-.2cm}
@@ -494,8 +497,8 @@ According to \citet{krippendorf2004content}, this is an acceptable inter-rater a
 
 \subsubsection{Results and Analysis.}
 
-We compare our approach with previous state-of-the-art work in Table \ref{tab:yelp-comparison-previous}.
-For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citet{fu2018style} propose another model using multiple decoders; the method is further developed in \citet{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:yelp-comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
+We compare our approach with previous state-of-the-art work in Table \ref{tab:comparison-previous}.
+For baseline methods, we quoted results from existing papers whenever possible, and replicated the experiments to report other metrics with publicly available code \cite{shen2017style,fu2018style,zhao2018adversarially}.\footnote{\citet{fu2018style} propose another model using multiple decoders; the method is further developed in \citet{zhao2018adversarially}, and we adopt the latter for comparison.} As discussed in Table~\ref{tab:comparison-previous}, our replication involves reasonable efforts and is fair for comparison.
 
 \begin{table*}[ht]
 	\centering\vspace{-.2cm}
@@ -555,11 +558,11 @@ We observe that the style embedding model \cite{fu2018style} performs poorly on 
 The other two competing methods~\cite{shen2017style,zhao2018adversarially} achieve reasonable transfer accuracy and cosine similarity. However, our model outperforms them by 10\% transfer accuracy as well as content preserving scores (measured by cosine similarity and the word overlap rate). This shows our model is able to generate high-quality style transferred sentences, which in turn indicates that the  latent space  is well disentangled into style and content subspaces. Regarding language fluency, we see that VAE is better than DAE in both experiments. This is expected as VAE regularizes the latent space by imposing a probabilistic distribution. We also see that our method achieves considerably more fluent sentences than competing methods, showing that our multi-task and adversarial losses are more ``natural'' than other methods, for example, aligning RNN hidden states \cite{shen2017style}.
 
 
-Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:yelp-comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
+Table~\ref{tab:manual-evaluation} presents the results of human evaluation. Again, we see that the style embedding model \cite{fu2018style} is ineffective as it has a very low transfer strength, and that our method outperforms other baselines in all aspects. The results are consistent with the automatic metrics in both experiments (Table~\ref{tab:comparison-previous}). This implies that the automatic metrics we used are reasonable; it also shows consistent evidence of the effectiveness of our approach.
 
 We conducted ablation tests on the Yelp dataset, and show results in Table~\ref{tab:ablation-results}. With $\loss{VAE}$ only, we cannot achieve reasonable style transfer accuracy by substituting an empirically estimated style vector of the target style.  This is because the style and content spaces would not be disentangled spontaneously with the autoencoding loss alone.
 
-With either $\loss{mul(s)}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together improves the transfer accuracy to 90\%, outperforming previous methods by a margin of 10\% (Table~\ref{tab:yelp-comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
+With either $\loss{mul(s)}$ or $\loss{adv(s)}$, the model achieves reasonable transfer accuracy and cosine similarity. Combining them together improves the transfer accuracy to 90\%, outperforming previous methods by a margin of 10\% (Table~\ref{tab:comparison-previous}). This shows that the multi-task loss and the adversarial loss work in different ways. Our insight of combining the two auxiliary losses is a simple yet effective way of disentangling latent space.
 
 However, $\loss{mul(s)}$ and $\loss{adv(s)}$ only regularize the style information, leading to gradual drop of content preserving scores. Then, we have another insight of introducing content-oriented auxiliary losses, $\loss{mul(c)}$ and $\loss{adv(c)}$, based on BoW features, which regularize the content information in the same way as the style information. By incorporating all these auxiliary losses, we achieve high transfer accuracy, high content preservation, as well as high language fluency.
 
